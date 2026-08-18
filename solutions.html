@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solutions — Deeluh</title>
+<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+
+/* ==========================================================
+     SOLUTIONS SECTION 
+     ========================================================== */
+     .solutions {
+    position: relative;
+    padding: 7rem 1.5rem 8rem;
+    background-color: #fff;
+    background-image:
+      radial-gradient(42% 40% at 90% 6%, var(--brand-clay-tint) 0%, transparent 65%),
+      radial-gradient(45% 38% at 4% 94%, var(--brand-primary-tint) 0%, transparent 65%);
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+
+  .solutions__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     HEADER — small eyebrow (the "category"), large Hedvig
+     heading, centered — same pattern as firm-size/wdd headers
+     ========================================================== */
+  .solutions__header {
+    max-width: 760px;
+    margin: 0 auto 4rem;
+    text-align: center;
+  }
+
+  .solutions__header .eyebrow,
+  .solutions__header h2,
+  .solutions__header p {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+  }
+  .solutions.is-visible .solutions__header .eyebrow { opacity: 1; transform: translateY(0); }
+  .solutions.is-visible .solutions__header h2 { opacity: 1; transform: translateY(0); transition-delay: .12s; }
+  .solutions.is-visible .solutions__header p  { opacity: 1; transform: translateY(0); transition-delay: .24s; }
+
+  .solutions__header .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    margin-bottom: 1.25rem;
+  }
+
+  .solutions__header .eyebrow::before,
+  .solutions__header .eyebrow::after {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .solutions__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .solutions__header p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin: 0 auto;
+    /* max-width: 58ch; */
+  }
+
+  /* ==========================================================
+     GRID — two columns, six cards
+     ========================================================== */
+  .solutions__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  /* ==========================================================
+     CARD — same radius / shadow / hover physics as .firm-card,
+     solid Deeluh green per this section's brief, with layered
+     backgrounds: solid green, grid texture, radial glow behind
+     the illustration, and a thin shimmering top accent line
+     ========================================================== */
+  .solutions__card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--brand-primary);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.04);
+    padding: 2rem 2rem 0;
+    display: flex;
+    flex-direction: column;
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .solutions.is-visible .solutions__card {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1),
+                box-shadow .4s ease, border-color .4s ease;
+  }
+
+  .solutions__card:hover {
+    transform: translateY(-6px);
+    border-color: var(--brand-clay);
+    box-shadow: 0 24px 48px -18px rgba(0, 0, 0, 0.45);
+  }
+  .solutions.is-visible .solutions__card:hover { transform: translateY(-6px); }
+
+  /* thin shimmering accent line along the top edge of every card —
+     a quiet nod to the wordmark shine used elsewhere on the site */
+  .solutions__card::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    z-index: 3;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(231, 183, 164, 0) 35%,
+      rgba(231, 183, 164, 0.9) 50%,
+      rgba(231, 183, 164, 0) 65%,
+      transparent 100%);
+    background-size: 220% 100%;
+    background-position: -60% 0;
+    opacity: .55;
+    animation: card-shimmer 6s ease-in-out infinite;
+  }
+  .solutions__card:nth-child(2)::after { animation-delay: -1s; }
+  .solutions__card:nth-child(3)::after { animation-delay: -2s; }
+  .solutions__card:nth-child(4)::after { animation-delay: -3s; }
+  .solutions__card:nth-child(5)::after { animation-delay: -4s; }
+  .solutions__card:nth-child(6)::after { animation-delay: -5s; }
+
+  @keyframes card-shimmer {
+    0%   { background-position: -60% 0; }
+    45%  { background-position: 160% 0; }
+    100% { background-position: 160% 0; }
+  }
+
+  /* layer 2 — subtle square grid, ~32px, 4-5% opacity */
+  .solutions__card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 32px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.045) 0 1px, transparent 1px 32px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* layer 3 — soft glow behind the illustration, warms up on hover */
+  .solutions__glow {
+    position: absolute;
+    left: 50%;
+    bottom: -10%;
+    width: 80%;
+    height: 60%;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(188, 91, 60, 0.24) 0%, transparent 75%);
+    filter: blur(20px);
+    z-index: 0;
+    pointer-events: none;
+    transition: opacity .4s ease;
+  }
+  .solutions__card:hover .solutions__glow { opacity: 1.4; }
+
+  .solutions__content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .solutions__category {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--brand-clay-light);
+    margin-bottom: .9rem;
+  }
+
+  .solutions__title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.4rem;
+    line-height: 1.25;
+    color: #fff;
+    margin: 0 0 .75rem;
+    max-width: 34ch;
+  }
+
+  .solutions__desc {
+    font-size: .92rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.72);
+    margin: 0 0 1.5rem;
+    max-width: 42ch;
+  }
+
+  .solutions__link {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .86rem;
+    font-weight: 600;
+    color: var(--brand-clay-light);
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: gap .2s ease, color .2s ease;
+  }
+  .solutions__link:hover { gap: .65rem; color: #fff; }
+
+  /* ==========================================================
+     ILLUSTRATION — brand-styled UI-panel diagrams, fills the
+     bottom of the card and fades into it
+     ========================================================== */
+  .solutions__illustration {
+    position: relative;
+    z-index: 1;
+    margin-top: auto;
+    width: 100%;
+    height: 208px;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 97%);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent 97%);
+  }
+
+  .solutions__illustration svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .panel-label {
+    font-family: var(--font-body);
+    font-weight: 700;
+    letter-spacing: .03em;
+  }
+  .panel-text {
+    font-family: var(--font-body);
+    font-weight: 600;
+  }
+  .panel-meta {
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
+
+  /* shared micro-animation classes, reused across every diagram —
+     identical approach to the previous line-icon illustrations */
+  .diagram-flow {
+    stroke-dasharray: 4 7;
+    animation: diagram-dash 2.6s linear infinite;
+  }
+  @keyframes diagram-dash {
+    to { stroke-dashoffset: -22; }
+  }
+
+  .diagram-pulse {
+    animation: diagram-glow 3.4s ease-in-out infinite;
+    transform-origin: center;
+  }
+  @keyframes diagram-glow {
+    0%, 100% { opacity: .55; transform: scale(1); }
+    50%      { opacity: 1; transform: scale(1.18); }
+  }
+
+  .diagram-ring {
+    animation: diagram-ring 3.4s ease-out infinite;
+    transform-origin: center;
+  }
+  @keyframes diagram-ring {
+    0%   { opacity: .5; transform: scale(0.75); }
+    80%  { opacity: 0; transform: scale(1.35); }
+    100% { opacity: 0; transform: scale(1.35); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .diagram-flow, .diagram-pulse, .diagram-ring, .solutions__card::after {
+      animation: none;
+    }
+    .solutions__card, .solutions__header .eyebrow, .solutions__header h2, .solutions__header p {
+      transition: none;
+    }
+    .solutions__card:hover { transform: none; }
+  }
+
+  /* ==========================================================
+     TABLET
+     ========================================================== */
+  @media (max-width: 900px) {
+    .solutions { padding: 4.5rem 1.25rem 4rem; }
+    .solutions__header { margin-bottom: 3rem; }
+    .solutions__grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .solutions__card:hover { transform: none; } /* tap, not hover, on touch */
+  }
+
+  /* ==========================================================
+     MOBILE
+     ========================================================== */
+  @media (max-width: 640px) {
+    .solutions__card { padding: 1.75rem 1.75rem 0; }
+    .solutions__title { font-size: 1.25rem; }
+    .solutions__illustration { height: 218px; }
+  }
+
+    /* ==========================================================
+     BIG LOGO SECTION BEFORE FOOTER
+     ========================================================== */
+     .logo-section {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 2rem 2rem; */
+    background: linear-gradient(160deg, var(--brand-clay) 0%, var(--brand-clay-hover) 100%);
+    overflow: hidden;
+  }
+
+  .logo-wrap {
+    width: 100%;
+    max-width: 1400px;
+    text-align: center;
+  }
+
+  /* the wordmark itself — width is set by JS so it always spans
+     edge-to-edge regardless of font metrics or viewport size */
+  .logo-text {
+    display: inline-block;
+    /* font-family: var(--font-body); */
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+
+    /* the shimmer: a soft translucent base with a bright band that
+       sweeps across it — the "light passing over metal" look */
+    background-image: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.28) 40%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.28) 60%,
+      rgba(255, 255, 255, 0.28) 100%
+    );
+    background-size: 300% 100%;
+    background-position: -100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation-name: shine-sweep;
+    animation-duration: var(--shine-cycle);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* the sweep itself happens fast, early in the cycle, then holds
+     and waits for the next loop — that pause is what makes the
+     "cycle length" feel like a repeat interval rather than a
+     constant back-and-forth shimmer */
+  @keyframes shine-sweep {
+    0%   { background-position: -120% 0; }
+    18%  { background-position: 220% 0; }
+    100% { background-position: 220% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-text {
+      animation: none;
+      background-position: 0 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .logo-section { min-height: 38vh; padding: 3rem 1.25rem; }
+  }
+
+
+</style>
+</head>
+<body>
+
+ <!-- NAVBAR -->
+
+ <nav class="navbar" id="siteNavbar">
+  <div class="navbar__inner">
+
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
+      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
+    </a>
+
+    <ul class="navbar__menu">
+      <li><a href="product.html">Product</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+
+      <li class="navbar__item--dropdown">
+        <button class="navbar__dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          Security
+          <svg class="navbar__dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="navbar__dropdown-panel">
+          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+        </div>
+      </li>
+
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="company.html">Company</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+    </div>
+
+    <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+
+  <div class="navbar__mobile" id="navMobile">
+    <div class="navbar__mobile-inner">
+      <ul class="navbar__mobile-links">
+        <li><a href="product.html">Product</a></li>
+        <li><a href="solutions.html">Solutions</a></li>
+
+        <li class="navbar__mobile-dropdown" id="navLegalDropdown">
+          <button class="navbar__mobile-dropdown-trigger" type="button" aria-expanded="false" aria-controls="navLegalPanel">
+            Security
+            <svg class="navbar__mobile-dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
+            <div class="navbar__mobile-dropdown-inner">
+              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+      <div class="navbar__mobile-actions">
+        <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const navbar = document.getElementById('siteNavbar');
+  const burger = document.getElementById('navBurger');
+
+  // swap green → white once scrolled past a small threshold
+  function updateNavbarScrollState() {
+    navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', updateNavbarScrollState, { passive: true });
+  updateNavbarScrollState();
+
+  // hamburger toggle
+  burger.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // close the mobile menu if the viewport grows back past the breakpoint
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width: 981px)').matches) {
+      navbar.classList.remove('is-open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- LEGAL DROPDOWN (nav) — click-to-open accordion on mobile -->
+<script>
+  (function () {
+    const legalDropdown = document.getElementById('navLegalDropdown');
+    if (!legalDropdown) return;
+    const trigger = legalDropdown.querySelector('.navbar__mobile-dropdown-trigger');
+
+    trigger.addEventListener('click', () => {
+      const isOpen = legalDropdown.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // collapse the accordion if the viewport grows back into desktop
+    // width, so it doesn't stay stuck open behind the hover dropdown
+    window.addEventListener('resize', () => {
+      if (window.matchMedia('(min-width: 981px)').matches) {
+        legalDropdown.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+
+<!-- END OF NAVBAR -->
+
+<section class="solutions" id="solutionsSection">
+  <div class="solutions__inner">
+
+    <div class="solutions__header">
+      <!-- <span class="eyebrow">For your firm size</span> -->
+      <h2>Whatever your firm's structure, Deeluh fits.</h2>
+      <p>Deeluh's data model handles the role permissions, co-approval rules, and regulatory requirements specific to how your practice is actually organised — not a generic one-size-fits-all setup.</p>
+    </div>
+
+    <div class="solutions__grid">
+
+      <!-- 01 — SOLE PRACTITIONER — "your desk", one active node,
+           one line in, one line out. Nothing else in the way. -->
+      <article class="solutions__card">
+        <span class="solutions__glow"></span>
+        <div class="solutions__content">
+          <span class="solutions__category">Sole Practitioner</span>
+          <h3 class="solutions__title">You are the firm.</h3>
+          <p class="solutions__desc">One login, one desk, everything Deeluh ships — priced for one. The card below is your whole workspace: intake in, billing out, no approval layers standing between the two.</p>
+        </div>
+        <div class="solutions__illustration">
+          <svg viewBox="0 0 320 208" fill="none">
+            <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+            <rect x="24" y="22" width="88" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
+            <text x="68" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">YOUR DESK</text>
+            <circle class="diagram-pulse" cx="284" cy="32" r="3.5" fill="var(--brand-clay)"/>
+
+            <circle class="diagram-ring" cx="160" cy="98" r="32" fill="none" stroke="var(--brand-clay)" stroke-width="1.2"/>
+            <circle cx="160" cy="98" r="32" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+            <text x="160" y="103" text-anchor="middle" class="panel-text" font-size="13" fill="#fff">You</text>
+
+            <line class="diagram-flow" x1="42" y1="126" x2="126" y2="106" stroke="var(--brand-clay)" stroke-width="1.4" stroke-linecap="round"/>
+            <line class="diagram-flow" x1="194" y1="106" x2="278" y2="126" stroke="var(--brand-clay)" stroke-width="1.4" stroke-linecap="round" style="animation-delay:-1.1s"/>
+            <circle cx="42" cy="126" r="3" fill="rgba(255,255,255,0.65)"/>
+            <circle class="diagram-pulse" cx="278" cy="126" r="3" fill="var(--brand-clay)" style="animation-delay:-1.6s"/>
+            <text x="42" y="146" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.55)">Intake</text>
+            <text x="278" y="146" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.55)">Billing</text>
+
+            <rect x="24" y="172" width="76" height="22" rx="11" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+            <text x="62" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Seats · 1</text>
+            <rect x="110" y="172" width="126" height="22" rx="11" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+            <text x="173" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Approval layers · 0</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 02 — SOLE PROPRIETORSHIP — root/associate role hierarchy,
+           three seats branching off one owner node -->
+      <article class="solutions__card">
+        <span class="solutions__glow"></span>
+        <div class="solutions__content">
+          <span class="solutions__category">Sole Proprietorship</span>
+          <h3 class="solutions__title">You own the firm. Associates work under you.</h3>
+          <p class="solutions__desc">Role permissions built in from the start, with billing per seat as your team grows. The hierarchy below is live in your workspace on day one — you keep oversight, associates get exactly the access you set.</p>
+        </div>
+        <div class="solutions__illustration">
+          <svg viewBox="0 0 320 208" fill="none">
+            <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+            <rect x="24" y="22" width="102" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
+            <text x="75" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">ROLE HIERARCHY</text>
+
+            <text x="160" y="52" text-anchor="middle" class="panel-meta" font-size="8" letter-spacing=".06em" fill="var(--brand-clay-light, #e7b7a4)">OWNER</text>
+            <circle cx="160" cy="70" r="15" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <text x="160" y="74" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">You</text>
+
+            <line class="diagram-flow" x1="160" y1="86" x2="96" y2="128" stroke="var(--brand-clay)" stroke-width="1.3" stroke-linecap="round"/>
+            <line class="diagram-flow" x1="160" y1="86" x2="160" y2="128" stroke="var(--brand-clay)" stroke-width="1.3" stroke-linecap="round" style="animation-delay:-.6s"/>
+            <line class="diagram-flow" x1="160" y1="86" x2="224" y2="128" stroke="var(--brand-clay)" stroke-width="1.3" stroke-linecap="round" style="animation-delay:-1.2s"/>
+
+            <circle class="diagram-pulse" cx="96" cy="134" r="11" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <circle class="diagram-pulse" cx="160" cy="134" r="11" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" style="animation-delay:-1.1s"/>
+            <circle class="diagram-pulse" cx="224" cy="134" r="11" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" style="animation-delay:-2.2s"/>
+            <text x="96" y="138" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">A</text>
+            <text x="160" y="138" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">A</text>
+            <text x="224" y="138" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">A</text>
+
+            <rect x="103" y="172" width="114" height="22" rx="11" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+            <text x="160" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Per-seat billing</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 03 — PARTNERSHIP — deed-enforced co-sign workflow, two
+           partner nodes converging on one executed workflow -->
+      <article class="solutions__card">
+        <span class="solutions__glow"></span>
+        <div class="solutions__content">
+          <span class="solutions__category">Partnership</span>
+          <h3 class="solutions__title">Decisions that need every partner's sign-off, actually need every partner's sign-off.</h3>
+          <p class="solutions__desc">Co-approval is built directly into firm workflows. Upload your partnership deed and Deeluh enforces the approval paths below automatically — nothing executes until both partners have signed.</p>
+        </div>
+        <div class="solutions__illustration">
+          <svg viewBox="0 0 320 208" fill="none">
+            <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+            <rect x="24" y="22" width="112" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
+            <text x="80" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">CO-SIGN ENGINE</text>
+
+            <rect x="24" y="52" width="272" height="24" rx="8" fill="rgba(255,255,255,0.05)" stroke="var(--brand-clay)" stroke-width="1" stroke-dasharray="2 3"/>
+            <text x="36" y="68" class="panel-meta" font-size="9" fill="rgba(255,255,255,0.8)">Partnership_Deed.pdf</text>
+            <circle class="diagram-pulse" cx="284" cy="64" r="3.5" fill="var(--brand-clay)"/>
+
+            <rect x="34" y="92" width="88" height="42" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.4)" stroke-width="1.3"/>
+            <text x="78" y="110" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Partner A</text>
+            <rect x="52" y="116" width="52" height="13" rx="6.5" fill="rgba(188,91,60,0.28)"/>
+            <text x="78" y="125" text-anchor="middle" class="panel-meta" font-size="7" fill="var(--brand-clay-light, #e7b7a4)">SIGNED</text>
+
+            <rect x="198" y="92" width="88" height="42" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.4)" stroke-width="1.3"/>
+            <text x="242" y="110" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Partner B</text>
+            <rect x="216" y="116" width="52" height="13" rx="6.5" fill="rgba(188,91,60,0.28)"/>
+            <text x="242" y="125" text-anchor="middle" class="panel-meta" font-size="7" fill="var(--brand-clay-light, #e7b7a4)">SIGNED</text>
+
+            <line class="diagram-flow" x1="94" y1="134" x2="140" y2="164" stroke="var(--brand-clay)" stroke-width="1.3" stroke-linecap="round"/>
+            <line class="diagram-flow" x1="226" y1="134" x2="180" y2="164" stroke="var(--brand-clay)" stroke-width="1.3" stroke-linecap="round" style="animation-delay:-.9s"/>
+
+            <rect x="112" y="168" width="96" height="30" rx="8" fill="rgba(255,255,255,0.06)" stroke="var(--brand-clay)" stroke-width="1.4"/>
+            <text x="160" y="182" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.65)">WORKFLOW</text>
+            <text x="160" y="193" text-anchor="middle" class="panel-text" font-size="9" fill="var(--brand-clay-light, #e7b7a4)">Executed</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 04 — MULTI-PARTNER FIRM — two isolated practice groups
+           feeding a shared, audit-secured knowledge vault -->
+      <article class="solutions__card">
+        <span class="solutions__glow"></span>
+        <div class="solutions__content">
+          <span class="solutions__category">Multi-Partner Firm</span>
+          <h3 class="solutions__title">Distinct practice groups. One firm-wide system.</h3>
+          <p class="solutions__desc">Department separation, associateship isolation, complete audit trails and a shared knowledge vault — practice groups stay walled off from each other, but everything still lands in one hash-secured record.</p>
+        </div>
+        <div class="solutions__illustration">
+          <svg viewBox="0 0 320 208" fill="none">
+            <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+            <rect x="24" y="22" width="106" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
+            <text x="77" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">PRACTICE GROUPS</text>
+
+            <rect x="26" y="52" width="112" height="52" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+            <text x="82" y="70" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Corporate</text>
+            <text x="82" y="86" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.5)">Isolated</text>
+
+            <rect x="182" y="52" width="112" height="52" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+            <text x="238" y="70" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Litigation</text>
+            <text x="238" y="86" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.5)">Isolated</text>
+
+            <line class="diagram-flow" x1="90" y1="104" x2="140" y2="140" stroke="var(--brand-clay)" stroke-width="1.2" stroke-linecap="round"/>
+            <line class="diagram-flow" x1="230" y1="104" x2="180" y2="140" stroke="var(--brand-clay)" stroke-width="1.2" stroke-linecap="round" style="animation-delay:-1s"/>
+
+            <circle class="diagram-ring" cx="160" cy="152" r="28" fill="none" stroke="var(--brand-clay)" stroke-width="1.2"/>
+            <circle cx="160" cy="152" r="28" fill="rgba(255,255,255,0.05)" stroke="var(--brand-clay)" stroke-width="1.5"/>
+            <text x="160" y="150" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Vault</text>
+            <text x="160" y="163" text-anchor="middle" class="panel-meta" font-size="7" fill="var(--brand-clay-light, #e7b7a4)">Audit-secured</text>
+
+            <circle class="diagram-pulse" cx="130" cy="195" r="2.5" fill="var(--brand-clay)"/>
+            <text x="140" y="198" class="panel-meta" font-size="7.5" fill="rgba(255,255,255,0.55)">Hash-chain trail live</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 05 — LEGAL DEPARTMENT — intake queue feeding a matter
+           lifecycle timeline, built for in-house not firm billing -->
+      <article class="solutions__card">
+        <span class="solutions__glow"></span>
+        <div class="solutions__content">
+          <span class="solutions__category">Legal Department</span>
+          <h3 class="solutions__title">Built for in-house teams, not law firms.</h3>
+          <p class="solutions__desc">Track contracts, compliance and legal requests across the business without the billing and trust-accounting workflows built for firms. Every request moves through a clear lifecycle, end to end.</p>
+        </div>
+        <div class="solutions__illustration">
+          <svg viewBox="0 0 320 208" fill="none">
+            <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+            <rect x="24" y="22" width="126" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
+            <text x="87" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">INTAKE &amp; LIFECYCLE</text>
+
+            <rect x="24" y="50" width="272" height="28" rx="8" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+            <text x="34" y="68" class="panel-text" font-size="8.5" fill="#fff">Vendor Review Request</text>
+            <rect x="234" y="57" width="54" height="15" rx="7.5" fill="rgba(188,91,60,0.28)"/>
+            <text x="261" y="68" text-anchor="middle" class="panel-meta" font-size="7" fill="var(--brand-clay-light, #e7b7a4)">In review</text>
+
+            <line x1="42" y1="92" x2="42" y2="184" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+
+            <circle class="diagram-pulse" cx="42" cy="98" r="4" fill="var(--brand-clay)"/>
+            <text x="56" y="96" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.8)">Data extracted</text>
+            <text x="56" y="107" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.45)">14 risk points parsed</text>
+
+            <circle class="diagram-pulse" cx="42" cy="140" r="4" fill="var(--brand-clay-light, #e7b7a4)" style="animation-delay:-1.1s"/>
+            <text x="56" y="138" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.8)">Jurisdiction check</text>
+            <text x="56" y="149" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.45)">In progress</text>
+
+            <circle cx="42" cy="182" r="4" fill="rgba(255,255,255,0.3)"/>
+            <text x="56" y="180" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.5)">GC approval</text>
+            <text x="56" y="191" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.3)">Pending</text>
+          </svg>
+        </div>
+      </article>
+
+      <!-- 06 — ENTERPRISE — data residency across offices/entities,
+           routed through one governance node -->
+      <article class="solutions__card">
+        <span class="solutions__glow"></span>
+        <div class="solutions__content">
+          <span class="solutions__category">Enterprise</span>
+          <h3 class="solutions__title">Complex structures. Custom configuration.</h3>
+          <p class="solutions__desc">Dedicated data residency, custom compliance workflows and enterprise configuration for legal organisations operating across multiple offices, entities or jurisdictions — all routed through a single governance layer.</p>
+          <a href="company.html#contactSection" class="solutions__link">Contact Sales →</a>
+        </div>
+        <div class="solutions__illustration">
+          <svg viewBox="0 0 320 208" fill="none">
+            <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
+            <rect x="24" y="22" width="104" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
+            <text x="76" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">GLOBAL TOPOLOGY</text>
+
+            <rect x="24" y="52" width="88" height="30" rx="7" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <text x="68" y="71" text-anchor="middle" class="panel-meta" font-size="7.5" fill="#fff">Lagos HQ</text>
+
+            <rect x="208" y="52" width="88" height="30" rx="7" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <text x="252" y="71" text-anchor="middle" class="panel-meta" font-size="7.5" fill="#fff">London</text>
+
+            <rect x="116" y="150" width="88" height="30" rx="7" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+            <text x="160" y="169" text-anchor="middle" class="panel-meta" font-size="7.5" fill="#fff">New York</text>
+
+            <line class="diagram-flow" x1="90" y1="82" x2="138" y2="106" stroke="var(--brand-clay)" stroke-width="1.2" stroke-linecap="round"/>
+            <line class="diagram-flow" x1="230" y1="82" x2="182" y2="106" stroke="var(--brand-clay)" stroke-width="1.2" stroke-linecap="round" style="animation-delay:-.9s"/>
+            <line class="diagram-flow" x1="160" y1="134" x2="160" y2="150" stroke="var(--brand-clay)" stroke-width="1.2" stroke-linecap="round" style="animation-delay:-1.8s"/>
+
+            <circle class="diagram-ring" cx="160" cy="118" r="24" fill="none" stroke="var(--brand-clay)" stroke-width="1.2"/>
+            <circle cx="160" cy="118" r="24" fill="rgba(255,255,255,0.05)" stroke="var(--brand-clay)" stroke-width="1.5"/>
+            <text x="160" y="116" text-anchor="middle" class="panel-text" font-size="8" fill="#fff">Governance</text>
+            <text x="160" y="127" text-anchor="middle" class="panel-meta" font-size="6.5" fill="var(--brand-clay-light, #e7b7a4)">NDPA · GDPR</text>
+
+            <rect x="86" y="190" width="148" height="16" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
+            <text x="160" y="201" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.75)">99.99% uptime SLA</text>
+          </svg>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  const section = document.getElementById('solutionsSection');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        section.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealObserver.observe(section);
+
+  // stagger the six cards ~80ms apart
+  document.querySelectorAll('.solutions__card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 80}ms`;
+  });
+})();
+</script>
+
+<!-- BIG LOGO BEFORE FOOTER SECTION -->
+
+<section class="logo-section">
+  <div class="logo-wrap">
+    <span class="logo-text" id="deeluhLogo">Deeluh</span>
+  </div>
+</section>
+
+<!-- END OF BIG LOGO BEFORE FOOTER SECTION -->
+
+
+<!-- FOOTER -->
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <!-- <p class="footer-brand__name">Deeluh</p> -->
+        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Product</p>
+        <ul>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="javascript:void(0)">Security</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Company</p>
+        <ul>
+          <li><a href="company.html">About</a></li>
+          <li><a href="company.html#contactSection">Contact sales</a></li>
+          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Legal</p>
+        <ul>
+          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
+          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
+          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
+          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+
+      <div class="footer-bottom__social">
+        <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<!-- END OF FOOTER -->
+
+<!-- "BIG LOGO SECTION BEFORE FOOTER" -->
+<script>
+  // fits the wordmark exactly to the width of its container, every time —
+  // more reliable than guessing a vw-based font-size, since it accounts
+  // for the actual rendered font metrics on the user's device
+  function fitLogoText() {
+    const wrap = document.querySelector('.logo-wrap');
+    const text = document.getElementById('deeluhLogo');
+    if (!wrap || !text) return;
+
+    const targetWidth = wrap.clientWidth;
+    text.style.fontSize = '100px'; // baseline to measure against
+    const measuredWidth = text.getBoundingClientRect().width;
+    const scale = targetWidth / measuredWidth;
+
+    // clamp so it can't get absurdly huge/tiny on extreme viewport sizes
+    const newSize = Math.min(Math.max(100 * scale, 40), 520);
+    text.style.fontSize = newSize + 'px';
+  }
+
+  window.addEventListener('resize', fitLogoText);
+  window.addEventListener('load', fitLogoText);
+  fitLogoText();
+
+  /* ==========================================================
+     HOW TO CONTROL THE REPEAT TIMING
+     ========================================================== */
+
+  function setLogoShineInterval(seconds) {
+    document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
+  }
+  // example: setLogoShineInterval(8);
+</script>
+<!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
+
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources — Deeluh</title>
+<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+
+a.text-link {
+    color: var(--brand-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color .2s ease;
+  }
+  a.text-link:hover { color: var(--brand-clay); }
+
+  /* ==========================================================
+     RESOURCES PAGE
+     ========================================================== */
+  .resources {
+    position: relative;
+    padding: 10rem 1.5rem 8rem;
+    background-color: #fff;
+    background-image:
+      radial-gradient(40% 34% at 90% 4%, var(--brand-clay-tint) 0%, transparent 65%),
+      radial-gradient(38% 32% at 4% 40%, var(--brand-primary-tint) 0%, transparent 65%),
+      radial-gradient(36% 30% at 94% 96%, var(--brand-clay-tint) 0%, transparent 65%);
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+
+  /* subtle technical grid, same treatment used elsewhere */
+  .resources::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(15,61,58,0.035) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(15,61,58,0.035) 0 1px, transparent 1px 120px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .resources__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    max-width: 90%;
+    margin: 0 auto;
+  }
+
+  /* shared fade-up entrance */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .resources.is-visible .fade-up { opacity: 1; transform: translateY(0); }
+  .resources.is-visible .fade-up:nth-of-type(2) { transition-delay: 80ms; }
+  .resources.is-visible .fade-up:nth-of-type(3) { transition-delay: 160ms; }
+  .resources.is-visible .fade-up:nth-of-type(4) { transition-delay: 240ms; }
+
+  /* ==========================================================
+     RESOURCES OVERVIEW
+     ========================================================== */
+  .resources__eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    text-align: center;
+    margin: 0 0 1.25rem;
+  }
+  .resources__eyebrow::before, .resources__eyebrow::after {
+    content: ""; width: 18px; height: 2px; background: var(--brand-clay); display: inline-block;
+  }
+
+  .resources__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+    text-align: center;
+  }
+
+  .resources__header p {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     RESOURCE TYPES — plain nav-like blocks, not cards
+     ========================================================== */
+  .resources__types {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin: 4rem 0 6rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(15, 21, 25, 0.08);
+  }
+
+  .resources__type {
+    text-decoration: none;
+    display: block;
+    color: inherit;
+  }
+
+  .resources__type h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0 0 .5rem;
+    transition: color .25s ease;
+  }
+
+  .resources__type:hover h3 { color: var(--brand-clay); }
+
+  .resources__type p {
+    font-size: .88rem;
+    line-height: 1.6;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     SECTION PATTERN — Blog / Guides (reused for both)
+     ========================================================== */
+  .resources__section {
+    margin-bottom: 5.5rem;
+  }
+
+  .resources__section h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .resources__section p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink-2);
+    margin: 0 0 1.25rem;
+    /* max-width: 68ch; */
+    max-width: 90%;
+  }
+
+  .resources__section p:last-child { margin-bottom: 0; }
+
+  /* ==========================================================
+     FREE REPORT — slightly more visual weight, still no card
+     ========================================================== */
+  .resources__report {
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--brand-clay);
+  }
+
+  .resources__report h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    color: var(--ink);
+    margin: 0 0 .75rem;
+  }
+
+  .resources__report p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink-2);
+    margin: 0 0 1.25rem;
+    /* max-width: 68ch; */
+    max-width: 90%;
+  }
+
+  .resources__report-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--brand-primary);
+    margin: 0 0 .6rem;
+  }
+
+  .resources__report-status {
+    font-size: .85rem;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     TABLET / MOBILE
+     ========================================================== */
+  @media (max-width: 900px) {
+    .resources { padding: 8rem 1.25rem 5rem; }
+    .resources__types {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin: 3rem 0 4.5rem;
+    }
+    .resources__section { margin-bottom: 4rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-up { transition: none; opacity: 1; transform: none; }
+  }
+
+   /* ==========================================================
+     BIG LOGO SECTION BEFORE FOOTER
+     ========================================================== */
+     .logo-section {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 2rem 2rem; */
+    background: linear-gradient(160deg, var(--brand-clay) 0%, var(--brand-clay-hover) 100%);
+    overflow: hidden;
+  }
+
+  .logo-wrap {
+    width: 100%;
+    max-width: 1400px;
+    text-align: center;
+  }
+
+  /* the wordmark itself — width is set by JS so it always spans
+     edge-to-edge regardless of font metrics or viewport size */
+  .logo-text {
+    display: inline-block;
+    /* font-family: var(--font-body); */
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+
+    /* the shimmer: a soft translucent base with a bright band that
+       sweeps across it — the "light passing over metal" look */
+    background-image: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.28) 40%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.28) 60%,
+      rgba(255, 255, 255, 0.28) 100%
+    );
+    background-size: 300% 100%;
+    background-position: -100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation-name: shine-sweep;
+    animation-duration: var(--shine-cycle);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* the sweep itself happens fast, early in the cycle, then holds
+     and waits for the next loop — that pause is what makes the
+     "cycle length" feel like a repeat interval rather than a
+     constant back-and-forth shimmer */
+  @keyframes shine-sweep {
+    0%   { background-position: -120% 0; }
+    18%  { background-position: 220% 0; }
+    100% { background-position: 220% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-text {
+      animation: none;
+      background-position: 0 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .logo-section { min-height: 38vh; padding: 3rem 1.25rem; }
+  }
+  
+
+  
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar" id="siteNavbar">
+  <div class="navbar__inner">
+
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
+      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
+    </a>
+
+    <ul class="navbar__menu">
+      <li><a href="product.html">Product</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+
+      <li class="navbar__item--dropdown">
+        <button class="navbar__dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          Security
+          <svg class="navbar__dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="navbar__dropdown-panel">
+          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+        </div>
+      </li>
+
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="company.html">Company</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+    </div>
+
+    <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+
+  <div class="navbar__mobile" id="navMobile">
+    <div class="navbar__mobile-inner">
+      <ul class="navbar__mobile-links">
+        <li><a href="product.html">Product</a></li>
+        <li><a href="solutions.html">Solutions</a></li>
+
+        <li class="navbar__mobile-dropdown" id="navLegalDropdown">
+          <button class="navbar__mobile-dropdown-trigger" type="button" aria-expanded="false" aria-controls="navLegalPanel">
+            Security
+            <svg class="navbar__mobile-dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
+            <div class="navbar__mobile-dropdown-inner">
+              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+      <div class="navbar__mobile-actions">
+        <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const navbar = document.getElementById('siteNavbar');
+  const burger = document.getElementById('navBurger');
+
+  // swap green → white once scrolled past a small threshold
+  function updateNavbarScrollState() {
+    navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', updateNavbarScrollState, { passive: true });
+  updateNavbarScrollState();
+
+  // hamburger toggle
+  burger.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // close the mobile menu if the viewport grows back past the breakpoint
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width: 981px)').matches) {
+      navbar.classList.remove('is-open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- LEGAL DROPDOWN (nav) — click-to-open accordion on mobile -->
+<script>
+  (function () {
+    const legalDropdown = document.getElementById('navLegalDropdown');
+    if (!legalDropdown) return;
+    const trigger = legalDropdown.querySelector('.navbar__mobile-dropdown-trigger');
+
+    trigger.addEventListener('click', () => {
+      const isOpen = legalDropdown.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // collapse the accordion if the viewport grows back into desktop
+    // width, so it doesn't stay stuck open behind the hover dropdown
+    window.addEventListener('resize', () => {
+      if (window.matchMedia('(min-width: 981px)').matches) {
+        legalDropdown.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+
+<!-- END OF NAVBAR -->
+
+<!-- RESOURCES PAGE -->
+<section class="resources" id="resourcesSection">
+  <div class="resources__inner">
+
+    <!-- RESOURCES OVERVIEW -->
+    <div class="fade-up">
+      <div class="resources__header">
+        <h2>Resources</h2>
+        <p>Insight for the modern law firm, drawn from practice management, compliance, and legal technology, brought to you by the people building the platform behind it. Whether you're looking for a quick answer, a deeper read, or a full report on where the industry is heading, this is where we'll keep it.</p>
+      </div>
+    </div>
+
+    <!-- RESOURCE TYPES -->
+    <div class="resources__types fade-up">
+      <a href="javascript:void(0)" class="resources__type">
+        <h3>Blog</h3>
+        <p>The latest thinking on running a modern legal practice</p>
+      </a>
+      <a href="javascript:void(0)" class="resources__type">
+        <h3>Guides</h3>
+        <p>In-depth reads on the topics that matter most to growing firms</p>
+      </a>
+      <a href="javascript:void(0)" class="resources__type">
+        <h3>Free Report</h3>
+        <p>The State of Legal Practice in Nigeria, 2026</p>
+      </a>
+    </div>
+
+    <!-- BLOG -->
+    <div class="resources__section fade-up" id="blog">
+      <h2>Blog</h2>
+      <p>Our blog covers the day-to-day realities of running a law firm today, from managing client expectations and structuring billing, to navigating compliance obligations and deciding when and how to bring technology into your practice. We write for the lawyer who's building a firm, not just practising within it, and we try to make sure every piece is genuinely useful rather than merely promotional.</p>
+      <p>Articles are launching soon. In the meantime, <a href="index.html#waitlist" class="text-link">join our waitlist</a> and we'll let you know the moment the first ones are live.</p>
+    </div>
+
+    <!-- GUIDES -->
+    <div class="resources__section fade-up" id="guides">
+      <h2>Guides</h2>
+      <p>Where our blog covers timely questions, our guides go deeper, longer reads built to be genuinely useful reference material rather than something you skim once and forget. Expect practical guidance on topics like structuring a firm for growth, getting trust accounting right, and understanding what NDPA compliance actually requires of a legal practice in Nigeria today.</p>
+      <p>Our first guides are currently in development. <a href="index.html#waitlist" class="text-link">Join our waitlist</a> to be notified as soon as they're available.</p>
+    </div>
+
+    <!-- FREE REPORT -->
+    <div class="resources__report fade-up" id="free-report">
+      <h2>Free Report</h2>
+      <p class="resources__report-title">The State of Legal Practice in Nigeria, 2026</p>
+      <p>A first-of-its-kind look at how Nigerian law firms are actually operating today, covering technology adoption, billing models, compliance readiness, and where the profession appears to be heading next. We built this report because we couldn't find the data ourselves when we went looking for it, so we're gathering and publishing it instead.</p>
+      <p class="resources__report-status">The report is coming soon and will be available as a free download. Join our waitlist to be among the first to receive it.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- BIG LOGO BEFORE FOOTER SECTION -->
+
+<section class="logo-section">
+  <div class="logo-wrap">
+    <span class="logo-text" id="deeluhLogo">Deeluh</span>
+  </div>
+</section>
+
+<!-- END OF BIG LOGO BEFORE FOOTER SECTION -->
+
+<!-- FOOTER -->
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <!-- <p class="footer-brand__name">Deeluh</p> -->
+        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Product</p>
+        <ul>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="javascript:void(0)">Security</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Company</p>
+        <ul>
+          <li><a href="company.html">About</a></li>
+          <li><a href="company.html#contactSection">Contact sales</a></li>
+          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Legal</p>
+        <ul>
+          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
+          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
+          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
+          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+
+      <div class="footer-bottom__social">
+        <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+  
+  <!-- END OF FOOTER -->
+
+<script>
+
+  const resSection = document.getElementById('resourcesSection');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        resSection.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05 });
+  revealObserver.observe(resSection);
+</script>
+
+<!-- "BIG LOGO SECTION BEFORE FOOTER" -->
+<script>
+  // fits the wordmark exactly to the width of its container, every time —
+  // more reliable than guessing a vw-based font-size, since it accounts
+  // for the actual rendered font metrics on the user's device
+  function fitLogoText() {
+    const wrap = document.querySelector('.logo-wrap');
+    const text = document.getElementById('deeluhLogo');
+    if (!wrap || !text) return;
+
+    const targetWidth = wrap.clientWidth;
+    text.style.fontSize = '100px'; // baseline to measure against
+    const measuredWidth = text.getBoundingClientRect().width;
+    const scale = targetWidth / measuredWidth;
+
+    // clamp so it can't get absurdly huge/tiny on extreme viewport sizes
+    const newSize = Math.min(Math.max(100 * scale, 40), 520);
+    text.style.fontSize = newSize + 'px';
+  }
+
+  window.addEventListener('resize', fitLogoText);
+  window.addEventListener('load', fitLogoText);
+  fitLogoText();
+
+  /* ==========================================================
+     HOW TO CONTROL THE REPEAT TIMING
+     ========================================================== */
+
+  function setLogoShineInterval(seconds) {
+    document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
+  }
+  // example: setLogoShineInterval(8);
+</script>
+<!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
+
+</body>
+</html>

@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — Deeluh</title>
+<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+
+  /* ==========================================================
+     "EVERYTHING YOUR FIRM NEEDS" SECTION 
+     ========================================================== */
+  .ecosystem {
+    position: relative;
+    padding: 7rem 1.5rem 8rem;
+    background-color: #fff;
+    background-image:
+      radial-gradient(42% 40% at 92% 6%, var(--brand-clay-tint) 0%, transparent 65%),
+      radial-gradient(45% 38% at 4% 92%, var(--brand-primary-tint) 0%, transparent 65%),
+      radial-gradient(38% 34% at 50% 100%, var(--brand-primary-tint) 0%, transparent 70%);
+    background-repeat: no-repeat;
+    overflow: hidden;
+  }
+
+  .ecosystem__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     HEADER — centered, simple fade-up (no letter-spell here,
+     per the brief: "heading fades upward, paragraph fades upward")
+     ========================================================== */
+  .ecosystem__header {
+    max-width: 640px;
+    margin: 0 auto 4.5rem;
+    text-align: center;
+  }
+
+  .ecosystem__header h2,
+  .ecosystem__header p {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+  }
+
+  .ecosystem.is-visible .ecosystem__header h2 {
+    opacity: 1; transform: translateY(0);
+  }
+  .ecosystem.is-visible .ecosystem__header p {
+    opacity: 1; transform: translateY(0);
+    transition-delay: .15s;
+  }
+
+  .ecosystem__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .ecosystem__accent {
+    color: var(--brand-clay);
+  }
+
+  .ecosystem__header p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    margin: 0 auto;
+    /* max-width: 56ch; */
+  }
+
+  /* ==========================================================
+     DIAGRAM — circular layout container
+     ========================================================== */
+  .ecosystem__diagram {
+    --diagram-size: 480px;
+    --radius: 178px;
+    --node-size: 84px;
+    --center-size: 114px;
+
+    position: relative;
+    width: var(--diagram-size);
+    height: var(--diagram-size);
+    margin: 0 auto;
+  }
+
+  /* soft halo glow behind the whole circle — the ambient ring
+     visible in the reference image */
+  .ecosystem__diagram::before {
+    content: "";
+    position: absolute;
+    inset: 6%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 72%);
+    z-index: 0;
+  }
+
+  /* ==========================================================
+     CONNECTOR LINES — thin, subtle, fade in last
+     ========================================================== */
+  .ecosystem__lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 1s ease;
+    pointer-events: none;
+  }
+
+  .ecosystem.is-visible .ecosystem__lines {
+    opacity: 1;
+    transition-delay: 1.05s;
+  }
+
+  .ecosystem__lines line {
+    stroke: var(--brand-primary);
+    stroke-opacity: 0.16;
+    stroke-width: 1.5;
+  }
+
+  /* ==========================================================
+     CENTER (DEELUH) CARD
+     ========================================================== */
+  .ecosystem__center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--center-size);
+    height: var(--center-size);
+    margin: calc(var(--center-size) / -2) 0 0 calc(var(--center-size) / -2);
+    z-index: 2;
+  }
+
+  .ecosystem__center-inner {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transform: scale(0.72);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+
+  .ecosystem.is-visible .ecosystem__center-inner {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: .4s;
+  }
+
+  .ecosystem__center-card {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18%;
+    border-radius: 24px;
+    background: #fff;
+    border: 1px solid rgba(15, 61, 58, 0.10);
+    box-shadow: 0 16px 32px -16px rgba(15, 61, 58, 0.22);
+    animation: center-pulse 4.5s ease-in-out infinite;
+  }
+
+  .ecosystem__center-card img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* soft, elegant glow pulse — subtle, not flashy */
+  @keyframes center-pulse {
+    0%, 100% { box-shadow: 0 16px 32px -16px rgba(15, 61, 58, 0.22), 0 0 0 0 rgba(15, 61, 58, 0.0); }
+    50%      { box-shadow: 0 16px 32px -16px rgba(15, 61, 58, 0.22), 0 0 0 10px rgba(15, 61, 58, 0.06); }
+  }
+
+  /* ==========================================================
+     SURROUNDING APP NODES
+     ========================================================== */
+  .ecosystem__node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--node-size);
+    height: var(--node-size);
+    margin: calc(var(--node-size) / -2) 0 0 calc(var(--node-size) / -2);
+    /* places the node at --angle degrees around the circle, radius
+       away from center, while keeping its own content upright */
+    transform: rotate(var(--angle)) translate(var(--radius)) rotate(calc(-1 * var(--angle)));
+    z-index: 3;
+  }
+
+  /* entrance (opacity only — no transform here, so it never
+     fights with the circular-position transform above or the
+     floating animation below) */
+  .ecosystem__node-float {
+    opacity: 0;
+    transition: opacity .6s ease;
+    transition-delay: var(--node-delay, 0s);
+    animation: node-float 5s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+  }
+
+  .ecosystem.is-visible .ecosystem__node-float {
+    opacity: 1;
+  }
+
+  @keyframes node-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+
+  .ecosystem__node-card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22%;
+    border-radius: 22px;
+    background: #fff;
+    border: 1px solid rgba(15, 61, 58, 0.08);
+    box-shadow: 0 8px 20px -12px rgba(15, 61, 58, 0.20);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease;
+  }
+
+  .ecosystem__node-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+
+  /* ==========================================================
+     TOOLTIP — desktop hover only
+     ========================================================== */
+  .ecosystem__tooltip {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 50%;
+    transform: translate(-50%, 6px);
+    width: 200px;
+    padding: .85rem 1rem;
+    border-radius: 14px;
+    background: var(--brand-primary);
+    color: #fff;
+    text-align: left;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease, transform .25s ease;
+    z-index: 10;
+    box-shadow: 0 16px 32px -14px rgba(15, 61, 58, 0.45);
+  }
+
+  .ecosystem__tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 10px;
+    background: var(--brand-primary);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .ecosystem__tooltip-title {
+    display: block;
+    font-size: .8rem;
+    font-weight: 700;
+    margin-bottom: .2rem;
+  }
+
+  .ecosystem__tooltip-sub {
+    display: block;
+    font-size: .72rem;
+    font-weight: 600;
+    color: #e7b7a4;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: .35rem;
+  }
+
+  .ecosystem__tooltip-desc {
+    display: block;
+    font-size: .78rem;
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  /* hover — desktop / fine-pointer devices only, so touch screens
+     never get a stuck hover state */
+  @media (hover: hover) and (pointer: fine) {
+    .ecosystem__node-card:hover {
+      transform: translateY(-6px) scale(1.05);
+      box-shadow: 0 24px 40px -16px rgba(15, 61, 58, 0.32);
+      border-color: rgba(15, 61, 58, 0.18);
+    }
+
+    .ecosystem__node-card:hover .ecosystem__tooltip {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ecosystem__center-card,
+    .ecosystem__node-float {
+      animation: none;
+    }
+    .ecosystem__header h2,
+    .ecosystem__header p,
+    .ecosystem__center-inner,
+    .ecosystem__node-float,
+    .ecosystem__lines {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* ==========================================================
+     TABLET — same circular layout, scaled down proportionally
+     ========================================================== */
+  @media (max-width: 900px) and (min-width: 641px) {
+    .ecosystem__diagram {
+      --diagram-size: 380px;
+      --radius: 138px;
+      --node-size: 66px;
+      --center-size: 90px;
+    }
+    .ecosystem__tooltip { width: 172px; }
+  }
+
+  /* ==========================================================
+     MOBILE — circular layout abandoned entirely: center card on
+     top, six app cards in a clean 2-column grid below
+     ========================================================== */
+  @media (max-width: 640px) {
+    .ecosystem { padding: 4.5rem 1.25rem 4rem; }
+    .ecosystem__header { margin-bottom: 3rem; }
+
+    .ecosystem__diagram {
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.75rem;
+    }
+
+    .ecosystem__diagram::before,
+    .ecosystem__lines {
+      display: none; /* no halo ring or connector lines on mobile */
+    }
+
+    .ecosystem__center {
+      position: static;
+      margin: 0;
+      width: 100px;
+      height: 100px;
+    }
+
+    .ecosystem__nodes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.1rem;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .ecosystem__node {
+      position: static;
+      transform: none;
+      width: 100%;
+      height: auto;
+      margin: 0;
+      aspect-ratio: 1 / 1;
+    }
+
+    /* tooltips and hover-lift are excluded on mobile via the
+       (hover:hover) feature query above, but we also strip the
+       transition delay stagger — mobile keeps only a simple,
+       uniform fade-up, per the brief */
+    .ecosystem__node-float {
+      transition-delay: 0s !important;
+      animation: none;
+    }
+
+    .ecosystem__tooltip { display: none; }
+  }
+
+  /* ==========================================================
+     SEVEN MODULES SECTION 
+     ========================================================== */
+     .modules {
+    position: relative;
+    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+    /* overflow: hidden; */
+    isolation: isolate;
+  }
+
+  .modules::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
+    background-size: 26px 26px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .modules::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 120px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .modules__aurora {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+  }
+  .modules__aurora--one {
+    width: 46vw; height: 46vw; max-width: 620px; max-height: 620px;
+    top: -12%; left: -8%;
+    background: radial-gradient(circle, rgba(188, 91, 60, 0.4) 0%, transparent 70%);
+    animation: modules-drift-a 42s cubic-bezier(.45,0,.55,1) infinite;
+  }
+  .modules__aurora--two {
+    width: 40vw; height: 40vw; max-width: 560px; max-height: 560px;
+    bottom: -14%; right: -6%;
+    background: radial-gradient(circle, rgba(15, 61, 58, 0.55) 0%, transparent 70%);
+    animation: modules-drift-b 50s cubic-bezier(.45,0,.55,1) infinite;
+    animation-delay: -18s;
+  }
+  @keyframes modules-drift-a {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(6%,8%) scale(1.1); }
+    100% { transform: translate(0,0) scale(1); }
+  }
+  @keyframes modules-drift-b {
+    0% { transform: translate(0,0) scale(1); }
+    50% { transform: translate(-6%,-6%) scale(0.94); }
+    100% { transform: translate(0,0) scale(1); }
+  }
+
+  .modules__noise {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.05;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modules__aurora { animation: none; }
+  }
+
+  /* ==========================================================
+     HEADER
+     ========================================================== */
+  .modules__header {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 7rem 1.5rem 0;
+    text-align: center;
+  }
+
+  .modules__header h2,
+  .modules__header p {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+  }
+  .modules.is-visible .modules__header h2 { opacity: 1; transform: translateY(0); }
+  .modules.is-visible .modules__header p  { opacity: 1; transform: translateY(0); transition-delay: .15s; }
+
+  .modules__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.1rem, 3.6vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin: 0 0 1.25rem;
+  }
+
+  .modules__header p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     GRID — right preview sticky, left list scrolls past it.
+     Same physics as .wdd-grid: the sticky column pins for as
+     long as its taller sibling still has height left below the
+     viewport, then releases naturally once the list runs out —
+     no artificial scroll runway needed.
+     ========================================================== */
+  .modules__grid {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 6rem;
+    display: grid;
+    grid-template-columns: 0.92fr 1.15fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+
+  /* ==========================================================
+     LEFT — module list (scrolls normally)
+     ========================================================== */
+  .modules__list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2.25rem;
+  }
+
+  .modules__accent {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.5px;
+    border-radius: 2px;
+    background: var(--brand-clay);
+    box-shadow: 0 0 10px rgba(188, 91, 60, 0.5);
+    transition: transform .45s cubic-bezier(.2,.8,.2,1), height .45s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .modules__row {
+    position: relative;
+    padding: 0 0 2.25rem 1.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    cursor: pointer;
+    transition: transform .25s ease, background .25s ease;
+    border-radius: 0 12px 12px 0;
+
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .modules.is-visible .modules__row {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1), background .25s ease;
+  }
+
+  .modules__row:last-child { border-bottom: none; padding-bottom: 0; }
+
+  .modules__row:hover {
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-2px);
+  }
+  .modules.is-visible .modules__row:hover { transform: translateY(-2px); }
+
+  .modules__row-top {
+    display: flex;
+    align-items: baseline;
+    gap: .85rem;
+  }
+
+  .modules__num {
+    font-family: var(--font-display);
+    font-size: .82rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+  }
+
+  /* headers now use Hedvig + <h3>, matching every other section's
+     card/module title pattern on the site — colors untouched */
+  .modules__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.2rem;
+    color: #fff;
+    transition: color .25s ease;
+  }
+  .modules__row:hover .modules__title,
+  .modules__row.is-active .modules__title { color: var(--brand-clay); }
+
+  .modules__short {
+    margin: .4rem 0 0 1.9rem;
+    font-size: .88rem;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .modules__full {
+    margin: 0 0 0 1.9rem;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .45s cubic-bezier(.2,.8,.2,1);
+  }
+  .modules__row.is-active .modules__full { grid-template-rows: 1fr; }
+
+  .modules__full-inner { overflow: hidden; }
+
+  .modules__full p {
+    margin: .85rem 0 0;
+    font-size: .9rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.78);
+    max-width: 44ch;
+  }
+
+  .modules__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-top: 1rem;
+  }
+
+  .modules__badge {
+    display: flex;
+    flex-direction: column;
+    padding: .55rem .85rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .modules__badge-title {
+    font-size: .74rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .modules__badge-sub {
+    font-size: .7rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: .1rem;
+  }
+
+  /* ==========================================================
+     RIGHT — sticky browser-chrome preview
+     ========================================================== */
+  .modules__preview {
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
+  }
+  .modules.is-visible .modules__preview {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: .3s;
+  }
+
+  .modules__preview-frame {
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f4f5f6;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.55);
+    animation: modules-float 7s ease-in-out infinite;
+  }
+
+  @keyframes modules-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
+  .modules__browser-bar {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .7rem .9rem;
+    background: #e7e9ea;
+    border-bottom: 1px solid rgba(15, 21, 25, 0.06);
+  }
+
+  .modules__browser-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d3d6d8;
+  }
+
+  .modules__browser-url {
+    flex: 1;
+    height: 20px;
+    border-radius: 6px;
+    background: #fff;
+    margin-left: .5rem;
+  }
+
+  .modules__shot-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10.2;
+  }
+
+  .modules__shot {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+    transition: opacity .35s ease, transform .35s ease;
+  }
+  .modules__shot.is-active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    position: relative;
+  }
+
+  /* ==========================================================
+     MOBILE-ONLY ACCORDION
+     ========================================================== */
+  .modules__mobile { display: none; }
+
+  /* ==========================================================
+     TABLET
+     ========================================================== */
+  @media (max-width: 1100px) and (min-width: 901px) {
+    .modules__grid { gap: 2.25rem; grid-template-columns: 1fr 1fr; }
+    .modules__title { font-size: 1.08rem; }
+  }
+
+  /* ==========================================================
+     MOBILE — real accordion, no sticky
+     ========================================================== */
+  @media (max-width: 900px) {
+    .modules__grid { display: none; }
+    .modules__mobile { display: block; }
+
+    .modules__header { padding: 4.5rem 1.25rem 0; }
+
+    .modules__mobile-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 3rem 1.25rem 5rem;
+    }
+
+    .modules__m-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .modules__mobile.is-visible .modules__m-item {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .modules__m-trigger {
+      width: 100%;
+      display: flex;
+      align-items: baseline;
+      gap: .75rem;
+      padding: 1.35rem 0;
+      background: none;
+      border: none;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .modules__m-num {
+      font-family: var(--font-display);
+      font-size: .78rem;
+      color: rgba(255, 255, 255, 0.4);
+      flex-shrink: 0;
+    }
+
+    .modules__m-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: 1.08rem;
+      color: #fff;
+    }
+    .modules__m-item.is-open .modules__m-title { color: var(--brand-clay); }
+
+    .modules__m-short {
+      margin: -0.5rem 0 0 1.75rem;
+      font-size: .85rem;
+      color: rgba(255, 255, 255, 0.6);
+      padding-bottom: 1rem;
+    }
+
+    .modules__m-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows .4s cubic-bezier(.2,.8,.2,1);
+    }
+    .modules__m-item.is-open .modules__m-panel { grid-template-rows: 1fr; }
+    .modules__m-panel-inner { overflow: hidden; }
+
+    .modules__m-panel p {
+      margin: 0 0 1.1rem;
+      font-size: .88rem;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .modules__m-shot-frame {
+      border-radius: 14px;
+      overflow: hidden;
+      background: #f4f5f6;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+      margin-bottom: 1.25rem;
+    }
+
+    .modules__m-shot-frame img {
+      width: 100%;
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .modules__row, .modules__preview, .modules__header h2, .modules__header p,
+    .modules__m-item, .modules__preview-frame, .modules__accent, .modules__shot {
+      transition: none;
+      animation: none;
+    }
+  }
+
+  /* ==========================================================
+     BIG LOGO SECTION BEFORE FOOTER
+     ========================================================== */
+     .logo-section {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 2rem 2rem; */
+    background: linear-gradient(160deg, var(--brand-clay) 0%, var(--brand-clay-hover) 100%);
+    overflow: hidden;
+  }
+
+  .logo-wrap {
+    width: 100%;
+    max-width: 1400px;
+    text-align: center;
+  }
+
+  /* the wordmark itself — width is set by JS so it always spans
+     edge-to-edge regardless of font metrics or viewport size */
+  .logo-text {
+    display: inline-block;
+    /* font-family: var(--font-body); */
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+
+    /* the shimmer: a soft translucent base with a bright band that
+       sweeps across it — the "light passing over metal" look */
+    background-image: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.28) 40%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.28) 60%,
+      rgba(255, 255, 255, 0.28) 100%
+    );
+    background-size: 300% 100%;
+    background-position: -100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation-name: shine-sweep;
+    animation-duration: var(--shine-cycle);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* the sweep itself happens fast, early in the cycle, then holds
+     and waits for the next loop — that pause is what makes the
+     "cycle length" feel like a repeat interval rather than a
+     constant back-and-forth shimmer */
+  @keyframes shine-sweep {
+    0%   { background-position: -120% 0; }
+    18%  { background-position: 220% 0; }
+    100% { background-position: 220% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-text {
+      animation: none;
+      background-position: 0 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .logo-section { min-height: 38vh; padding: 3rem 1.25rem; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+
+<nav class="navbar" id="siteNavbar">
+  <div class="navbar__inner">
+
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
+      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
+    </a>
+
+    <ul class="navbar__menu">
+      <li><a href="product.html">Product</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+
+      <li class="navbar__item--dropdown">
+        <button class="navbar__dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          Security
+          <svg class="navbar__dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="navbar__dropdown-panel">
+          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+        </div>
+      </li>
+
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="company.html">Company</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+    </div>
+
+    <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+
+  <div class="navbar__mobile" id="navMobile">
+    <div class="navbar__mobile-inner">
+      <ul class="navbar__mobile-links">
+        <li><a href="product.html">Product</a></li>
+        <li><a href="solutions.html">Solutions</a></li>
+
+        <li class="navbar__mobile-dropdown" id="navLegalDropdown">
+          <button class="navbar__mobile-dropdown-trigger" type="button" aria-expanded="false" aria-controls="navLegalPanel">
+            Security
+            <svg class="navbar__mobile-dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
+            <div class="navbar__mobile-dropdown-inner">
+              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+      <div class="navbar__mobile-actions">
+        <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const navbar = document.getElementById('siteNavbar');
+  const burger = document.getElementById('navBurger');
+
+  // swap green → white once scrolled past a small threshold
+  function updateNavbarScrollState() {
+    navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', updateNavbarScrollState, { passive: true });
+  updateNavbarScrollState();
+
+  // hamburger toggle
+  burger.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // close the mobile menu if the viewport grows back past the breakpoint
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width: 981px)').matches) {
+      navbar.classList.remove('is-open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- LEGAL DROPDOWN (nav) — click-to-open accordion on mobile -->
+<script>
+  (function () {
+    const legalDropdown = document.getElementById('navLegalDropdown');
+    if (!legalDropdown) return;
+    const trigger = legalDropdown.querySelector('.navbar__mobile-dropdown-trigger');
+
+    trigger.addEventListener('click', () => {
+      const isOpen = legalDropdown.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // collapse the accordion if the viewport grows back into desktop
+    // width, so it doesn't stay stuck open behind the hover dropdown
+    window.addEventListener('resize', () => {
+      if (window.matchMedia('(min-width: 981px)').matches) {
+        legalDropdown.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+
+<!-- END OF NAVBAR -->
+
+
+<!-- EVERYTHING YOUR FIRM NEEDS SECTION  -->
+
+<section class="ecosystem" id="ecosystem">
+  <div class="ecosystem__inner">
+
+    <div class="ecosystem__header">
+      <br><br><br>
+      <h2><span class="ecosystem__accent">Everything</span> your firm needs in one platform.</h2>
+      <p>Most firms run on a patchwork of separate tools — spreadsheets for matters, messaging apps for clients, notebooks for trust accounts, memory for compliance. Deeluh replaces the patchwork with one connected system built specifically for legal practice.</p>
+    </div>
+
+    <div class="ecosystem__diagram" id="ecosystemDiagram">
+
+      <svg class="ecosystem__lines" id="ecosystemLines"></svg>
+
+      <div class="ecosystem__center">
+        <div class="ecosystem__center-inner">
+          <div class="ecosystem__center-card">
+            <img src="assets/logos/deeluh-logo.svg" alt="Deeluh">
+          </div>
+        </div>
+      </div>
+
+      <div class="ecosystem__nodes">
+
+        <div class="ecosystem__node" data-node style="--angle: -90deg; --node-delay: .55s; --float-delay: 0s;">
+          <div class="ecosystem__node-float">
+            <div class="ecosystem__node-card">
+              <img src="assets/logos/whatsapp-logo.svg" alt="WhatsApp">
+              <span class="ecosystem__tooltip">
+                <span class="ecosystem__tooltip-sub">Client Messaging</span>
+                <span class="ecosystem__tooltip-title">WhatsApp</span>
+                <span class="ecosystem__tooltip-desc">Secure communication with clients inside Deeluh.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ecosystem__node" data-node style="--angle: -30deg; --node-delay: .63s; --float-delay: .6s;">
+          <div class="ecosystem__node-float">
+            <div class="ecosystem__node-card">
+              <img src="assets/logos/slack-logo.svg" alt="Slack">
+              <span class="ecosystem__tooltip">
+                <span class="ecosystem__tooltip-sub">Internal Communication</span>
+                <span class="ecosystem__tooltip-title">Slack</span>
+                <span class="ecosystem__tooltip-desc">Collaborate with your legal team without switching platforms.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ecosystem__node" data-node style="--angle: 30deg; --node-delay: .71s; --float-delay: 1.2s;">
+          <div class="ecosystem__node-float">
+            <div class="ecosystem__node-card">
+              <img src="assets/logos/notion-logo.svg" alt="Notion">
+              <span class="ecosystem__tooltip">
+                <span class="ecosystem__tooltip-sub">Knowledge Management</span>
+                <span class="ecosystem__tooltip-title">Notion</span>
+                <span class="ecosystem__tooltip-desc">Store notes, legal knowledge, and firm documentation in one place.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ecosystem__node" data-node style="--angle: 90deg; --node-delay: .79s; --float-delay: 1.8s;">
+          <div class="ecosystem__node-float">
+            <div class="ecosystem__node-card">
+              <img src="assets/logos/clickup-logo.svg" alt="ClickUp">
+              <span class="ecosystem__tooltip">
+                <span class="ecosystem__tooltip-sub">Matter &amp; Task Management</span>
+                <span class="ecosystem__tooltip-title">ClickUp</span>
+                <span class="ecosystem__tooltip-desc">Manage legal matters, tasks, deadlines, and workflows.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ecosystem__node" data-node style="--angle: 210deg; --node-delay: .95s; --float-delay: 3s;">
+          <div class="ecosystem__node-float">
+            <div class="ecosystem__node-card">
+              <img src="assets/logos/trello-logo.svg" alt="Trello">
+              <span class="ecosystem__tooltip">
+                <span class="ecosystem__tooltip-sub">Workflow Boards</span>
+                <span class="ecosystem__tooltip-title">Trello</span>
+                <span class="ecosystem__tooltip-desc">Track legal workflows without separate project management tools.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ecosystem__node" data-node style="--angle: 150deg; --node-delay: .87s; --float-delay: 2.4s;">
+          <div class="ecosystem__node-float">
+            <div class="ecosystem__node-card">
+              <img src="assets/logos/asana-logo.svg" alt="Asana">
+              <span class="ecosystem__tooltip">
+                <span class="ecosystem__tooltip-sub">Project Planning</span>
+                <span class="ecosystem__tooltip-title">Asana</span>
+                <span class="ecosystem__tooltip-desc">Coordinate legal projects from a single workspace.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    const section = document.getElementById('ecosystem');
+    if (!section) return;
+
+    // fires the whole entrance sequence once, when the section
+    // enters the viewport — CSS transition-delays on each element
+    // handle the actual staggered sequencing
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          section.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+
+    revealObserver.observe(section);
+
+    // draws the connector lines from each node's actual rendered
+    // center to the diagram's center — measured in real pixels so
+    // it stays correct at any diagram size (desktop/tablet)
+    const diagram = document.getElementById('ecosystemDiagram');
+    const linesSvg = document.getElementById('ecosystemLines');
+    const centerEl = section.querySelector('.ecosystem__center');
+    const nodeEls = section.querySelectorAll('[data-node]');
+
+    function drawConnectors() {
+      if (!diagram || !linesSvg || !centerEl) return;
+      if (window.innerWidth <= 640) return; // mobile has no circular layout / no lines
+
+      const diagramRect = diagram.getBoundingClientRect();
+      linesSvg.setAttribute('viewBox', `0 0 ${diagramRect.width} ${diagramRect.height}`);
+      linesSvg.innerHTML = '';
+
+      const centerRect = centerEl.getBoundingClientRect();
+      const cx = centerRect.left + centerRect.width / 2 - diagramRect.left;
+      const cy = centerRect.top + centerRect.height / 2 - diagramRect.top;
+
+      nodeEls.forEach(node => {
+        const nodeRect = node.getBoundingClientRect();
+        const nx = nodeRect.left + nodeRect.width / 2 - diagramRect.left;
+        const ny = nodeRect.top + nodeRect.height / 2 - diagramRect.top;
+
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', cx);
+        line.setAttribute('y1', cy);
+        line.setAttribute('x2', nx);
+        line.setAttribute('y2', ny);
+        linesSvg.appendChild(line);
+      });
+    }
+
+    window.addEventListener('load', drawConnectors);
+    window.addEventListener('resize', drawConnectors);
+    // fonts loading late can shift layout slightly — redraw once
+    // everything has definitely settled
+    setTimeout(drawConnectors, 300);
+    drawConnectors();
+  })();
+</script>
+
+<!-- END OF EVERYTHING YOUR FIRM NEEDS SECTION  -->
+
+<!-- SEVEN MODULES SECTION  -->
+
+<section class="modules" id="modulesSection">
+  <span class="modules__aurora modules__aurora--one"></span>
+  <span class="modules__aurora modules__aurora--two"></span>
+  <span class="modules__noise"></span>
+  <div class="modules__header">
+    <h2>Seven modules. One firm. Everything connected.</h2>
+    <p>Deeluh brings every essential part of legal practice into one connected platform. Instead of switching between disconnected software, every workflow lives together—from firm setup and matter management to billing, AI assistance, compliance and secure communication.</p>
+  </div>
+
+  <!-- ================= DESKTOP ================= -->
+  <div class="modules__grid" id="modulesGrid">
+
+    <div class="modules__list" id="modulesList">
+      <span class="modules__accent" id="modulesAccent"></span>
+
+      <div class="modules__row is-active" data-index="0" tabindex="0">
+        <div class="modules__row-top">
+          <span class="modules__num">01</span>
+          <h3 class="modules__title">Firm Setup</h3>
+        </div>
+        <p class="modules__short">Your firm, structured correctly, from day one.</p>
+        <div class="modules__full"><div class="modules__full-inner">
+          <p>Set up your firm structure and invite your team with the right permissions in under two minutes. Whether you're a sole practitioner or a multi-partner firm, Deeluh asks the right questions upfront so everything downstream—billing, approvals and access—is configured correctly from the start.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__row" data-index="1" tabindex="0">
+        <div class="modules__row-top">
+          <span class="modules__num">02</span>
+          <h3 class="modules__title">Matter Management</h3>
+        </div>
+        <p class="modules__short">Every matter, organized the way your firm actually works.</p>
+        <div class="modules__full"><div class="modules__full-inner">
+          <p>Track every matter from intake to close in a Kanban view built specifically for legal work—not repurposed project management software. Parties, deadlines, documents, time entries and activity history all live together with every action recorded in a complete audit trail.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__row" data-index="2" tabindex="0">
+        <div class="modules__row-top">
+          <span class="modules__num">03</span>
+          <h3 class="modules__title">Client Portal</h3>
+        </div>
+        <p class="modules__short">Give clients answers before they have to ask.</p>
+        <div class="modules__full"><div class="modules__full-inner">
+          <p>A secure branded portal where clients can monitor progress, upload documents, view upcoming milestones and see funds held on their behalf without calling your office for updates.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__row" data-index="3" tabindex="0">
+        <div class="modules__row-top">
+          <span class="modules__num">04</span>
+          <h3 class="modules__title">Billing &amp; Payments</h3>
+        </div>
+        <p class="modules__short">Get paid without the chase.</p>
+        <div class="modules__full"><div class="modules__full-inner">
+          <p>Track billable time automatically, generate invoices instantly and accept payments seamlessly. Built specifically for Nigerian legal practice with Naira-denominated billing.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__row" data-index="4" tabindex="0">
+        <div class="modules__row-top">
+          <span class="modules__num">05</span>
+          <h3 class="modules__title">Deeluh AI</h3>
+        </div>
+        <p class="modules__short">An assistant, not a replacement.</p>
+        <div class="modules__full"><div class="modules__full-inner">
+          <p>Deeluh AI assists with legal drafting, document review, legal research and analysis while ensuring lawyers remain fully in control. Every result is transparent, reviewable and verifiable.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__row" data-index="5" tabindex="0">
+        <div class="modules__row-top">
+          <span class="modules__num">06</span>
+          <h3 class="modules__title">Team Management &amp; Communication</h3>
+        </div>
+        <p class="modules__short">Keep the conversation where the work happens.</p>
+        <div class="modules__full"><div class="modules__full-inner">
+          <p>Manage permissions, workloads and collaboration across your entire firm. Matter-specific communication keeps conversations attached to the work while WhatsApp Business integration keeps client communication connected.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__row" data-index="6" tabindex="0">
+        <div class="modules__row-top">
+          <span class="modules__num">07</span>
+          <h3 class="modules__title">Trust &amp; Compliance Records</h3>
+        </div>
+        <p class="modules__short">Built for professional-conduct review, not just bookkeeping.</p>
+        <div class="modules__full"><div class="modules__full-inner">
+          <p>Every financial activity is protected by a tamper-evident hash-chain audit trail together with strict separation of client funds, trust funds and operating funds.</p>
+          <div class="modules__badges">
+            <span class="modules__badge">
+              <span class="modules__badge-title">Hash-chain audit trail</span>
+              <span class="modules__badge-sub">Tamper-evident transaction history</span>
+            </span>
+            <span class="modules__badge">
+              <span class="modules__badge-title">Three-pool separation</span>
+              <span class="modules__badge-sub">Client, trust and operating funds remain completely separated</span>
+            </span>
+          </div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="modules__preview">
+      <div class="modules__preview-frame">
+        <div class="modules__browser-bar">
+          <span class="modules__browser-dot"></span>
+          <span class="modules__browser-dot"></span>
+          <span class="modules__browser-dot"></span>
+          <span class="modules__browser-url"></span>
+        </div>
+        <div class="modules__shot-wrap" id="modulesShotWrap">
+          <img class="modules__shot is-active" data-index="0" src="assets/images/Dashboard.png" alt="Firm Setup">
+          <img class="modules__shot" data-index="1" src="assets/images/Matters.png" alt="Matter Management">
+          <img class="modules__shot" data-index="2" src="assets/images/Clientsandconflicts.png" alt="Client Portal">
+          <img class="modules__shot" data-index="3" src="assets/images/Timeandbilling.png" alt="Billing and Payments">
+          <img class="modules__shot" data-index="4" src="assets/images/Deeluhai.png" alt="Deeluh AI">
+          <img class="modules__shot" data-index="5" src="assets/images/Team.png" alt="Team Management">
+          <img class="modules__shot" data-index="6" src="assets/images/Yourmatter.png" alt="Trust and Compliance">
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= MOBILE: accordion ================= -->
+  <div class="modules__mobile" id="modulesMobile">
+    <div class="modules__mobile-inner">
+
+      <div class="modules__m-item is-open" data-index="0">
+        <button class="modules__m-trigger">
+          <span class="modules__m-num">01</span>
+          <h3 class="modules__m-title">Firm Setup</h3>
+        </button>
+        <p class="modules__m-short">Your firm, structured correctly, from day one.</p>
+        <div class="modules__m-panel"><div class="modules__m-panel-inner">
+          <div class="modules__m-shot-frame"><img src="assets/images/Dashboard.png" alt="Firm Setup" loading="lazy"></div>
+          <p>Set up your firm structure and invite your team with the right permissions in under two minutes. Whether you're a sole practitioner or a multi-partner firm, Deeluh asks the right questions upfront so everything downstream—billing, approvals and access—is configured correctly from the start.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__m-item" data-index="1">
+        <button class="modules__m-trigger">
+          <span class="modules__m-num">02</span>
+          <h3 class="modules__m-title">Matter Management</h3>
+        </button>
+        <p class="modules__m-short">Every matter, organized the way your firm actually works.</p>
+        <div class="modules__m-panel"><div class="modules__m-panel-inner">
+          <div class="modules__m-shot-frame"><img src="assets/images/Matters.png" alt="Matter Management" loading="lazy"></div>
+          <p>Track every matter from intake to close in a Kanban view built specifically for legal work—not repurposed project management software. Parties, deadlines, documents, time entries and activity history all live together with every action recorded in a complete audit trail.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__m-item" data-index="2">
+        <button class="modules__m-trigger">
+          <span class="modules__m-num">03</span>
+          <h3 class="modules__m-title">Client Portal</h3>
+        </button>
+        <p class="modules__m-short">Give clients answers before they have to ask.</p>
+        <div class="modules__m-panel"><div class="modules__m-panel-inner">
+          <div class="modules__m-shot-frame"><img src="assets/images/Clientsandconflicts.png" alt="Client Portal" loading="lazy"></div>
+          <p>A secure branded portal where clients can monitor progress, upload documents, view upcoming milestones and see funds held on their behalf without calling your office for updates.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__m-item" data-index="3">
+        <button class="modules__m-trigger">
+          <span class="modules__m-num">04</span>
+          <h3 class="modules__m-title">Billing &amp; Payments</h3>
+        </button>
+        <p class="modules__m-short">Get paid without the chase.</p>
+        <div class="modules__m-panel"><div class="modules__m-panel-inner">
+          <div class="modules__m-shot-frame"><img src="assets/images/Timeandbilling.png" alt="Billing and Payments" loading="lazy"></div>
+          <p>Track billable time automatically, generate invoices instantly and accept payments seamlessly. Built specifically for Nigerian legal practice with Naira-denominated billing.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__m-item" data-index="4">
+        <button class="modules__m-trigger">
+          <span class="modules__m-num">05</span>
+          <h3 class="modules__m-title">Deeluh AI</h3>
+        </button>
+        <p class="modules__m-short">An assistant, not a replacement.</p>
+        <div class="modules__m-panel"><div class="modules__m-panel-inner">
+          <div class="modules__m-shot-frame"><img src="assets/images/Deeluhai.png" alt="Deeluh AI" loading="lazy"></div>
+          <p>Deeluh AI assists with legal drafting, document review, legal research and analysis while ensuring lawyers remain fully in control. Every result is transparent, reviewable and verifiable.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__m-item" data-index="5">
+        <button class="modules__m-trigger">
+          <span class="modules__m-num">06</span>
+          <h3 class="modules__m-title">Team Management &amp; Communication</h3>
+        </button>
+        <p class="modules__m-short">Keep the conversation where the work happens.</p>
+        <div class="modules__m-panel"><div class="modules__m-panel-inner">
+          <div class="modules__m-shot-frame"><img src="assets/images/Team.png" alt="Team Management" loading="lazy"></div>
+          <p>Manage permissions, workloads and collaboration across your entire firm. Matter-specific communication keeps conversations attached to the work while WhatsApp Business integration keeps client communication connected.</p>
+        </div></div>
+      </div>
+
+      <div class="modules__m-item" data-index="6">
+        <button class="modules__m-trigger">
+          <span class="modules__m-num">07</span>
+          <h3 class="modules__m-title">Trust &amp; Compliance Records</h3>
+        </button>
+        <p class="modules__m-short">Built for professional-conduct review, not just bookkeeping.</p>
+        <div class="modules__m-panel"><div class="modules__m-panel-inner">
+          <div class="modules__m-shot-frame"><img src="assets/images/Yourmatter.png" alt="Trust and Compliance" loading="lazy"></div>
+          <p>Every financial activity is protected by a tamper-evident hash-chain audit trail together with strict separation of client funds, trust funds and operating funds.</p>
+          <div class="modules__badges">
+            <span class="modules__badge">
+              <span class="modules__badge-title">Hash-chain audit trail</span>
+              <span class="modules__badge-sub">Tamper-evident transaction history</span>
+            </span>
+            <span class="modules__badge">
+              <span class="modules__badge-title">Three-pool separation</span>
+              <span class="modules__badge-sub">Client, trust and operating funds remain completely separated</span>
+            </span>
+          </div>
+        </div></div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<script>
+(function () {
+  const section = document.getElementById('modulesSection');
+
+  /* ---- entrance reveal ---- */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        section.classList.add('is-visible');
+        document.getElementById('modulesMobile').classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealObserver.observe(section);
+
+  document.querySelectorAll('.modules__row').forEach((row, i) => {
+    row.style.transitionDelay = `${i * 80}ms`;
+  });
+  document.querySelectorAll('.modules__m-item').forEach((item, i) => {
+    item.style.transitionDelay = `${i * 80}ms`;
+  });
+
+  /* ---- desktop: sticky-right preview, driven by which row is
+     nearest the vertical center as the (taller) list scrolls past
+     underneath it — same detection technique used elsewhere on
+     the site for scroll-linked active states ---- */
+  const list = document.getElementById('modulesList');
+  const accent = document.getElementById('modulesAccent');
+  const rows = Array.from(document.querySelectorAll('.modules__row'));
+  const shots = Array.from(document.querySelectorAll('.modules__shot'));
+
+  let activeIndex = 0;
+
+  function positionAccent() {
+    const activeRow = rows[activeIndex];
+    if (!activeRow) return;
+    accent.style.transform = `translateY(${activeRow.offsetTop}px)`;
+    accent.style.height = activeRow.offsetHeight + 'px';
+  }
+
+  function setActive(index) {
+    if (index === activeIndex) return;
+    activeIndex = index;
+
+    rows.forEach((row, i) => row.classList.toggle('is-active', i === index));
+    shots.forEach((shot, i) => shot.classList.toggle('is-active', i === index));
+
+    positionAccent();
+    setTimeout(positionAccent, 460); // correct once the expand transition settles
+  }
+
+  // fires when a row crosses a thin horizontal band near the
+  // vertical center of the viewport
+  const rowObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        setActive(Number(entry.target.dataset.index));
+      }
+    });
+  }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+
+  rows.forEach(row => rowObserver.observe(row));
+
+  // hover — jumps the preview immediately without scrolling the page
+  rows.forEach((row) => {
+    row.addEventListener('mouseenter', () => {
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      setActive(Number(row.dataset.index));
+    });
+  });
+
+  // click / keyboard — scrolls that row to the center of the
+  // viewport, which then re-triggers the same IntersectionObserver
+  rows.forEach((row) => {
+    row.addEventListener('click', () => {
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setActive(Number(row.dataset.index));
+    });
+    row.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setActive(Number(row.dataset.index));
+      }
+    });
+  });
+
+  requestAnimationFrame(positionAccent);
+  window.addEventListener('load', positionAccent);
+  window.addEventListener('resize', positionAccent);
+
+  /* ---- mobile accordion ---- */
+  document.querySelectorAll('.modules__m-trigger').forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.modules__m-item');
+      const alreadyOpen = item.classList.contains('is-open');
+
+      document.querySelectorAll('.modules__m-item.is-open').forEach(open => {
+        open.classList.remove('is-open');
+      });
+
+      if (!alreadyOpen) item.classList.add('is-open');
+    });
+  });
+})();
+</script>
+
+<!-- END OF SEVEN MODULES SECTION  -->
+
+<!-- BIG LOGO BEFORE FOOTER SECTION -->
+
+<section class="logo-section">
+  <div class="logo-wrap">
+    <span class="logo-text" id="deeluhLogo">Deeluh</span>
+  </div>
+</section>
+
+<!-- END OF BIG LOGO BEFORE FOOTER SECTION -->
+
+<!-- FOOTER -->
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <!-- <p class="footer-brand__name">Deeluh</p> -->
+        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Product</p>
+        <ul>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="javascript:void(0)">Security</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Company</p>
+        <ul>
+          <li><a href="company.html">About</a></li>
+          <li><a href="company.html#contactSection">Contact sales</a></li>
+          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Legal</p>
+        <ul>
+          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
+          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
+          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
+          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+
+      <div class="footer-bottom__social">
+        <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<!-- END OF FOOTER -->
+
+
+<!-- "BIG LOGO SECTION BEFORE FOOTER" -->
+<script>
+  // fits the wordmark exactly to the width of its container, every time —
+  // more reliable than guessing a vw-based font-size, since it accounts
+  // for the actual rendered font metrics on the user's device
+  function fitLogoText() {
+    const wrap = document.querySelector('.logo-wrap');
+    const text = document.getElementById('deeluhLogo');
+    if (!wrap || !text) return;
+
+    const targetWidth = wrap.clientWidth;
+    text.style.fontSize = '100px'; // baseline to measure against
+    const measuredWidth = text.getBoundingClientRect().width;
+    const scale = targetWidth / measuredWidth;
+
+    // clamp so it can't get absurdly huge/tiny on extreme viewport sizes
+    const newSize = Math.min(Math.max(100 * scale, 40), 520);
+    text.style.fontSize = newSize + 'px';
+  }
+
+  window.addEventListener('resize', fitLogoText);
+  window.addEventListener('load', fitLogoText);
+  fitLogoText();
+
+  /* ==========================================================
+     HOW TO CONTROL THE REPEAT TIMING
+     ========================================================== */
+
+  function setLogoShineInterval(seconds) {
+    document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
+  }
+  // example: setLogoShineInterval(8);
+</script>
+<!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
+
+
+</body>
+</html>

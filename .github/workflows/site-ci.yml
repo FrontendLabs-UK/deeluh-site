@@ -1,0 +1,80 @@
+name: site-ci
+
+# WHAT THIS GATE IS FOR
+#
+# An external contributor works in this repo and nowhere else. They cannot reach the application,
+# its database or its secrets — that isolation is structural and lives in who is a collaborator on
+# which repo, not here. What this file adds is the second half: catching the things a hand-built
+# static site actually gets wrong, before they reach a public page read by law firms.
+#
+# It deliberately does NOT deploy. Preview deployments come from Cloudflare Pages on every push;
+# production is promoted by the Deeluh team. A CI file that could publish to deeluh.com would hand
+# the apex to whoever can open a pull request.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: site checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # ── SECRETS ─────────────────────────────────────────────────────────────────────────────
+      # This site needs no credential to build or serve. So ANY secret-shaped string here is a
+      # mistake, and the cheapest place to catch it is before it is ever pushed further.
+      - name: gitleaks
+        run: |
+          set -euo pipefail
+          GL_VER=8.28.0
+          GL_SHA256=5bc41815076e6ed6ef8fbecc9d9b75bcae31f39029ceb55da08086315316e3ba
+          curl -sSL -o gl.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GL_VER}/gitleaks_${GL_VER}_linux_x64.tar.gz"
+          echo "${GL_SHA256}  gl.tar.gz" | sha256sum -c -
+          tar -xzf gl.tar.gz gitleaks
+          ./gitleaks detect --no-banner --redact --exit-code 1
+
+      # ── DEAD LINKS ──────────────────────────────────────────────────────────────────────────
+      # The failure mode of a hand-built static site. A nav item that goes nowhere reads as a
+      # broken product to someone deciding whether to trust you with their clients' files.
+      - name: relative links resolve
+        run: |
+          set -euo pipefail
+          fail=0
+          for f in *.html; do
+            # every href="something.html" must exist on disk
+            grep -ohE 'href="[^"#:]+\.html' "$f" | sed 's/href="//' | sort -u | while read -r t; do
+              [ -f "$t" ] || { echo "::error file=$f::links to missing page: $t"; exit 1; }
+            done || fail=1
+          done
+          [ "$fail" = "0" ]
+
+      - name: report placeholder links
+        run: |
+          set -uo pipefail
+          n=$(grep -ohc 'javascript:void(0)' *.html 2>/dev/null | paste -sd+ - | bc 2>/dev/null || echo 0)
+          echo "javascript:void(0) placeholders: ${n:-0}"
+          # A warning, not a failure: a work-in-progress page is legitimate, an INVISIBLE one is not.
+          [ "${n:-0}" = "0" ] || echo "::warning::${n} placeholder link(s) — every one is a control that does nothing when clicked"
+
+      # ── ASSET WEIGHT ────────────────────────────────────────────────────────────────────────
+      # The audience is Nigerian law firms, frequently on mobile data. A 3 MB hero is a bounce.
+      - name: asset weight
+        run: |
+          set -uo pipefail
+          echo "images over 500 KB:"
+          find assets -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' \) -size +500k \
+            -printf '  %s  %p\n' 2>/dev/null | sort -rn || true
+          total=$(du -sk assets 2>/dev/null | cut -f1)
+          echo "assets total: ${total} KB"
+          [ "${total:-0}" -lt 20000 ] || echo "::warning::assets exceed 20 MB — first paint on a slow connection will suffer"

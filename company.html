@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Company — Deeluh</title>
+<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+
+/* ==========================================================
+     ABOUT DEELUH SECTION 
+     ========================================================== */
+     .about-deeluh {
+    position: relative;
+    background-color: #fff;
+    background-image:
+      radial-gradient(42% 38% at 92% 8%, var(--brand-clay-tint) 0%, transparent 65%),
+      radial-gradient(40% 36% at 6% 30%, var(--brand-primary-tint) 0%, transparent 65%);
+    background-repeat: no-repeat;
+    font-family: var(--font-body);
+    color: var(--ink);
+    /* overflow: hidden; */
+  }
+
+  /* ==========================================================
+     STAGE 1 — header + Mission / Values cards
+     ========================================================== */
+  .about-deeluh__stage1 {
+    position: relative;
+    z-index: 2;
+    padding: 10rem 1.5rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .about-deeluh__stage1 h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.6rem);
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .about-deeluh__eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    text-align: center;
+    margin: 0 0 3rem;
+
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .about-deeluh.is-visible .about-deeluh__eyebrow { opacity: 1; transform: translateY(0); }
+
+  .about-deeluh__eyebrow::before,
+  .about-deeluh__eyebrow::after {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .about-deeluh__cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+
+  /* plain standing text now — no card chrome (background, border,
+     shadow, hover) — just the section's normal heading/paragraph
+     pattern, side by side */
+  .about-deeluh__card {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .about-deeluh.is-visible .about-deeluh__card {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+  .about-deeluh.is-visible .about-deeluh__card:nth-child(2) { transition-delay: 100ms; }
+
+  .about-deeluh__card h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: var(--ink);
+    margin: 0 0 .85rem;
+  }
+
+  .about-deeluh__card p {
+    font-size: .95rem;
+    line-height: 1.7;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     STAGE 2 — generous gap before the statement gets its own
+     visual moment
+     ========================================================== */
+  .about-deeluh__gap { height: 2rem; }
+
+  /* ==========================================================
+     STAGE 3 — pinned scroll-reveal statement. Same physics as
+     the dashboard's tall-runway + sticky window, combined with
+     the same letter-by-letter reveal used on the firm-size /
+     wdd / compare headlines — including the word-safe wrapping
+     fix (whole words never break mid-word).
+     ========================================================== */
+  .about-deeluh__runway {
+    position: relative;
+    z-index: 2;
+    height: calc(300vh + 45vh);
+  }
+
+  .about-deeluh__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.5rem;
+  }
+
+  /* ==========================================================
+     F WATERMARK — large, faint, behind the statement. Opacity
+     is NOT time-based or on-load — it's driven live by the same
+     scroll-progress value that reveals the letters, in update()
+     ========================================================== */
+  .about-deeluh__fmark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: clamp(280px, 55vh, 620px);
+    width: clamp(280px, 55vh, 620px);
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity .08s linear;
+  }
+
+  .about-deeluh__fmark img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .about-deeluh__statement {
+    position: relative;
+    z-index: 1;
+    max-width: 90%;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.6rem, 3.6vw, 2.9rem);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  /* unrevealed state — muted grey/ash */
+  .about-deeluh__statement .letter {
+    display: inline-block;
+    color: var(--ink-3);
+    opacity: .28;
+    transform: translateY(10px);
+    transition: opacity .08s linear, transform .08s linear, color .3s ease;
+  }
+
+  /* revealed — snaps to its word's final color (falls back to
+     the normal paragraph grey/ash if no special color is set) */
+  .about-deeluh__statement .letter.is-revealed {
+    opacity: 1;
+    color: var(--word-color, var(--ink-2));
+  }
+
+  /* word-safe wrapper — white-space:nowrap guarantees a word can
+     never be split across a line purely because it ran out of
+     room, no matter how narrow the viewport gets */
+  .about-deeluh__statement .word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  /* ==========================================================
+     STAGE 4 — normal closing paragraph, no character effects
+     ========================================================== */
+  .about-deeluh__writeup {
+    position: relative;
+    z-index: 2;
+    max-width: 90%;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 8rem;
+
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .about-deeluh.is-visible .about-deeluh__writeup {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .about-deeluh__writeup p {
+    font-size: 1.02rem;
+    line-height: 1.75;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     TABLET
+     ========================================================== */
+  @media (max-width: 900px) {
+    .about-deeluh__stage1 { padding: 4.5rem 1.25rem 1.5rem; }
+    .about-deeluh__cards { grid-template-columns: 1fr; gap: 1.25rem; }
+    .about-deeluh__gap { height: 4rem; }
+    .about-deeluh__statement { max-width: 88%; }
+    .about-deeluh__stage1 h2 { margin: 60px 0px 0px auto; }
+  }
+  
+
+  /* ==========================================================
+     MOBILE
+     ========================================================== */
+  @media (max-width: 640px) {
+    .about-deeluh__statement {
+      max-width: 92%;
+      font-size: clamp(1.4rem, 6.5vw, 1.9rem);
+    }
+
+    .about-deeluh__runway { height: calc(100vh + 60vh); }
+
+    .about-deeluh__writeup { padding: 1.5rem 1.25rem 5rem; }
+
+    .about-deeluh__fmark {
+      height: clamp(200px, 46vh, 360px);
+      width: clamp(200px, 46vh, 360px);
+      left: 58%; /* center-weighted, slightly toward the right */
+
+    }
+
+    .about-deeluh__pin {
+    height: 70vh;
+  }
+
+
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .about-deeluh__eyebrow, .about-deeluh__card, .about-deeluh__writeup {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    /* reduced motion: show the full statement immediately, no
+       pinning, nothing hidden from the user */
+    .about-deeluh__runway { height: auto; }
+    .about-deeluh__statement .letter {
+      opacity: 1;
+      transform: none;
+      transition: none;
+      color: var(--word-color, var(--ink-2));
+    }
+    .about-deeluh__fmark {
+      opacity: 0.055;
+      transition: none;
+    }
+  }
+
+
+  /* ==========================================================
+     ABOUT FRONTENDLABS SECTION SHELL 
+     ========================================================== */
+  .flabs {
+    position: relative;
+    background: #0a0a0a;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 8rem 1.5rem;
+    font-family: var(--font-body);
+  }
+
+  /* subtle technical grid — 1px lines, ~3.5% opacity, large cells */
+  .flabs::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 140px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 140px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* extremely subtle radial glow behind the center mockup */
+  .flabs__glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60%;
+    max-width: 900px;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(255, 255, 255, 0.07) 0%, transparent 72%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ==========================================================
+     BACKGROUND F WATERMARK — the actual Frontendlabs mark,
+     oversized, near-invisible, architectural rather than
+     decorative. Sits above the grid but below the glow/content.
+     ========================================================== */
+  .flabs__fmark {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    right: -6%;
+    height: clamp(280px, 55vh, 640px);
+    width: clamp(280px, 55vh, 640px);
+    transform: translateY(-50%) scale(0.97);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.3s cubic-bezier(.16,1,.3,1), transform 1.3s cubic-bezier(.16,1,.3,1);
+  }
+
+  .flabs.is-visible .flabs__fmark {
+    opacity: 0.055;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .flabs__fmark img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .flabs__inner {
+    position: relative;
+    z-index: 3;
+    max-width: 1320px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     GRID — asymmetric 30 / 40 / 30, deliberately not three
+     identical cards
+     ========================================================== */
+  .flabs__grid {
+    display: grid;
+    grid-template-columns: 0.75fr 1fr 0.75fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  /* ==========================================================
+     SHARED text-column treatment (left + right)
+     ========================================================== */
+  .flabs__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 1.5rem;
+  }
+
+  .flabs__eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.4);
+    display: inline-block;
+  }
+
+  .flabs__text {
+    font-size: 1.02rem;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0 0 2rem;
+  }
+
+  .flabs__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .85rem 1.5rem;
+    border-radius: 12px;
+    font-size: .92rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease, color .25s ease, border-color .25s ease;
+  }
+
+  /* "Visit Frontendlabs" — outline, secondary weight */
+  .flabs__btn--outline {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+  }
+  .flabs__btn--outline:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+  }
+
+  /* "Book a Demo" — filled, primary weight (mirrors how Deeluh's
+     own primary CTA is filled, just in white/black instead of clay) */
+  .flabs__btn--filled {
+    background: #fff;
+    border: 1px solid #fff;
+    color: #0a0a0a;
+    box-shadow: 0 10px 24px -12px rgba(255, 255, 255, 0.25);
+  }
+  .flabs__btn--filled:hover {
+    background: #d9d9d9;
+    border-color: #d9d9d9;
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -12px rgba(255, 255, 255, 0.3);
+  }
+
+  /* ==========================================================
+     LEFT / RIGHT columns — entrance animation
+     ========================================================== */
+  .flabs__col {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  .flabs.is-visible .flabs__col {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);
+  }
+
+  .flabs__col--left  { transition-delay: 0ms; }
+  .flabs__col--right { transition-delay: .32s; }
+
+  .flabs.is-visible .flabs__col--left .flabs__eyebrow  { transition-delay: 0ms; }
+  .flabs.is-visible .flabs__col--left .flabs__text     { transition-delay: 100ms; }
+  .flabs.is-visible .flabs__col--left .flabs__btn      { transition-delay: 200ms; }
+  .flabs.is-visible .flabs__col--right .flabs__text    { transition-delay: 420ms; }
+  .flabs.is-visible .flabs__col--right .flabs__btn     { transition-delay: 520ms; }
+
+  .flabs__eyebrow, .flabs__col .flabs__text, .flabs__col .flabs__btn {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .55s cubic-bezier(.16,1,.3,1), transform .55s cubic-bezier(.16,1,.3,1);
+  }
+  .flabs.is-visible .flabs__eyebrow,
+  .flabs.is-visible .flabs__col .flabs__text,
+  .flabs.is-visible .flabs__col .flabs__btn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .flabs__col--right { text-align: left; }
+
+  /* ==========================================================
+     CENTER — Frontendlabs mockup, the visual anchor
+     ========================================================== */
+  .flabs__mockup-col {
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+    transition-delay: 220ms;
+  }
+  .flabs.is-visible .flabs__mockup-col {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .flabs__mockup {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #111;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.7), 0 0 0 rgba(255,255,255,0);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease;
+  }
+
+  .flabs__mockup:hover {
+    transform: translateY(-5px) scale(1.012);
+    box-shadow: 0 50px 100px -30px rgba(0, 0, 0, 0.75), 0 0 60px rgba(255, 255, 255, 0.06);
+  }
+
+  .flabs__mockup-bar {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .7rem .9rem;
+    background: #161616;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .flabs__mockup-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .flabs__mockup-url {
+    flex: 1;
+    height: 20px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    margin-left: .5rem;
+  }
+
+  .flabs__mockup img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* ==========================================================
+     TABLET — collapse the asymmetric grid toward a stacked flow
+     ========================================================== */
+  @media (max-width: 1000px) {
+    .flabs__grid {
+      grid-template-columns: 1fr;
+      gap: 3.5rem;
+      text-align: center;
+    }
+    .flabs__col--left, .flabs__col--right { max-width: 620px; margin: 0 auto; }
+    .flabs__mockup-col { order: 2; }
+    .flabs__col--left { order: 1; }
+    .flabs__col--right { order: 3; }
+    .flabs__eyebrow { justify-content: center; }
+  }
+
+  /* ==========================================================
+     MOBILE
+     ========================================================== */
+  @media (max-width: 640px) {
+    .flabs { padding: 5rem 1.25rem; }
+    .flabs__grid { gap: 2.75rem; }
+    .flabs__text { font-size: .96rem; }
+
+    /* same convention as the hero: stacked buttons stretch full width */
+    .flabs__col .flabs__btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .flabs__mockup-bar { padding: .55rem .75rem; }
+
+    /* smaller, dimmer, tucked lower-right so it doesn't fight
+       with the stacked mobile copy */
+    .flabs__fmark {
+      top: auto;
+      bottom: -4%;
+      right: -10%;
+      height: clamp(180px, 42vh, 340px);
+      width: clamp(180px, 42vh, 340px);
+      transform: translateY(0) scale(0.97);
+    }
+    .flabs.is-visible .flabs__fmark {
+      opacity: 0.035;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flabs__col, .flabs__eyebrow, .flabs__col .flabs__text, .flabs__col .flabs__btn,
+    .flabs__mockup-col, .flabs__mockup, .flabs__btn, .flabs__fmark {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+    .flabs__fmark { opacity: 0.055; }
+  }
+
+  /* ==========================================================
+     FAQ SECTION
+     ========================================================== */
+     .faq {
+    padding: 7rem 1.5rem 8rem;
+    background: #fff;
+  }
+
+  .faq__inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq__header {
+    margin-bottom: 3rem;
+  }
+
+  .faq__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    margin-bottom: 1.1rem;
+  }
+
+  .faq__eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .faq__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.6rem);
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0 0 .75rem;
+  }
+
+  .faq__header p {
+    font-size: 1.02rem;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     ACCORDION
+     ========================================================== */
+  .faq-list {
+    border-top: 1px solid rgba(15, 21, 25, 0.1);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid rgba(15, 21, 25, 0.1);
+  }
+
+  .faq-item__trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.6rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+
+  .faq-item__question {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+    transition: color .25s ease;
+  }
+
+  .faq-item__trigger:hover .faq-item__question {
+    color: var(--brand-primary);
+  }
+
+  /* plus / close icon, built from two CSS lines */
+  .faq-item__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--brand-primary);
+    transition: background .3s ease, border-color .3s ease;
+  }
+
+  .faq-item__icon::before,
+  .faq-item__icon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: var(--brand-primary);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), background .3s ease;
+  }
+
+  .faq-item__icon::before {
+    width: 12px;
+    height: 1.5px;
+    transform: translate(-50%, -50%);
+  }
+
+  .faq-item__icon::after {
+    width: 1.5px;
+    height: 12px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* open state: fill the circle, turn plus into an x */
+  .faq-item.is-open .faq-item__icon {
+    background: var(--brand-primary);
+  }
+
+  .faq-item.is-open .faq-item__icon::before,
+  .faq-item.is-open .faq-item__icon::after {
+    background: #fff;
+  }
+
+  .faq-item.is-open .faq-item__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg) scaleY(0); /* collapses vertical bar */
+  }
+
+  .faq-item.is-open .faq-item__icon::before {
+    transform: translate(-50%, -50%) rotate(180deg);
+  }
+
+  /* collapsible panel — grid-rows trick, no JS height math needed */
+  .faq-item__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .faq-item.is-open .faq-item__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-item__panel-inner {
+    overflow: hidden;
+  }
+
+  .faq-item__answer {
+    font-size: .96rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    padding: 0 0 1.75rem;
+    max-width: 62ch;
+  }
+
+  /* ==========================================================
+     RESPONSIVE FAQ
+     ========================================================== */
+  @media (max-width: 640px) {
+    .faq { padding: 4.5rem 1.25rem 4rem; }
+    .faq-item__trigger { padding: 1.35rem 0; }
+    .faq-item__question { font-size: .98rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item__panel,
+    .faq-item__icon::before,
+    .faq-item__icon::after {
+      transition: none;
+    }
+  }
+
+
+  .contact, .contact * { box-sizing: border-box; }
+  .contact h2 { overflow-wrap: normal; word-break: keep-all; }
+
+  /* ==========================================================
+     CONTACT US SECTION 
+     ========================================================== */
+  .contact {
+    position: relative;
+    padding: 7rem 1.5rem 8rem;
+    background: linear-gradient(160deg, var(--brand-clay) 0%, var(--brand-clay-hover) 100%);
+    overflow: hidden;
+    isolation: isolate;
+    font-family: var(--font-body);
+  }
+
+  .contact::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.5px);
+    background-size: 26px 26px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .contact::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 120px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .contact__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     HEADER
+     ========================================================== */
+  .contact__header {
+    text-align: center;
+    margin-bottom: 3rem;
+
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .contact.is-visible .contact__header { opacity: 1; transform: translateY(0); }
+
+  .contact__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    line-height: 1.15;
+    color: #fff;
+    margin: 0 0 1rem;
+  }
+
+  .contact__header p {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.78);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     FORM
+     ========================================================== */
+  .contact__form {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+    transition-delay: 120ms;
+  }
+  .contact.is-visible .contact__form { opacity: 1; transform: translateY(0); }
+
+  .contact__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .contact__field { display: flex; flex-direction: column; }
+
+  .contact__field label {
+    font-size: .82rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: .5rem;
+  }
+
+  .contact__input,
+  .contact__select,
+  .contact__textarea {
+    width: 100%;
+    padding: .9rem 1.05rem;
+    border-radius: 12px;
+    border: 1px solid rgba(15, 21, 25, 0.08);
+    background: #fdfdfc;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: .92rem;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+
+  .contact__input::placeholder,
+  .contact__textarea::placeholder { color: var(--ink-3); }
+
+  .contact__input:focus,
+  .contact__select:focus,
+  .contact__textarea:focus {
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px rgba(15, 61, 58, 0.14);
+  }
+
+  .contact__select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%235c6971' stroke-width='2'%3E%3Cpath d='M5 8l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 16px;
+    padding-right: 2.75rem;
+    cursor: pointer;
+  }
+  .contact__select:invalid { color: var(--ink-3); }
+  .contact__select option { color: var(--ink); }
+
+  .contact__textarea {
+    min-height: 140px;
+    resize: vertical;
+    line-height: 1.55;
+  }
+
+  .contact__field--full { margin-bottom: 1rem; }
+
+  /* inline validation */
+  .contact__error-msg {
+    display: none;
+    font-size: .78rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.22);
+    border-left: 2px solid #fff;
+    padding: .3rem .6rem;
+    border-radius: 4px;
+    margin-top: .45rem;
+  }
+  .contact__field.has-error .contact__error-msg { display: block; }
+  .contact__field.has-error .contact__input,
+  .contact__field.has-error .contact__select,
+  .contact__field.has-error .contact__textarea {
+    border-color: #fff;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28);
+  }
+
+  /* ==========================================================
+     CONSENT + SUBMIT
+     ========================================================== */
+  .contact__consent {
+    font-size: .8rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin: .5rem 0 1.5rem;
+  }
+
+  .contact__consent a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .contact__consent a:hover { color: rgba(255, 255, 255, 0.8); }
+
+  .contact__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: .95rem 1.6rem;
+    border-radius: 12px;
+    border: none;
+    background: var(--brand-primary);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .25s ease, transform .25s ease, box-shadow .25s ease;
+    box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.35);
+  }
+
+  .contact__submit:hover {
+    background: var(--brand-primary-hover);
+    transform: translateY(-2px);
+  }
+
+  .contact__submit:disabled {
+    opacity: .7;
+    cursor: default;
+    transform: none;
+  }
+
+  /* ==========================================================
+     FORM-LEVEL MESSAGES (submission error / success)
+     ========================================================== */
+  .contact__form-error {
+    display: none;
+    font-size: .85rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.22);
+    border-left: 2px solid #fff;
+    padding: .7rem .9rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+  }
+  .contact.is-submit-error .contact__form-error { display: block; }
+
+  .contact__success {
+    display: none;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    opacity: 0;
+    transition: opacity .5s ease;
+  }
+  .contact.is-submitted .contact__form { display: none; }
+  .contact.is-submitted .contact__success {
+    display: block;
+    opacity: 1;
+  }
+
+  .contact__success h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.6rem;
+    color: #fff;
+    margin: 0 0 .6rem;
+  }
+
+  .contact__success p {
+    font-size: .95rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     TABLET / MOBILE
+     ========================================================== */
+  @media (max-width: 640px) {
+    .contact { padding: 4.5rem 1.25rem 5rem; }
+    .contact__row { grid-template-columns: 1fr; gap: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .contact__header, .contact__form, .contact__success {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+    .contact__submit { transition: none; }
+    .contact__submit:hover { transform: none; }
+  }
+
+
+
+  /* ==========================================================
+     BIG LOGO SECTION BEFORE FOOTER
+     ========================================================== */
+     .logo-section {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 2rem 2rem; */
+    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+    overflow: hidden;
+  }
+
+  .logo-wrap {
+    width: 100%;
+    max-width: 1400px;
+    text-align: center;
+  }
+
+  /* the wordmark itself — width is set by JS so it always spans
+     edge-to-edge regardless of font metrics or viewport size */
+  .logo-text {
+    display: inline-block;
+    /* font-family: var(--font-body); */
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+
+    /* the shimmer: a soft translucent base with a bright band that
+       sweeps across it — the "light passing over metal" look */
+    background-image: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.28) 40%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.28) 60%,
+      rgba(255, 255, 255, 0.28) 100%
+    );
+    background-size: 300% 100%;
+    background-position: -100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation-name: shine-sweep;
+    animation-duration: var(--shine-cycle);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* the sweep itself happens fast, early in the cycle, then holds
+     and waits for the next loop — that pause is what makes the
+     "cycle length" feel like a repeat interval rather than a
+     constant back-and-forth shimmer */
+  @keyframes shine-sweep {
+    0%   { background-position: -120% 0; }
+    18%  { background-position: 220% 0; }
+    100% { background-position: 220% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-text {
+      animation: none;
+      background-position: 0 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .logo-section { min-height: 38vh; padding: 3rem 1.25rem; }
+  }
+
+ 
+
+</style>
+</head>
+<body>
+
+ <!-- NAVBAR -->
+
+ <nav class="navbar" id="siteNavbar">
+  <div class="navbar__inner">
+
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
+      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
+    </a>
+
+    <ul class="navbar__menu">
+      <li><a href="product.html">Product</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+
+      <li class="navbar__item--dropdown">
+        <button class="navbar__dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          Security
+          <svg class="navbar__dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="navbar__dropdown-panel">
+          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+        </div>
+      </li>
+
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="company.html">Company</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+    </div>
+
+    <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+
+  <div class="navbar__mobile" id="navMobile">
+    <div class="navbar__mobile-inner">
+      <ul class="navbar__mobile-links">
+        <li><a href="product.html">Product</a></li>
+        <li><a href="solutions.html">Solutions</a></li>
+
+        <li class="navbar__mobile-dropdown" id="navLegalDropdown">
+          <button class="navbar__mobile-dropdown-trigger" type="button" aria-expanded="false" aria-controls="navLegalPanel">
+            Security
+            <svg class="navbar__mobile-dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
+            <div class="navbar__mobile-dropdown-inner">
+              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+      <div class="navbar__mobile-actions">
+        <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const navbar = document.getElementById('siteNavbar');
+  const burger = document.getElementById('navBurger');
+
+  // swap green → white once scrolled past a small threshold
+  function updateNavbarScrollState() {
+    navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', updateNavbarScrollState, { passive: true });
+  updateNavbarScrollState();
+
+  // hamburger toggle
+  burger.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // close the mobile menu if the viewport grows back past the breakpoint
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width: 981px)').matches) {
+      navbar.classList.remove('is-open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- LEGAL DROPDOWN (nav) — click-to-open accordion on mobile -->
+<script>
+  (function () {
+    const legalDropdown = document.getElementById('navLegalDropdown');
+    if (!legalDropdown) return;
+    const trigger = legalDropdown.querySelector('.navbar__mobile-dropdown-trigger');
+
+    trigger.addEventListener('click', () => {
+      const isOpen = legalDropdown.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // collapse the accordion if the viewport grows back into desktop
+    // width, so it doesn't stay stuck open behind the hover dropdown
+    window.addEventListener('resize', () => {
+      if (window.matchMedia('(min-width: 981px)').matches) {
+        legalDropdown.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+
+<!-- END OF NAVBAR -->
+
+<!-- "ABOUT DEELUH" SECTION -->
+
+
+<section class="about-deeluh" id="aboutDeeluhSection">
+
+  <!-- STAGE 1 -->
+  <div class="about-deeluh__stage1">
+    <!-- <span class="about-deeluh__eyebrow">About Deeluh</span> -->
+      <h2>About Deeluh</h2><br><br><br>
+
+    <div class="about-deeluh__cards">
+      <article class="about-deeluh__card">
+        <h3>Our Mission</h3>
+        <p>Deeluh exists to give every law firm, from solo practitioners to full-service firms, an operating system built around how legal work actually happens, so that lawyers can spend their time practising law rather than managing the software meant to support them.</p>
+      </article>
+
+      <article class="about-deeluh__card">
+        <h3>Our Values</h3>
+        <p>We believe that judgment should always stay with the lawyer, and that technology's job is to remove friction rather than to replace professional judgment, which is why every matter-facing feature we build ships under strict lawyer-review boundaries. We also believe in building for how firms actually run, rather than guessing at what a firm might need from the outside, so every workflow inside Deeluh is shaped by real legal practice rather than assumptions made at a distance from it. And because we're building for firms operating in a market that has too often been an afterthought for global software, we price in local currency from the outset, rather than adopting a dollar-denominated model built around an economy we don't serve.</p>
+      </article>
+    </div>
+  </div>
+
+  <!-- STAGE 2 -->
+  <div class="about-deeluh__gap"></div>
+
+  <!-- STAGE 3 -->
+  <div class="about-deeluh__runway" id="statementRunway">
+    <div class="about-deeluh__pin">
+      <span class="about-deeluh__fmark" id="statementFmark">
+        <img src="assets/logos/frontendlabs-f-mark-ash.svg" alt="" role="presentation">
+      </span>
+      <p class="about-deeluh__statement" id="statementText" data-full-text="Deeluh is built by Frontendlabs, a technology company, working with guidance from a practicing commercial lawyer who has run a firm and dealt directly with the problems Deeluh sets out to solve."></p>
+    </div>
+  </div>
+
+  <!-- STAGE 4 -->
+  <div class="about-deeluh__writeup">
+    <p>Law firms today run on some of the most sophisticated professional judgment found in any industry, and yet that judgment is too often supported by some of the least sophisticated tools available to it: matters tracked in a spreadsheet, clients reached through a messaging app never designed for confidential communication, trust accounts reconciled by hand, and compliance held together largely by memory and good intentions. That gap doesn't only slow a firm down; it quietly costs both the client and the lawyer, because a firm can only grow as far as one person's memory can stretch, and no lawyer should have to carry an entire practice's operations in their head simply to keep that practice running.</p>
+  </div>
+
+</section>
+
+<script>
+(function () {
+  const section = document.getElementById('aboutDeeluhSection');
+
+  /* ---- simple fade-up entrance for stage 1 / stage 4 ---- */
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        section.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealObserver.observe(section);
+
+  /* ---- pinned scroll-reveal statement ---- */
+  const runway = document.getElementById('statementRunway');
+  const statementEl = document.getElementById('statementText');
+  const fmarkEl = document.getElementById('statementFmark');
+  if (!runway || !statementEl) return;
+
+  const fullText = statementEl.dataset.fullText;
+  const GREEN_WORDS = ['Deeluh'];
+  const BLACK_WORDS = ['Frontendlabs'];
+
+  function stripPunctuation(word) {
+    return word.replace(/[,.]/g, '');
+  }
+
+  statementEl.textContent = '';
+  statementEl.setAttribute('aria-label', fullText);
+
+  const letterSpans = [];
+  const words = fullText.split(' ');
+
+  words.forEach((word, wordIndex) => {
+    const bare = stripPunctuation(word);
+    const wordWrapper = document.createElement('span');
+    wordWrapper.className = 'word';
+
+    if (GREEN_WORDS.includes(bare)) {
+      wordWrapper.style.setProperty('--word-color', 'var(--brand-primary)');
+    } else if (BLACK_WORDS.includes(bare)) {
+      wordWrapper.style.setProperty('--word-color', 'var(--ink)');
+    }
+
+    [...word].forEach(char => {
+      const span = document.createElement('span');
+      span.className = 'letter';
+      span.textContent = char;
+      wordWrapper.appendChild(span);
+      letterSpans.push(span);
+    });
+
+    statementEl.appendChild(wordWrapper);
+
+    if (wordIndex < words.length - 1) {
+      statementEl.appendChild(document.createTextNode(' '));
+    }
+  });
+
+  const totalLetters = letterSpans.length;
+  const completeAt = 0.82;
+  const letterWindow = 0.09;
+
+  function update() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const rect = runway.getBoundingClientRect();
+    const scrollRange = rect.height - window.innerHeight;
+
+    const entryPoint = window.innerHeight;
+    const exitPoint = -scrollRange;
+    const totalTravel = entryPoint - exitPoint;
+    const progress = totalTravel > 0
+      ? Math.min(Math.max((entryPoint - rect.top) / totalTravel, 0), 1)
+      : 0;
+
+    letterSpans.forEach((span, i) => {
+      const start = (i / (totalLetters - 1)) * (completeAt - letterWindow);
+      const t = Math.min(Math.max((progress - start) / letterWindow, 0), 1);
+      span.style.opacity = t;
+      span.style.transform = `translateY(${(1 - t) * 10}px)`;
+      span.classList.toggle('is-revealed', t > 0.6);
+    });
+
+    // F mark — emerges over the first 60% of the reveal, then holds
+    // steady at its final subtle opacity rather than fading back out,
+    // so it's still faintly present once the statement is fully read
+    if (fmarkEl) {
+      const isMobile = window.innerWidth <= 640;
+      // const finalOpacity = isMobile ? 0.045 : 0.055;
+      const finalOpacity = isMobile ? 0.07 : 0.09;
+      const emergence = Math.min(progress / 0.6, 1);
+      fmarkEl.style.opacity = emergence * finalOpacity;
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+
+
+<!-- END OF "ABOUT DEELUH" SECTION -->
+
+<!-- "ABOUT FRONTENDLABS" SECTION -->
+
+<section class="flabs" id="flabsSection">
+  <span class="flabs__glow"></span>
+  <span class="flabs__fmark">
+    <img src="assets/logos/frontendlabs-f-mark.svg" alt="" role="presentation">
+  </span>
+
+  <div class="flabs__inner">
+    <div class="flabs__grid">
+
+      <!-- LEFT — About Frontendlabs -->
+      <div class="flabs__col flabs__col--left">
+        <span class="flabs__eyebrow">About Frontendlabs</span>
+        <p class="flabs__text">Frontendlabs is a technology studio that builds products for both funded startups and pre-seed ventures, bringing more than fifteen years of combined team experience to that work, alongside a track record that includes reaching four million people worldwide and delivering £120 million in client value through past acquisitions. Deeluh is Frontendlabs' answer to a problem we saw up close within the legal industry, and we've approached building it with the same philosophy we bring to every product we take on: get to market, get it right, and stay for the long run.</p>
+        <a href="https://frontendlabs.co.uk/" target="_blank" rel="noopener" class="flabs__btn flabs__btn--outline">Visit Frontendlabs →</a>
+      </div>
+
+      <!-- CENTER — mockup -->
+      <div class="flabs__mockup-col">
+        <div class="flabs__mockup">
+          <div class="flabs__mockup-bar">
+            <span class="flabs__mockup-dot"></span>
+            <span class="flabs__mockup-dot"></span>
+            <span class="flabs__mockup-dot"></span>
+            <span class="flabs__mockup-url"></span>
+          </div>
+          <img src="assets/images/frontendlabs.png" alt="Frontendlabs website homepage">
+        </div>
+      </div>
+
+      <!-- RIGHT — Nigeria-first -->
+      <div class="flabs__col flabs__col--right">
+        <p class="flabs__text">We're launching first in Nigeria, with pricing set in naira and a platform built around how Nigerian firms actually operate today. Our ambition is to design for legal teams everywhere, but we're deliberately starting in the market we understand best, so that what we build first is genuinely right, rather than merely broad.</p>
+        <a href="mailto:hello@deeluh.com" class="flabs__btn flabs__btn--filled">Book a Demo</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  const section = document.getElementById('flabsSection');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        section.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  observer.observe(section);
+})();
+</script>
+
+<!-- END OF "ABOUT FRONTENDLABS" SECTION -->
+
+<!-- FAQ SECTION -->
+
+<section class="faq" id="faq">
+  <div class="faq__inner">
+
+    <div class="faq__header">
+      <span class="faq__eyebrow">FAQ</span>
+      <h2>Frequently asked questions</h2>
+      <p>Answers we get asked before firms sign up.</p>
+    </div>
+
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-item__trigger" aria-expanded="false">
+          <span class="faq-item__question">What makes Deeluh different from generic practice management software?</span>
+          <span class="faq-item__icon"></span>
+        </button>
+        <div class="faq-item__panel">
+          <div class="faq-item__panel-inner">
+            <p class="faq-item__answer">Deeluh has been built specifically for legal practice rather than adapted from generic business software, so lawyer verification, trust accounting, and firm-structure logic, spanning everything from a Sole Practitioner to an Enterprise organisation, are built in from the very beginning rather than added on afterward.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-item__trigger" aria-expanded="false">
+          <span class="faq-item__question">How is pricing structured?</span>
+          <span class="faq-item__icon"></span>
+        </button>
+        <div class="faq-item__panel">
+          <div class="faq-item__panel-inner">
+            <p class="faq-item__answer">Pricing is fixed, either monthly or per seat depending on the size of your firm, set in naira, with two months included free on annual billing. Full detail is available on our Pricing page.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-item__trigger" aria-expanded="false">
+          <span class="faq-item__question">How does Deeluh use AI?</span>
+          <span class="faq-item__icon"></span>
+        </button>
+        <div class="faq-item__panel">
+          <div class="faq-item__panel-inner">
+            <p class="faq-item__answer">Deeluh AI assists with drafting, document review, and research, though every piece of output it produces is a draft aid rather than a finished product, and is reviewed by a qualified person before it is relied upon or sent on to a client. Judgment stays with the lawyer, always.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-item__trigger" aria-expanded="false">
+          <span class="faq-item__question">Is my data secure?</span>
+          <span class="faq-item__icon"></span>
+        </button>
+        <div class="faq-item__panel">
+          <div class="faq-item__panel-inner">
+            <p class="faq-item__answer">Yes. Deeluh applies encryption both at rest and in transit, maintains tenant isolation between firms, and enforces role-based access controls throughout the platform. Fuller detail is available on our Security page and within our Privacy Policy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-item__trigger" aria-expanded="false">
+          <span class="faq-item__question">Can Deeluh support my firm as it grows?</span>
+          <span class="faq-item__icon"></span>
+        </button>
+        <div class="faq-item__panel">
+          <div class="faq-item__panel-inner">
+            <p class="faq-item__answer">Yes. Deeluh has been built to support every firm structure, from Sole Practitioner and Sole Proprietorship through Partnership, Multi-Partner or Full-Service Firm, Legal Department, and Enterprise, so a firm shouldn't need to switch platforms as it grows.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-item__trigger" aria-expanded="false">
+          <span class="faq-item__question">How quickly can I get started?</span>
+          <span class="faq-item__icon"></span>
+        </button>
+        <div class="faq-item__panel">
+          <div class="faq-item__panel-inner">
+            <p class="faq-item__answer"> Workspace setup takes under two minutes. Once you tell Deeluh a little about your firm's structure and team, your workspace is ready.</p>
+          </div>
+        </div>
+      </div>
+
+      
+
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('.faq-item__trigger').forEach(trigger => {
+    trigger.addEventListener('click', () => {
+      const item = trigger.closest('.faq-item');
+      const isOpen = item.classList.contains('is-open');
+
+      // uncomment the block below if you want only one answer open at a time
+      // document.querySelectorAll('.faq-item.is-open').forEach(openItem => {
+      //   if (openItem !== item) {
+      //     openItem.classList.remove('is-open');
+      //     openItem.querySelector('.faq-item__trigger').setAttribute('aria-expanded', 'false');
+      //   }
+      // });
+
+      item.classList.toggle('is-open', !isOpen);
+      trigger.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+</script>
+
+<!-- END OF FAQ SECTION -->
+
+<!-- CONTACT SECTION -->
+
+<section class="contact" id="contactSection">
+  <div class="contact__inner">
+
+    <div class="contact__header">
+      <h2>Contact Us</h2>
+      <p>Fill out the form below and we'll be in touch within one business day.</p>
+    </div>
+
+    <form class="contact__form" id="contactForm" novalidate>
+
+      <div class="contact__form-error" id="contactFormError">Something went wrong. Please try again.</div>
+
+      <div class="contact__row">
+        <div class="contact__field" data-field="firstName">
+          <label for="firstName">First Name</label>
+          <input class="contact__input" type="text" id="firstName" name="firstName" placeholder="First Name" required autocomplete="given-name">
+          <span class="contact__error-msg">Please enter your first name.</span>
+        </div>
+        <div class="contact__field" data-field="lastName">
+          <label for="lastName">Last Name</label>
+          <input class="contact__input" type="text" id="lastName" name="lastName" placeholder="Last Name" required autocomplete="family-name">
+          <span class="contact__error-msg">Please enter your last name.</span>
+        </div>
+      </div>
+
+      <div class="contact__row">
+        <div class="contact__field" data-field="email">
+          <label for="email">Work Email</label>
+          <input class="contact__input" type="email" id="email" name="email" placeholder="Work Email" required autocomplete="email">
+          <span class="contact__error-msg">Please enter a valid email address.</span>
+        </div>
+        <div class="contact__field" data-field="phone">
+          <label for="phone">Phone</label>
+          <input class="contact__input" type="tel" id="phone" name="phone" placeholder="Phone" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="contact__field contact__field--full" data-field="firmSize">
+        <label for="firmSize">Firm Size</label>
+        <select class="contact__select" id="firmSize" name="firmSize" required defaultValue="">
+          <option value="" disabled selected>Firm Size</option>
+          <option value="Sole">Sole</option>
+          <option value="Boutique">Boutique</option>
+          <option value="Mid">Mid</option>
+          <option value="Full">Full</option>
+          <option value="Enterprise">Enterprise</option>
+        </select>
+        <span class="contact__error-msg">Please select your firm size.</span>
+      </div>
+
+      <div class="contact__field contact__field--full" data-field="enquiry">
+        <label for="enquiry">Tell us about your enquiry</label>
+        <textarea class="contact__textarea" id="enquiry" name="enquiry" placeholder="Tell us about your enquiry" required></textarea>
+        <span class="contact__error-msg">Please tell us a little about your enquiry.</span>
+      </div>
+
+      <p class="contact__consent">By submitting this form, you agree to receive emails from Deeluh and can unsubscribe at any time. View our <a href="/privacy">Privacy Policy</a>.</p>
+
+      <button type="submit" class="contact__submit" id="contactSubmitBtn">Submit</button>
+    </form>
+
+    <div class="contact__success" id="contactSuccess">
+      <h3>Thanks — we'll be in touch shortly.</h3>
+      <!-- <p>A member of the Deeluh team will reach out within one business day.</p> -->
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  const section = document.getElementById('contactSection');
+  const form = document.getElementById('contactForm');
+  const submitBtn = document.getElementById('contactSubmitBtn');
+  const formError = document.getElementById('contactFormError');
+
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        section.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  revealObserver.observe(section);
+
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function setFieldError(name, hasError) {
+    const field = form.querySelector(`[data-field="${name}"]`);
+    if (field) field.classList.toggle('has-error', hasError);
+  }
+
+  function validate() {
+    const values = {
+      firstName: form.firstName.value.trim(),
+      lastName: form.lastName.value.trim(),
+      email: form.email.value.trim(),
+      firmSize: form.firmSize.value,
+      enquiry: form.enquiry.value.trim()
+    };
+
+    let firstInvalid = null;
+    let isValid = true;
+
+    const checks = [
+      ['firstName', values.firstName.length > 0],
+      ['lastName', values.lastName.length > 0],
+      ['email', EMAIL_RE.test(values.email)],
+      ['firmSize', values.firmSize.length > 0],
+      ['enquiry', values.enquiry.length > 0]
+    ];
+
+    checks.forEach(([name, ok]) => {
+      setFieldError(name, !ok);
+      if (!ok) {
+        isValid = false;
+        if (!firstInvalid) firstInvalid = name;
+      }
+    });
+
+    if (firstInvalid) {
+      const el = form.querySelector(`#${firstInvalid}`);
+      if (el) el.focus();
+    }
+
+    return isValid;
+  }
+
+
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzdmwTtfHOi1f22CM8NjGJnDDqDjFu-x5noF5LA3HFN05tiNi1FNe_mSDNaJOQEGXp8/exec';
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    section.classList.remove('is-submit-error');
+
+    if (!validate()) return;
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    const payload = {
+      firstName: form.firstName.value.trim(),
+      lastName: form.lastName.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      firmSize: form.firmSize.value,
+      enquiry: form.enquiry.value.trim(),
+      submittedAt: new Date().toISOString()
+    };
+
+    try {
+      await fetch(SHEET_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(payload)
+      });
+
+      section.classList.add('is-submitted');
+    } catch (err) {
+      section.classList.add('is-submit-error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit';
+    }
+  });
+
+
+  ['firstName', 'lastName', 'email', 'firmSize', 'enquiry'].forEach((name) => {
+    const el = form.querySelector(`#${name}`);
+    if (el) el.addEventListener('input', () => setFieldError(name, false));
+  });
+})();
+</script>
+
+
+
+<!-- END OF CONTACT SECTION -->
+
+<!-- BIG LOGO BEFORE FOOTER SECTION -->
+
+<section class="logo-section">
+  <div class="logo-wrap">
+    <span class="logo-text" id="deeluhLogo">Deeluh</span>
+  </div>
+</section>
+
+<!-- END OF BIG LOGO BEFORE FOOTER SECTION -->
+
+<!-- FOOTER -->
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+
+    <div class="footer-grid">
+
+      <div class="footer-brand">
+        <!-- <p class="footer-brand__name">Deeluh</p> -->
+        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Product</p>
+        <ul>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
+          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="javascript:void(0)">Security</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Company</p>
+        <ul>
+          <li><a href="company.html">About</a></li>
+          <li><a href="company.html#contactSection">Contact sales</a></li>
+          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <p class="footer-col__title">Legal</p>
+        <ul>
+          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
+          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
+          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
+          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+
+      <div class="footer-bottom__social">
+        <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<!-- END OF FOOTER -->
+
+
+
+<!-- "BIG LOGO SECTION BEFORE FOOTER" -->
+<script>
+  // fits the wordmark exactly to the width of its container, every time —
+  // more reliable than guessing a vw-based font-size, since it accounts
+  // for the actual rendered font metrics on the user's device
+  function fitLogoText() {
+    const wrap = document.querySelector('.logo-wrap');
+    const text = document.getElementById('deeluhLogo');
+    if (!wrap || !text) return;
+
+    const targetWidth = wrap.clientWidth;
+    text.style.fontSize = '100px'; // baseline to measure against
+    const measuredWidth = text.getBoundingClientRect().width;
+    const scale = targetWidth / measuredWidth;
+
+    // clamp so it can't get absurdly huge/tiny on extreme viewport sizes
+    const newSize = Math.min(Math.max(100 * scale, 40), 520);
+    text.style.fontSize = newSize + 'px';
+  }
+
+  window.addEventListener('resize', fitLogoText);
+  window.addEventListener('load', fitLogoText);
+  fitLogoText();
+
+  /* ==========================================================
+     HOW TO CONTROL THE REPEAT TIMING
+     ========================================================== */
+
+  function setLogoShineInterval(seconds) {
+    document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
+  }
+  // example: setLogoShineInterval(8);
+</script>
+<!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
+
+</body>
+</html>

@@ -1,0 +1,4400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deeluh</title>
+<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  /* ==========================================================
+     global stylesheet
+     ========================================================== */
+  :root {
+    --brand-primary: #0F3D3A;
+    --brand-primary-hover: #0a2b29;
+    --brand-primary-tint: #e6ecec;
+    --brand-clay: #BC5B3C;
+    --brand-clay-hover: #a04a30;
+    --brand-clay-tint: #f7ece7;
+    --ink: #0f1519;
+    --ink-2: #354149;
+    --ink-3: #5c6971;
+
+    --font-display: "Hedvig Letters Serif", serif;
+    --font-body: "Manrope", sans-serif;
+    --shine-cycle: 5s;   /* ← add this line */
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: #fff;
+  }
+  h2 {
+  overflow-wrap: normal;
+  word-break: keep-all;
+}
+
+  /* =========================================
+  FADEIN FADE OUT EFFECT ON HERO SECTION AND BELOW SECTION 
+  ============================================ */
+
+/* used on the ticker + "what deeluh does" section */
+.fade-in-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+    will-change: opacity, transform;
+  }
+
+  .fade-in-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-section {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+   /* ==========================================================
+     "FOR YOUR FIRM SIZE AND WHAT DEELUH DOES" SECTION WRITEUP EFFECT
+     ========================================================== */
+
+    #firmSizeEyebrow, #wddEyebrow { opacity: 0; transition: opacity .08s linear; }
+    #firmSizeParagraph { opacity: 0; transform: translateY(12px); transition: opacity .08s linear, transform .08s linear; }
+    #firmSizeHeadline .letter { transition: opacity .08s linear, transform .08s linear; }
+    /* #firmSizeEyebrow, #wddEyebrow { opacity: 0; transition: opacity .08s linear; } */
+
+
+
+
+
+
+
+     /* ==========================================================
+     HERO SECTION
+     ========================================================== */
+  .hero {
+    position: relative;
+    padding: 13rem 1.5rem 6rem;
+    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
+    background-size: 26px 26px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* faint grid lines, ~5% opacity */
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 120px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero__mesh {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* each blob travels a slow, wide loop around the section — staggered
+     timing/paths so they never feel like they're moving in sync */
+  .hero__mesh--one {
+    width: 620px;
+    height: 620px;
+    top: -220px;
+    left: -120px;
+    background: radial-gradient(circle, rgba(188, 91, 60, 0.42) 0%, transparent 70%);
+    animation: mesh-drift-a 22s ease-in-out infinite;
+  }
+
+  .hero__mesh--two {
+    width: 520px;
+    height: 520px;
+    top: -80px;
+    right: -140px;
+    background: radial-gradient(circle, rgba(188, 91, 60, 0.32) 0%, transparent 70%);
+    animation: mesh-drift-b 26s ease-in-out infinite;
+    animation-delay: -6s;
+  }
+
+  .hero__mesh--three {
+    width: 560px;
+    height: 560px;
+    bottom: -260px;
+    left: 30%;
+    background: radial-gradient(circle, rgba(217, 119, 87, 0.30) 0%, transparent 70%);
+    animation: mesh-drift-a 30s ease-in-out infinite;
+    animation-delay: -14s;
+  }
+
+  .hero__mesh--four {
+    width: 380px;
+    height: 380px;
+    top: 30%;
+    left: 50%;
+    background: radial-gradient(circle, rgba(188, 91, 60, 0.22) 0%, transparent 70%);
+    animation: mesh-drift-b 24s ease-in-out infinite;
+    animation-delay: -10s;
+  }
+
+  /* long, wide, organic loops — 5 keypoints instead of a simple
+     back-and-forth, so the motion never feels mechanical or like
+     it's obviously "resetting" */
+     @keyframes mesh-drift-a {
+    0%   { transform: translate(0, 0) scale(1); }
+    25%  { transform: translate(60px, 40px) scale(1.08); }
+    50%  { transform: translate(20px, 90px) scale(0.96); }
+    75%  { transform: translate(-40px, 30px) scale(1.05); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  @keyframes mesh-drift-b {
+    0%   { transform: translate(0, 0) scale(1); }
+    25%  { transform: translate(-50px, 60px) scale(0.95); }
+    50%  { transform: translate(-90px, -20px) scale(1.08); }
+    75%  { transform: translate(-30px, -60px) scale(1); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__mesh { animation: none; }
+  }
+
+
+
+  /* ==========================================================
+     CONTENT — centered SaaS-style hero
+     ========================================================== */
+  .hero__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .hero__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    /* padding: .45rem .9rem;
+    border-radius: 999px; */
+    /* background: rgba(255, 255, 255, 0.08); */
+    /* border: 1px solid rgba(255, 255, 255, 0.18); */
+    color: #e7b7a4;
+    font-size: .8rem;
+    font-weight: 600;
+    margin-bottom: 1.75rem;
+  }
+
+  /* .hero__badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-clay);
+    flex-shrink: 0;
+  } */
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.4rem, 5.2vw, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    color: #fff;
+    margin: 0 0 1.4rem;
+  }
+
+  .hero p {
+    font-size: 1.1rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.72);
+    max-width: 58ch;
+    margin: 0 auto 2.5rem;
+  }
+
+  .hero__actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3.5rem;
+  }
+
+  .hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .85rem 1.6rem;
+    border-radius: 12px;
+    font-size: .95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+  }
+
+  .hero__btn--primary {
+    background: var(--brand-clay);
+    color: #fff;
+    box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.4);
+  }
+
+  .hero__btn--primary:hover {
+    background: var(--brand-clay-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px -10px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero__btn--secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .hero__btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+  }
+
+  /* ==========================================================
+     FEATURE STRIP
+     ========================================================== */
+  .hero__features {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: .75rem 0;
+    font-size: .85rem;
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .hero__features span {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: 0 1rem;
+    position: relative;
+  }
+
+  .hero__features span + span::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .hero__features strong {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+  }
+
+  /* ==========================================================
+     RESPONSIVE
+     ========================================================== */
+  @media (max-width: 640px) {
+    .hero { padding: 12rem 1.25rem 3.5rem; }
+    .hero__actions { flex-direction: column; align-items: stretch; }
+    .hero__btn { justify-content: center; }
+    .hero__features span { padding: 0 .6rem; }
+  }
+
+
+  /* ==========================================================
+     TICKER SECTION
+     ========================================================== */
+     .ticker {
+    position: relative;
+    padding: 1.1rem 0;
+    background: var(--brand-primary-tint);
+    border-top: 1px solid rgba(15, 61, 58, 0.12);
+    border-bottom: 1px solid rgba(15, 61, 58, 0.12);
+    overflow: hidden;
+  }
+
+  /* fade the track out at both edges instead of a hard cut */
+  .ticker {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  }
+
+  .ticker__track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: ticker-scroll 32s linear infinite;
+  }
+
+  .ticker:hover .ticker__track {
+    animation-play-state: paused;
+  }
+
+  .ticker__group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .ticker__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 1rem;
+    font-size: 1.85rem;
+    font-weight: 500;
+    color: var(--ink-2);
+    white-space: nowrap;
+    font-family: Hedvig Letters, Serif, serif;
+    
+  }
+
+  .ticker__item::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--brand-clay);
+    flex-shrink: 0;
+  }
+
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); } /* exactly half, since content is duplicated once */
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticker__track { animation: none; }
+  }
+
+  @media (max-width: 640px) {
+  .ticker__item {
+    font-size: 1rem;      /* down from 1.85rem */
+    gap: 1.5rem;          /* down from 3.9rem — was scaled for the bigger text */
+    padding: 0 1rem;      /* down from 0 2rem */
+  }
+}
+
+  /* ==========================================================
+     "WHAT DEELUH DOES" SECTION
+     ========================================================== */
+     .wdd {
+    position: relative;
+    padding: 7rem 1.5rem 9rem;
+    /* background:
+      radial-gradient(55% 45% at 90% 5%, var(--brand-primary-tint) 0%, transparent 60%),
+      radial-gradient(45% 35% at 5% 100%, var(--brand-clay-tint) 0%, transparent 60%),
+      #fff; */
+      background-color: #fff; 
+    background-image:
+      radial-gradient(38% 42% at 15% 20%, rgba(188, 91, 60, 0.20) 0%, transparent 70%),
+      radial-gradient(45% 40% at 85% 10%, rgba(188, 91, 60, 0.14) 0%, transparent 70%),
+      radial-gradient(50% 45% at 80% 90%, rgba(188, 91, 60, 0.10) 0%, transparent 70%),
+      radial-gradient(35% 35% at 10% 85%, rgba(188, 91, 60, 0.12) 0%, transparent 70%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .wdd__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     GRID — left text pinned, right cards scroll
+     ========================================================== */
+  .wdd-grid {
+    display: grid;
+    grid-template-columns: minmax(280px, 0.85fr) 1.15fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* left copy — same design language as the "For your firm size" middle column */
+  .wdd-left {
+    position: sticky;
+    top: 6rem; /* pins near the top of the viewport — match your fixed nav's height */
+    align-self: start;
+    padding: 0 1rem 0 0;
+    z-index: 2;
+  }
+
+  .wdd-left__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    margin-bottom: 1.25rem;
+  }
+
+  .wdd-left__eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .wdd-left h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .wdd-left p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    max-width: 40ch;
+    margin: 0;
+  }
+
+  /* right column — the four scrolling cards */
+  .wdd-right {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+    padding: 2rem 0 6rem;
+  }
+
+  /* ==========================================================
+     CARDS — identical spec to .firm-card (gradient, radius, shadow, hover)
+     ========================================================== */
+  .wdd-card {
+    position: relative;
+    padding: 1.85rem 1.75rem;
+    border-radius: 20px;
+    background: linear-gradient(160deg, #ffffff 0%, var(--brand-primary-tint) 130%);
+    border: 1px solid rgba(15, 61, 58, 0.10);
+    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.04);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+  }
+
+  .wdd-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--brand-primary);
+    box-shadow: 0 24px 48px -18px rgba(15, 61, 58, 0.28);
+  }
+
+  .wdd-card__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.1rem;
+  }
+
+  .wdd-card__index {
+    font-family: var(--font-display);
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--brand-primary);
+    letter-spacing: .02em;
+  }
+
+  .wdd-card__status {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    padding: .3rem .65rem;
+    border-radius: 999px;
+  }
+
+  .wdd-card__status::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .wdd-card__status--live {
+    background: var(--brand-primary-tint);
+    color: var(--brand-primary);
+  }
+  .wdd-card__status--live::before { background: var(--brand-primary); }
+
+  .wdd-card__status--dev {
+    background: var(--brand-clay-tint);
+    color: var(--brand-clay-hover);
+  }
+  .wdd-card__status--dev::before { background: var(--brand-clay); }
+
+  .wdd-card h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.3rem;
+    color: var(--ink);
+    margin: 0 0 .65rem;
+  }
+
+  .wdd-card p {
+    font-size: .95rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     "WHAT DEELUH DOES" RESPONSIVE
+     ========================================================== */
+  @media (max-width: 900px) {
+    .wdd { padding: 4.5rem 1.25rem 4rem; }
+    .wdd-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .wdd-left { position: static; padding: 0; }
+    .wdd-left p { max-width: none; }
+    .wdd-right { padding: 0; gap: 1.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wdd-card { transition: none; }
+    .wdd-card:hover { transform: none; }
+  }
+
+  /* ==========================================================
+     APP SCREEN RECORD DEMO SECTION
+     ========================================================== */
+     .portal-demo-section {
+    position: relative;
+    padding: 6rem 1.5rem;
+    background: linear-gradient(160deg, var(--brand-clay) 0%, var(--brand-clay-hover) 100%);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* dot grid, ~7% opacity */
+  .portal-demo-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.5px);
+    background-size: 26px 26px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* faint grid lines, ~5% opacity */
+  .portal-demo-section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 120px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .portal-demo-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    mix-blend-mode: screen;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .portal-demo-glow--one {
+    width: 42vw; height: 42vw; max-width: 520px; max-height: 520px;
+    top: -14%; left: -8%;
+    background: radial-gradient(circle, rgba(15, 61, 58, 0.5) 0%, transparent 70%);
+  }
+  .portal-demo-glow--two {
+    width: 36vw; height: 36vw; max-width: 460px; max-height: 460px;
+    bottom: -16%; right: -6%;
+    background: radial-gradient(circle, rgba(15, 61, 58, 0.4) 0%, transparent 70%);
+  }
+
+  .portal-demo-frame {
+    position: relative;
+    z-index: 2;
+    width: 70%;
+    max-width: 1050px;
+    margin: 0 auto;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.45);
+  }
+
+  /* ==========================================================
+     "APP SCREEN" BACKGROUND — the light gray canvas the nav
+     and chat card sit on, matching the screenshot exactly
+     ========================================================== */
+  .portal-app {
+    background: #f4f5f6;
+  }
+
+  /* ==========================================================
+     TOP NAV
+     ========================================================== */
+  .portal-nav {
+    background: var(--brand-primary);
+    padding: 0 2rem;
+  }
+
+  .portal-nav__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.1rem 0;
+    gap: 1.5rem;
+  }
+
+  .portal-nav__brand {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    min-width: 0;
+  }
+
+  .portal-nav__logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .portal-nav__logo svg { width: 18px; height: 18px; color: #fff; }
+
+  .portal-nav__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .portal-nav__subtitle {
+    margin: 0;
+    font-size: .78rem;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+  }
+
+  .portal-nav__right {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .portal-nav__secure {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .82rem;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+  }
+
+  .portal-nav__secure svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .portal-nav__avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .78rem;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* ==========================================================
+     NAV TABS
+     ========================================================== */
+  .portal-nav__tabs {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .portal-nav__tabs::-webkit-scrollbar { display: none; }
+
+  .portal-nav__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .8rem 1.1rem;
+    font-size: .9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.65);
+    background: transparent;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    white-space: nowrap;
+    cursor: default;
+  }
+
+  .portal-nav__tab.is-active {
+    background: #f4f5f6;
+    color: var(--ink);
+  }
+
+  .portal-nav__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: .15rem .5rem;
+    border-radius: 999px;
+    background: var(--brand-clay);
+    color: #fff;
+    font-size: .68rem;
+    font-weight: 700;
+  }
+
+  /* ==========================================================
+     BODY
+     ========================================================== */
+  .portal-body {
+    position: relative;
+    padding: 2rem 2rem 3.5rem;
+  }
+
+  /* ==========================================================
+     CHAT CARD
+     ========================================================== */
+  .portal-chat {
+    background: #fff;
+    border-radius: 20px;
+    border: 1px solid rgba(15, 21, 25, 0.07);
+    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.03), 0 20px 40px -28px rgba(15, 21, 25, 0.18);
+    overflow: hidden;
+  }
+
+  .portal-chat__header {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    padding: 1.4rem 1.75rem;
+    border-bottom: 1px solid rgba(15, 21, 25, 0.06);
+  }
+
+  .portal-chat__avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--brand-primary-tint);
+    color: var(--brand-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .portal-chat__title {
+    margin: 0;
+    font-size: .98rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .portal-chat__subtitle {
+    margin: .15rem 0 0;
+    font-size: .82rem;
+    color: var(--ink-3);
+  }
+
+  /* ==========================================================
+     MESSAGES
+     ========================================================== */
+  .portal-chat__messages {
+    min-height: 340px;
+    max-height: 460px;
+    overflow-y: auto;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    transition: opacity .6s ease;
+  }
+
+  .portal-chat__messages.is-fading { opacity: 0; }
+
+  .portal-msg {
+    display: flex;
+    flex-direction: column;
+    max-width: 64%;
+    opacity: 0;
+    transition: opacity .55s cubic-bezier(.2,.8,.2,1), transform .55s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .portal-msg--left  { align-self: flex-start; transform: translate(-18px, 10px); }
+  .portal-msg--right { align-self: flex-end; transform: translate(18px, 10px); }
+
+  .portal-msg.is-visible {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .portal-msg__bubble {
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    font-size: .92rem;
+    line-height: 1.55;
+  }
+
+  .portal-msg--left .portal-msg__bubble {
+    background: #fff;
+    border: 1px solid rgba(15, 21, 25, 0.09);
+    color: var(--ink-2);
+  }
+
+  .portal-msg--right .portal-msg__bubble {
+    background: var(--brand-primary);
+    color: #fff;
+  }
+
+  .portal-msg__meta {
+    margin-top: .5rem;
+    font-size: .76rem;
+    color: var(--ink-3);
+  }
+
+  .portal-msg--left .portal-msg__meta  { text-align: left; }
+  .portal-msg--right .portal-msg__meta { text-align: right; }
+
+  /* ==========================================================
+     TYPING INDICATOR
+     ========================================================== */
+  .portal-typing {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 1rem 1.15rem;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(15, 21, 25, 0.09);
+    opacity: 0;
+    transform: translate(-18px, 10px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+
+  .portal-typing.is-visible {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  .portal-typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ink-3);
+    animation: typing-bounce 1.1s ease-in-out infinite;
+  }
+
+  .portal-typing span:nth-child(2) { animation-delay: .15s; }
+  .portal-typing span:nth-child(3) { animation-delay: .3s; }
+
+  @keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: .5; }
+    30%           { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* ==========================================================
+     INPUT ROW
+     ========================================================== */
+  .portal-chat__inputRow {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+    padding: 1.25rem 1.75rem;
+    border-top: 1px solid rgba(15, 21, 25, 0.06);
+  }
+
+  .portal-chat__input {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding: 0 1.1rem;
+    border-radius: 12px;
+    background: #eef0f1;
+  }
+
+  .portal-chat__placeholder {
+    font-size: .9rem;
+    color: var(--ink-3);
+  }
+
+  .portal-chat__caret {
+    display: inline-block;
+    width: 1.5px;
+    height: 16px;
+    margin-left: 2px;
+    background: var(--ink-3);
+    animation: caret-blink 1s step-end infinite;
+  }
+
+  @keyframes caret-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  .portal-chat__send {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    background: var(--brand-primary);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    transition: transform .18s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .portal-chat__send svg { width: 19px; height: 19px; color: #fff; }
+
+  .portal-chat__send.is-pressed {
+    transform: scale(0.88);
+  }
+
+  /* ==========================================================
+     BOTTOM FOOTER
+     ========================================================== */
+  .portal-footer__badge {
+    position: absolute;
+    left: 2rem;
+    bottom: 3rem;
+    transform: translateY(50%);
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .5rem .9rem;
+    border-radius: 999px;
+    background: var(--brand-clay-tint);
+    border: 1px solid rgba(188, 91, 60, 0.18);
+    font-size: .78rem;
+    font-weight: 500;
+    color: var(--brand-clay-hover);
+  }
+
+  .portal-footer__badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--brand-clay);
+    flex-shrink: 0;
+  }
+
+  .portal-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.25rem 2rem;
+    background: #f4f5f6;
+    border-top: 1px solid rgba(15, 21, 25, 0.06);
+    font-size: .8rem;
+    color: var(--ink-3);
+  }
+
+  .portal-footer__links a {
+    color: var(--ink-3);
+    text-decoration: none;
+    margin-left: 1.25rem;
+  }
+
+  .portal-footer__links a:first-child { margin-left: 0; }
+  .portal-footer__links a:hover { color: var(--brand-primary); }
+
+  /* ==========================================================
+     DESKTOP SCALE-DOWN — since the frame is now 70% width
+     instead of near-full-width, every internal element scales
+     down proportionally so nothing feels oversized relative to
+     its new container
+     ========================================================== */
+  @media (min-width: 901px) {
+    .portal-nav { padding: 0 1.5rem; }
+    .portal-nav__top { padding: .9rem 0; }
+    .portal-nav__logo { width: 32px; height: 32px; border-radius: 8px; }
+    .portal-nav__logo svg { width: 16px; height: 16px; }
+    .portal-nav__title { font-size: .92rem; }
+    .portal-nav__subtitle { font-size: .72rem; }
+    .portal-nav__secure { font-size: .76rem; }
+    .portal-nav__avatar { width: 30px; height: 30px; font-size: .72rem; }
+    .portal-nav__tab { padding: .7rem .95rem; font-size: .84rem; }
+    .portal-nav__badge { font-size: .64rem; }
+
+    .portal-body { padding: 1.65rem 1.65rem 3rem; }
+
+    .portal-chat__header { padding: 1.15rem 1.4rem; }
+    .portal-chat__avatar { width: 38px; height: 38px; border-radius: 10px; font-size: .78rem; }
+    .portal-chat__title { font-size: .9rem; }
+    .portal-chat__subtitle { font-size: .76rem; }
+
+    .portal-chat__messages { padding: 1.4rem; min-height: 300px; max-height: 400px; }
+    .portal-msg { max-width: 72%; } /* bumped up from 64% — narrower container needs relatively more room per bubble */
+    .portal-msg__bubble { font-size: .86rem; padding: .85rem 1.05rem; }
+    .portal-msg__meta { font-size: .72rem; }
+
+    .portal-chat__inputRow { padding: 1.05rem 1.4rem; }
+    .portal-chat__input { height: 44px; padding: 0 .95rem; }
+    .portal-chat__placeholder { font-size: .84rem; }
+    .portal-chat__send { width: 44px; height: 44px; border-radius: 11px; }
+    .portal-chat__send svg { width: 17px; height: 17px; }
+
+    .portal-footer__badge { left: 1.65rem; font-size: .72rem; padding: .45rem .8rem; }
+    .portal-footer__bottom { padding: 1.05rem 1.65rem; font-size: .76rem; }
+  }
+
+  /* ==========================================================
+     APP SCREEN RECORD DEMO SECTION RESPONSIVE (TABLET)
+     ========================================================== */
+  @media (max-width: 900px) {
+    .portal-demo-section { padding: 4.5rem 1.25rem; }
+    .portal-nav { padding: 0 1.5rem; }
+    .portal-body { padding: 1.5rem 1.5rem 3rem; }
+    .portal-msg { max-width: 74%; }
+    .portal-footer__badge { left: 1.5rem; }
+    .portal-footer__bottom { padding: 1.1rem 1.5rem; }
+  }
+
+  /* ==========================================================
+     APP SCREEN RECORD DEMO SECTION RESPONSIVE (MOBILE)
+     ========================================================== */
+  @media (max-width: 640px) {
+    .portal-demo-frame { border-radius: 0px; }
+    .portal-demo-frame { width: 95%; }
+    .portal-nav { padding: 0 1.1rem; }
+
+
+    .portal-nav__top { padding: .9rem 0; gap: .75rem; }
+    .portal-nav__subtitle { display: none; }
+    .portal-nav__secure span { display: none; } /* icon-only on very small screens */
+    .portal-nav__secure { gap: 0; }
+
+    .portal-nav__tabs { justify-content: flex-start; }
+    .portal-nav__tab { padding: .7rem .85rem; font-size: .82rem; }
+
+    /* .portal-body { padding: 1.1rem 1.1rem 2.75rem; } */
+    .portal-body { padding: 1.1rem 1.1rem .75rem; }
+    .portal-chat { border-radius: 16px; }
+    .portal-chat__header { padding: 1.1rem 1.25rem; }
+    .portal-chat__subtitle { font-size: .76rem; }
+
+    .portal-chat__messages { padding: 1.25rem; min-height: 280px; }
+    .portal-msg { max-width: 86%; }
+    .portal-msg__bubble { font-size: .88rem; padding: .85rem 1rem; }
+
+    .portal-chat__inputRow { padding: 1rem 1.25rem; }
+    .portal-chat__placeholder { font-size: .82rem; }
+
+    .portal-footer__badge {
+      position: static;
+      transform: none;
+      margin: 1rem 1.1rem 0;
+      width: fit-content;
+    }
+
+    .portal-footer__bottom {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: .5rem;
+      padding: 1.1rem 1.25rem;
+    }
+
+    .portal-footer__links a { margin-left: 0; margin-right: 1.1rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portal-msg, .portal-typing, .portal-chat__send, .portal-chat__messages {
+      transition: none;
+    }
+    .portal-typing span, .portal-chat__caret { animation: none; }
+  }
+
+
+  /* ==========================================================
+     FOR YOUR FIRM SIZE SECTION
+     ========================================================== */
+  .firm-size {
+    position: relative;
+    padding: 7rem 1.5rem 4rem;
+    background:
+      radial-gradient(60% 50% at 12% 0%, var(--brand-primary-tint) 0%, transparent 60%),
+      radial-gradient(50% 40% at 92% 100%, var(--brand-clay-tint) 0%, transparent 60%),
+      #fff;
+    /* overflow: hidden; */
+  }
+
+  .firm-size__inner {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     GRID — three columns, middle sticks, sides scroll
+     ========================================================== */
+  .firm-grid {
+    display: grid;
+    grid-template-columns: 1fr minmax(300px, 1.05fr) 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .firm-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3.5rem;
+  }
+
+  .firm-col--left  { padding-top: 0; }
+  .firm-col--right { padding-top: 0; } 
+
+  .firm-mid {
+    position: sticky;
+    top: 14vh;
+    position: -webkit-sticky;
+    z-index: 10;
+    align-self: start;
+    padding: 0 1rem;
+  }
+
+
+  .firm-mid__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-family: var(--font-body);
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    margin-bottom: 1.25rem;
+  }
+
+  .firm-mid__eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);text-align: center;
+    display: inline-block;
+  }
+
+  .firm-mid span {
+    text-align: center;
+  }
+
+
+  .firm-mid h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+    text-align: center;
+  }
+
+  .firm-mid p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    max-width: 40ch;
+    margin: 0;
+    text-align: center;
+  }
+
+  /* ==========================================================
+     CARDS
+     ========================================================== */
+  .firm-card {
+    position: relative;
+    padding: 1.85rem 1.75rem;
+    border-radius: 20px;
+    background: linear-gradient(160deg, #ffffff 0%, var(--brand-primary-tint) 130%);
+    border: 1px solid rgba(15, 61, 58, 0.10);
+    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.04);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+  }
+
+  .firm-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--brand-primary);
+    box-shadow: 0 24px 48px -18px rgba(15, 61, 58, 0.28);
+  }
+
+  /* scale cluster — dots grow with firm size, a real structural echo of the copy */
+  .firm-card__scale {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 20px;
+    margin-bottom: 1.1rem;
+  }
+
+  .firm-card__scale span {
+    display: block;
+    width: 6px;
+    border-radius: 2px;
+    background: var(--brand-primary-tint);
+  }
+
+  .firm-card__scale span.is-filled {
+    background: var(--brand-primary);
+  }
+
+  .firm-card h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin: 0 0 .6rem;
+  }
+
+  .firm-card p {
+    font-size: .925rem;
+    line-height: 1.55;
+    color: var(--ink-2);
+    margin: 0 0 1.25rem;
+  }
+
+  .firm-card__price {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .3rem;
+    padding: .4rem .85rem;
+    border-radius: 999px;
+    background: var(--brand-clay-tint);
+    color: var(--brand-clay-hover);
+    font-size: .85rem;
+    font-weight: 600;
+  }
+
+  /* footnote under the grid */
+  .firm-size__note {
+    text-align: center;
+    margin-top: 4rem;
+    font-size: .85rem;
+    color: var(--ink-3);
+  }
+
+
+    /* ==========================================================
+     "FOR YOUR FIRM SIZE" RESPONSIVE
+     ========================================================== */
+     @media (max-width: 900px) {
+    .firm-size { padding: 4.5rem 1.25rem 4rem; }
+    .firm-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .firm-col--right { padding-top: 0; }
+    .firm-mid { position: static; padding: 0; order: -1; }
+    .firm-mid p { max-width: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .firm-card { transition: none; }
+    .firm-card:hover { transform: none; }
+  }
+
+  /* ==========================================================
+     DASHBOARD SECTION
+     ========================================================== */
+     .dashboard-showcase {
+    position: relative;
+    padding: 7rem 1.5rem 4rem;
+    background-color: #fff;
+    background-image:
+      radial-gradient(40% 40% at 88% 8%, var(--brand-primary-tint) 0%, transparent 65%),
+      radial-gradient(45% 40% at 8% 95%, var(--brand-clay-tint) 0%, transparent 65%);
+    background-repeat: no-repeat;
+    /* overflow: hidden; */
+  }
+
+
+  /* ==========================================================
+     DASHBOARD IMAGE SECTION
+     ========================================================== */
+  
+  .dashboard-showcase {
+    position: relative;
+    height: 220vh;
+    background-color: #fff;
+    background-image:
+      radial-gradient(40% 30% at 88% 8%, var(--brand-primary-tint) 0%, transparent 65%),
+      radial-gradient(45% 30% at 8% 95%, var(--brand-clay-tint) 0%, transparent 65%);
+    background-repeat: no-repeat;
+  }
+
+  .dashboard-showcase__pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1.5rem;
+    overflow: hidden;
+  }
+
+  .dashboard-showcase__inner {
+    position: relative;
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ==========================================================
+     HEADER — taken out of flow so it doesn't compete with the
+     image for vertical space. Sits on top early on, then fades
+     and lifts away via JS as the image grows toward full size.
+     ========================================================== */
+  .dashboard-showcase__header {
+    position: absolute;
+    top: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 680px;
+    width: 100%;
+    text-align: center;
+    z-index: 2;
+    will-change: opacity, transform;
+  }
+
+  .dashboard-showcase__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1rem;
+  }
+
+  .dashboard-showcase__header p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+    margin: 0 auto;
+    max-width: 52ch;
+  }
+
+  /* ==========================================================
+     IMAGE — the part that scales, now free to use the whole
+     pinned viewport once the header has faded out. No height
+     cap this time, so it can reach its original full size.
+     ========================================================== */
+  .dashboard-showcase__media {
+    position: relative;
+    max-width: 1180px;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    transform: scale(0.5); /* starting size — JS animates this up to 1 */
+    transform-origin: center center;
+    will-change: transform;
+  }
+
+  .dashboard-showcase__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    filter: drop-shadow(0 40px 60px rgba(15, 61, 58, 0.22));
+  }
+
+  /* soft glow sitting behind the image for extra depth */
+  .dashboard-showcase__media::before {
+    content: "";
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 70%;
+    background: radial-gradient(closest-side, rgba(15, 61, 58, 0.14) 0%, transparent 80%);
+    filter: blur(50px);
+    z-index: -1;
+  }
+
+  /* ==========================================================
+     MOBILE — the pinned-zoom effect is desktop-only. Below the
+     breakpoint, this collapses back to a normal, short section:
+     no tall scroll-runway, no sticky pin, image at rest size.
+     ========================================================== */
+     @media (max-width: 900px) {
+
+.dashboard-showcase {
+  height: auto;
+  padding: 4.5rem 1.25rem 4rem;
+}
+
+.dashboard-showcase__pin {
+  position: static;
+  height: auto;
+  display: block;
+  padding: 0;
+  overflow: visible;
+}
+
+.dashboard-showcase__inner {
+  height: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 2rem;
+}
+
+.dashboard-showcase__header {
+  position: static;
+  top: auto;
+  left: auto;
+  transform: none;
+
+  order: 1;
+
+  width: 100%;
+  max-width: 680px;
+
+  margin: 0 auto;
+  text-align: center;
+
+  opacity: 1 !important;
+}
+
+.dashboard-showcase__media {
+  order: 2;
+
+  width: 100%;
+  max-width: 1180px;
+
+  transform: none;
+}
+}
+
+  @media (prefers-reduced-motion: reduce) {
+    .dashboard-showcase__media { transition: none; }
+  }
+
+
+   /* ========================
+     PRICING SECTION
+     =========================== */
+
+     .pricing {
+    position: relative;
+    padding: 7rem 1.5rem 6rem;
+    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* dot grid, ~5% opacity — same treatment as the modules section */
+  .pricing::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1.5px);
+    background-size: 26px 26px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* faint grid lines, ~4% opacity */
+  .pricing::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 120px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* the original clay glow — kept as its own layer since ::before
+     and ::after are now taken by the grid/dot textures */
+  .pricing__glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(45% 35% at 85% 8%, rgba(188, 91, 60, 0.16) 0%, transparent 65%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .pricing__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .pricing__header {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 2.5rem;
+  }
+
+  .pricing__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #e7b7a4;
+    margin-bottom: 1.1rem;
+  }
+
+  .pricing__eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .pricing__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    line-height: 1.15;
+    color: #fff;
+    margin: 0 0 1rem;
+  }
+
+  .pricing__header p {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.72);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     CURRENCY SWITCH
+     ========================================================== */
+  .currency-switch-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .6rem;
+    margin: 2rem 0 2.5rem;
+  }
+
+  .currency-switch {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .currency-switch button {
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.65);
+    font-family: var(--font-body);
+    font-size: .85rem;
+    font-weight: 600;
+    padding: .5rem 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .25s ease, color .25s ease;
+  }
+
+  .currency-switch button:hover { color: #fff; }
+
+  .currency-switch button.is-active {
+    background: #fff;
+    color: var(--brand-primary);
+  }
+
+  .currency-switch__meta {
+    font-size: .74rem;
+    color: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    min-height: 1.2em;
+  }
+
+  .currency-switch__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6fcf97;
+    flex-shrink: 0;
+  }
+  .currency-switch__dot.is-stale { background: #e7b7a4; }
+
+  .billing-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .85rem;
+    margin: 0 0 .75rem;
+  }
+
+  .billing-toggle span {
+    font-size: .9rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    transition: color .25s ease;
+  }
+
+  .billing-toggle span.is-active { color: #fff; }
+
+  .toggle-switch {
+    position: relative;
+    width: 52px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch__knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--brand-clay);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .pricing.is-annual .toggle-switch__knob { transform: translateX(22px); }
+
+  .billing-toggle__save {
+    display: block;
+    text-align: center;
+    font-size: .82rem;
+    color: #e7b7a4;
+    margin-bottom: 3rem;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1.25rem;
+    align-items: stretch;
+  }
+
+  .price-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.9rem 1.5rem;
+    border-radius: 20px;
+    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-clay) 165%);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+  }
+
+  .price-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--brand-clay);
+    box-shadow: 0 24px 48px -18px rgba(188, 91, 60, 0.45);
+  }
+
+  .price-card--popular {
+    border-color: var(--brand-clay);
+    box-shadow: 0 20px 40px -16px rgba(188, 91, 60, 0.35);
+  }
+
+  .price-card__badge {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--brand-clay);
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: .35rem .75rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .price-card__tier {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: #fff;
+    margin: 0 0 .3rem;
+  }
+
+  .price-card__scope {
+    font-size: .82rem;
+    color: rgba(255,255,255,0.65);
+    margin: 0 0 1.4rem;
+  }
+
+  .price-card__amount {
+    display: flex;
+    align-items: baseline;
+    gap: .35rem;
+    margin-bottom: .25rem;
+    min-height: 2.2rem;
+  }
+
+  .price-card__amount .value {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .price-card__amount .unit {
+    font-size: .8rem;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .price-card__annual-note {
+    font-size: .78rem;
+    color: #e7b7a4;
+    min-height: 1.1em;
+    margin-bottom: 1.4rem;
+  }
+
+  .price-card__cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .7rem 1rem;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    font-size: .88rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .25s ease, border-color .25s ease;
+  }
+
+  .price-card--popular .price-card__cta,
+  .price-card__cta:hover {
+    background: var(--brand-clay);
+    border-color: var(--brand-clay);
+  }
+
+  .price-annual { display: none; }
+  .pricing.is-annual .price-monthly { display: none; }
+  .pricing.is-annual .price-annual { display: flex; }
+  .pricing.is-annual .price-card__annual-note { display: block; }
+  .price-card__annual-note { display: none; }
+
+  .pricing__disclaimer {
+    text-align: center;
+    font-size: .76rem;
+    color: rgba(255, 255, 255, 0.45);
+    margin-top: 2.5rem;
+  }
+
+  .feature-panel {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  .feature-panel__col {
+    /* border-radius: var(--pricing-radius); */
+    border-radius: 10px;
+    padding: 1.75rem 1.9rem;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(6px);
+  }
+
+  .feature-panel__title {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    font-size: .85rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 0 0 1.1rem;
+  }
+
+  .feature-panel__title .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .feature-panel__col--live .dot { background: #6fcf97; }
+  .feature-panel__col--dev .dot { background: #e7b7a4; }
+
+  .feature-panel__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+  }
+
+  .feature-panel__col li {
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+    font-size: .9rem;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.78);
+  }
+
+  .feature-panel__col li svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .feature-panel__col--live li svg { color: #6fcf97; }
+  .feature-panel__col--dev li svg { color: #e7b7a4; }
+
+ 
+
+  /* ==========================================================
+     PRICING RESPONSIVE
+     ========================================================== */
+  @media (max-width: 1100px) {
+    .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  @media (max-width: 720px) {
+    .pricing { padding: 4.5rem 1.25rem 3.5rem; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .feature-panel { grid-template-columns: 1fr; }
+    .currency-switch { flex-wrap: wrap; justify-content: center; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .price-card, .toggle-switch__knob { transition: none; }
+    .price-card:hover { transform: none; }
+  }
+
+
+
+  /* ==========================================================
+     "Why firms choose Deeluh" SECTION 
+     ========================================================== */
+     .compare {
+    position: relative;
+    padding: 7rem 1.5rem 9rem;
+    background-color: #fff;
+    background-image:
+      radial-gradient(42% 40% at 92% 6%, var(--brand-clay-tint) 0%, transparent 65%),
+      radial-gradient(45% 38% at 4% 92%, var(--brand-primary-tint) 0%, transparent 65%);
+    background-repeat: no-repeat;
+    /* overflow: hidden; */
+  }
+
+  .compare__inner {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  /* ==========================================================
+     GRID — sticky left header, scrolling right rows
+     (same physics as .firm-grid / .wdd-grid)
+     ========================================================== */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.85fr) 1.15fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  .compare-left {
+    position: sticky;
+    top: 6rem;
+    align-self: start;
+    padding: 0 1rem 0 0;
+    z-index: 2;
+  }
+
+  .compare-left__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    margin-bottom: 1.25rem;
+  }
+
+  .compare-left__eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .compare-left h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: 0 0 1.25rem;
+  }
+
+  .compare-left p {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    max-width: 38ch;
+    margin: 0;
+  }
+
+  /* ==========================================================
+     SCROLL-SPELL ENTRANCE — same pattern as the wdd / firm-size
+     sections. Hidden by default, JS drives opacity/position from
+     scroll progress through .compare-grid
+     ========================================================== */
+  #compareEyebrow { opacity: 0; transition: opacity .08s linear; }
+  #compareParagraph { opacity: 0; transform: translateY(12px); transition: opacity .08s linear, transform .08s linear; }
+  #compareHeadline .letter { transition: opacity .08s linear, transform .08s linear; }
+
+  /* ==========================================================
+     RIGHT COLUMN WRAPPER — holds the sticky label header + rows
+     ========================================================== */
+  .compare-right {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ==========================================================
+     STICKY LABEL HEADER — "Traditional Tool | Deeluh"
+     pins near the top of the viewport, rows scroll underneath it
+     ========================================================== */
+  .compare-header {
+    position: sticky;
+    top: 0; /* pinned to the exact top of the viewport — no gap above it */
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 6rem 4rem 1.75rem;
+    border-radius: 0;
+    /* fully opaque — no see-through blur, so rows are truly hidden
+       once they pass underneath, not just ghosted behind glass */
+    background: #fdfdfc;
+    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.03);
+    transition: box-shadow .3s ease;
+  }
+
+  /* the "cave mouth" — a solid-to-transparent lip hanging just below
+     the header, so rows fade into it and vanish smoothly instead of
+     being sharply clipped or peeking out from behind an edge */
+  .compare-header::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 28px;
+    background: linear-gradient(180deg, #fdfdfc 0%, rgba(253, 253, 252, 0) 100%);
+    pointer-events: none;
+  }
+
+  /* stronger shadow once it's actually pinned and rows are
+     passing beneath it — toggled by the sentinel-based JS below */
+  .compare-header.is-stuck {
+    box-shadow: 0 12px 24px -14px rgba(15, 61, 58, 0.22);
+  }
+
+  .compare-header__old,
+  .compare-header__new {
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+
+  .compare-header__old span {
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .compare-header__new span {
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: var(--brand-primary);
+  }
+
+  .compare-header__divider {
+    width: 2px;
+    height: 22px;
+    background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-clay) 100%);
+    border-radius: 2px;
+  }
+
+  /* ==========================================================
+     ROWS
+     ========================================================== */
+  .compare-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 3rem 0 6rem;
+  }
+
+  .compare-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 1.75rem;
+    border-radius: 20px;
+    background: linear-gradient(160deg, #ffffff 0%, var(--brand-primary-tint) 130%);
+    border: 1px solid rgba(15, 61, 58, 0.10);
+    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.04);
+    transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
+
+    /* reveal state — starts hidden, JS flips .is-visible */
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  .compare-row.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .6s ease,
+                box-shadow .4s ease, border-color .4s ease;
+  }
+
+  .compare-row:hover {
+    transform: translateY(-4px);
+    border-color: var(--brand-primary);
+    box-shadow: 0 24px 48px -18px rgba(15, 61, 58, 0.24);
+  }
+
+  /* -- traditional side -- */
+  .compare-row__old {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+  }
+
+  .compare-row__icon {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(92, 105, 113, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-3);
+  }
+
+  .compare-row__icon svg { width: 12px; height: 12px; }
+
+  .compare-row__old span {
+    font-size: .98rem;
+    color: var(--ink-3);
+    line-height: 1.45;
+  }
+
+  /* -- glowing center divider -- */
+  .compare-row__divider {
+    width: 2px;
+    height: 100%;
+    min-height: 40px;
+    background: linear-gradient(180deg, var(--brand-primary) 0%, var(--brand-clay) 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 12px rgba(188, 91, 60, 0.35);
+    transform: scaleY(0);
+    transform-origin: top center;
+    transition: transform .7s cubic-bezier(.2,.8,.2,1);
+    transition-delay: .15s;
+  }
+
+  .compare-row.is-visible .compare-row__divider {
+    transform: scaleY(1);
+  }
+
+  /* -- deeluh side -- */
+  .compare-row__new {
+    display: flex;
+    align-items: center;
+    gap: .85rem;
+  }
+
+  .compare-row__icon--check {
+    background: var(--brand-primary);
+    border-color: var(--brand-primary);
+    color: #fff;
+  }
+
+  .compare-row__new span {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+
+  /* ==========================================================
+     RESPONSIVE — sticky off, rows stack, divider becomes
+     a horizontal arrow between the two states
+     ========================================================== */
+  @media (max-width: 900px) {
+    .compare { padding: 4.5rem 1.25rem 4rem; }
+    .compare-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .compare-left { position: static; padding: 0; }
+    .compare-left p { max-width: none; }
+
+    /* the side-by-side label header doesn't map to the stacked
+       mobile row layout, so it becomes a plain, non-sticky legend */
+    .compare-header {
+      position: static;
+      margin-bottom: 1.25rem;
+      padding: 1.1rem;
+      border-radius: 16px;
+      border: 1px solid rgba(15, 61, 58, 0.10);
+    }
+    .compare-header::after { display: none; }
+    .compare-header.is-stuck { box-shadow: 0 1px 2px rgba(15, 21, 25, 0.03); }
+
+    .compare-rows { padding: 0; gap: 1rem; }
+
+    .compare-row {
+      grid-template-columns: 1fr;
+      gap: .9rem;
+      padding: 1.35rem 1.35rem 1.5rem;
+    }
+
+    .compare-row__old,
+    .compare-row__new {
+      width: 100%;
+    }
+
+    /* divider becomes a horizontal "old → new" arrow marker */
+    .compare-row__divider {
+      width: 100%;
+      height: 2px;
+      min-height: 0;
+      position: relative;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform .6s cubic-bezier(.2,.8,.2,1);
+      transition-delay: .1s;
+    }
+
+    .compare-row.is-visible .compare-row__divider {
+      transform: scaleX(1);
+    }
+
+    .compare-row__divider::after {
+      content: "↓";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--brand-clay);
+      color: #fff;
+      font-size: .8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(188, 91, 60, 0.4);
+    }
+
+    .compare-row:hover {
+      transform: none; /* skip the lift on touch devices, hover is unreliable there anyway */
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .compare-row,
+    .compare-row__divider {
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+ /* ==========================================================
+     FAQ SECTION
+     ========================================================== */
+  .faq {
+    padding: 7rem 1.5rem 8rem;
+    background: #fff;
+  }
+
+  .faq__inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .faq__header {
+    margin-bottom: 3rem;
+  }
+
+  .faq__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-hover);
+    margin-bottom: 1.1rem;
+  }
+
+  .faq__eyebrow::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .faq__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.6rem);
+    line-height: 1.15;
+    color: var(--ink);
+    margin: 0 0 .75rem;
+  }
+
+  .faq__header p {
+    font-size: 1.02rem;
+    color: var(--ink-3);
+    margin: 0;
+  }
+
+  /* ==========================================================
+     ACCORDION
+     ========================================================== */
+  .faq-list {
+    border-top: 1px solid rgba(15, 21, 25, 0.1);
+  }
+
+  .faq-item {
+    border-bottom: 1px solid rgba(15, 21, 25, 0.1);
+  }
+
+  .faq-item__trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.6rem 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+  }
+
+  .faq-item__question {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+    transition: color .25s ease;
+  }
+
+  .faq-item__trigger:hover .faq-item__question {
+    color: var(--brand-primary);
+  }
+
+  /* plus / close icon, built from two CSS lines */
+  .faq-item__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--brand-primary);
+    transition: background .3s ease, border-color .3s ease;
+  }
+
+  .faq-item__icon::before,
+  .faq-item__icon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: var(--brand-primary);
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), background .3s ease;
+  }
+
+  .faq-item__icon::before {
+    width: 12px;
+    height: 1.5px;
+    transform: translate(-50%, -50%);
+  }
+
+  .faq-item__icon::after {
+    width: 1.5px;
+    height: 12px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* open state: fill the circle, turn plus into an x */
+  .faq-item.is-open .faq-item__icon {
+    background: var(--brand-primary);
+  }
+
+  .faq-item.is-open .faq-item__icon::before,
+  .faq-item.is-open .faq-item__icon::after {
+    background: #fff;
+  }
+
+  .faq-item.is-open .faq-item__icon::after {
+    transform: translate(-50%, -50%) rotate(90deg) scaleY(0); /* collapses vertical bar */
+  }
+
+  .faq-item.is-open .faq-item__icon::before {
+    transform: translate(-50%, -50%) rotate(180deg);
+  }
+
+  /* collapsible panel — grid-rows trick, no JS height math needed */
+  .faq-item__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .4s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .faq-item.is-open .faq-item__panel {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-item__panel-inner {
+    overflow: hidden;
+  }
+
+  .faq-item__answer {
+    font-size: .96rem;
+    line-height: 1.65;
+    color: var(--ink-2);
+    padding: 0 0 1.75rem;
+    max-width: 62ch;
+  }
+
+  /* ==========================================================
+     RESPONSIVE FAQ
+     ========================================================== */
+  @media (max-width: 640px) {
+    .faq { padding: 4.5rem 1.25rem 4rem; }
+    .faq-item__trigger { padding: 1.35rem 0; }
+    .faq-item__question { font-size: .98rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item__panel,
+    .faq-item__icon::before,
+    .faq-item__icon::after {
+      transition: none;
+    }
+  }
+
+  /* ==========================================================
+     CTA FORM SECTION
+     ========================================================== */
+     .waitlist {
+    position: relative;
+    padding: 7rem 1.5rem;
+    background: linear-gradient(160deg, var(--brand-clay) 0%, var(--brand-clay-hover) 100%);
+    overflow: hidden;
+  }
+
+  .waitlist__glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .waitlist__glow--one {
+    width: 520px;
+    height: 520px;
+    top: -180px;
+    left: -100px;
+    background: radial-gradient(circle, rgba(15, 61, 58, 0.35) 0%, transparent 70%);
+    animation: waitlist-drift-a 24s ease-in-out infinite;
+  }
+
+  .waitlist__glow--two {
+    width: 460px;
+    height: 460px;
+    bottom: -200px;
+    right: -120px;
+    background: radial-gradient(circle, rgba(15, 61, 58, 0.28) 0%, transparent 70%);
+    animation: waitlist-drift-b 28s ease-in-out infinite;
+    animation-delay: -8s;
+  }
+
+  @keyframes waitlist-drift-a {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(50px, 60px) scale(1.07); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  @keyframes waitlist-drift-b {
+    0%   { transform: translate(0, 0) scale(1); }
+    50%  { transform: translate(-40px, -50px) scale(0.95); }
+    100% { transform: translate(0, 0) scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .waitlist__glow { animation: none; }
+  }
+
+  /* ==========================================================
+     CONTENT — centered
+     ========================================================== */
+  .waitlist__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .waitlist h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.4vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: #fff;
+    margin: 0 0 1rem;
+  }
+
+  .waitlist__lede {
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.85);
+    max-width: 50ch;
+    margin: 0 auto 2.5rem;
+  }
+
+  /* ==========================================================
+     FORM
+     ========================================================== */
+  .waitlist__form {
+    display: flex;
+    align-items: stretch;
+    gap: .75rem;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .waitlist__input {
+    flex: 1;
+    min-width: 0;
+    padding: .95rem 1.2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: .95rem;
+    outline: none;
+    transition: border-color .2s ease, background .2s ease;
+  }
+
+  .waitlist__input::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+  .waitlist__input:focus {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .waitlist__btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .95rem 1.6rem;
+    border-radius: 12px;
+    border: none;
+    background: var(--brand-primary);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .25s ease, transform .25s ease, box-shadow .25s ease;
+    box-shadow: 0 10px 22px -10px rgba(0, 0, 0, 0.35);
+  }
+
+  .waitlist__btn:hover {
+    background: var(--brand-primary-hover);
+    transform: translateY(-2px);
+  }
+
+  /* success state — swapped in via JS after a valid submit */
+  .waitlist__success {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    padding: .95rem 1.2rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-size: .95rem;
+    font-weight: 600;
+    max-width: 460px;
+    margin: 0 auto;
+  }
+
+  .waitlist.is-submitted .waitlist__form { display: none; }
+  .waitlist.is-submitted .waitlist__success { display: flex; }
+
+  .waitlist__fine-print {
+    margin: 1.5rem auto 0;
+    max-width: 52ch;
+    font-size: .78rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.65);
+  }
+
+  .waitlist__fine-print a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .waitlist__fine-print a:hover { color: #fff; }
+
+  /* ==========================================================
+     RESPONSIVE
+     ========================================================== */
+  @media (max-width: 560px) {
+    .waitlist { padding: 4.5rem 1.25rem; }
+    .waitlist__form { flex-direction: column; }
+    .waitlist__btn { width: 100%; }
+  }
+
+  /* ==========================================================
+     BIG LOGO SECTION BEFORE FOOTER
+     ========================================================== */
+     .logo-section {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 2rem 2rem; */
+    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+    overflow: hidden;
+  }
+
+  .logo-wrap {
+    width: 100%;
+    max-width: 1400px;
+    text-align: center;
+  }
+
+  /* the wordmark itself — width is set by JS so it always spans
+     edge-to-edge regardless of font metrics or viewport size */
+  .logo-text {
+    display: inline-block;
+    /* font-family: var(--font-body); */
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+
+    /* the shimmer: a soft translucent base with a bright band that
+       sweeps across it — the "light passing over metal" look */
+    background-image: linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.28) 40%,
+      rgba(255, 255, 255, 0.95) 50%,
+      rgba(255, 255, 255, 0.28) 60%,
+      rgba(255, 255, 255, 0.28) 100%
+    );
+    background-size: 300% 100%;
+    background-position: -100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    animation-name: shine-sweep;
+    animation-duration: var(--shine-cycle);
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  /* the sweep itself happens fast, early in the cycle, then holds
+     and waits for the next loop — that pause is what makes the
+     "cycle length" feel like a repeat interval rather than a
+     constant back-and-forth shimmer */
+  @keyframes shine-sweep {
+    0%   { background-position: -120% 0; }
+    18%  { background-position: 220% 0; }
+    100% { background-position: 220% 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .logo-text {
+      animation: none;
+      background-position: 0 0;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .logo-section { min-height: 38vh; padding: 3rem 1.25rem; }
+  }
+
+ 
+
+</style>
+</head>
+<body>
+
+ <!-- NAVBAR -->
+
+ <nav class="navbar" id="siteNavbar">
+  <div class="navbar__inner">
+
+    <a href="index.html" class="navbar__logo">
+      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
+      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
+    </a>
+
+    <ul class="navbar__menu">
+      <li><a href="product.html">Product</a></li>
+      <li><a href="solutions.html">Solutions</a></li>
+
+      <li class="navbar__item--dropdown">
+        <button class="navbar__dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          Security
+          <svg class="navbar__dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="navbar__dropdown-panel">
+          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+        </div>
+      </li>
+
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="company.html">Company</a></li>
+    </ul>
+
+    <div class="navbar__actions">
+      <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+    </div>
+
+    <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+  </div>
+
+  <div class="navbar__mobile" id="navMobile">
+    <div class="navbar__mobile-inner">
+      <ul class="navbar__mobile-links">
+        <li><a href="product.html">Product</a></li>
+        <li><a href="solutions.html">Solutions</a></li>
+
+        <li class="navbar__mobile-dropdown" id="navLegalDropdown">
+          <button class="navbar__mobile-dropdown-trigger" type="button" aria-expanded="false" aria-controls="navLegalPanel">
+            Security
+            <svg class="navbar__mobile-dropdown-caret" viewBox="0 0 10 6" fill="none" aria-hidden="true">
+              <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
+            <div class="navbar__mobile-dropdown-inner">
+              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html" class="navbar__dropdown-link">Legal</a>
+            </div>
+          </div>
+        </li>
+
+        <li><a href="resources.html">Resources</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+      <div class="navbar__mobile-actions">
+        <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const navbar = document.getElementById('siteNavbar');
+  const burger = document.getElementById('navBurger');
+
+  // swap green → white once scrolled past a small threshold
+  function updateNavbarScrollState() {
+    navbar.classList.toggle('is-scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', updateNavbarScrollState, { passive: true });
+  updateNavbarScrollState();
+
+  // hamburger toggle
+  burger.addEventListener('click', () => {
+    const isOpen = navbar.classList.toggle('is-open');
+    burger.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // close the mobile menu if the viewport grows back past the breakpoint
+  window.addEventListener('resize', () => {
+    if (window.matchMedia('(min-width: 981px)').matches) {
+      navbar.classList.remove('is-open');
+      burger.setAttribute('aria-expanded', 'false');
+    }
+  });
+</script>
+
+<!-- LEGAL DROPDOWN (nav) — click-to-open accordion on mobile -->
+<script>
+  (function () {
+    const legalDropdown = document.getElementById('navLegalDropdown');
+    if (!legalDropdown) return;
+    const trigger = legalDropdown.querySelector('.navbar__mobile-dropdown-trigger');
+
+    trigger.addEventListener('click', () => {
+      const isOpen = legalDropdown.classList.toggle('is-open');
+      trigger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // collapse the accordion if the viewport grows back into desktop
+    // width, so it doesn't stay stuck open behind the hover dropdown
+    window.addEventListener('resize', () => {
+      if (window.matchMedia('(min-width: 981px)').matches) {
+        legalDropdown.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+
+<!-- END OF NAVBAR -->
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+  <span class="hero__mesh hero__mesh--one"></span>
+  <span class="hero__mesh hero__mesh--two"></span>
+  <span class="hero__mesh hero__mesh--three"></span>
+  <span class="hero__mesh hero__mesh--four"></span>
+      
+        <div class="hero__inner">
+          <!-- <span class="hero__badge">Built for Nigerian law firms</span> -->
+      
+          <h1>The intelligent operating system for legal practice.</h1><br><br>
+      
+          <p>Everything your firm needs to win clients, manage matters, collaborate as one team. Deeluh turns how your firm runs into how your firm grows.</p>
+      
+          <div class="hero__actions">
+            <a href="#waitlist" class="hero__btn hero__btn--primary">Join Waitlist</a>
+            <a href="javascript:void(0)" class="hero__btn hero__btn--secondary">Watch the Demo</a>
+          </div>
+      
+          <div class="hero__features">
+            <span><strong>Launching first in Nigeria. Designed for legal teams everywhere.</strong></span>
+            <!-- <span><strong>NDPA 2023</strong>&nbsp;aware</span>
+            <span><strong>RPC 2023</strong>&nbsp;audit trails</span>
+            <span><strong>Paystack</strong>&nbsp;billing</span> -->
+          </div>
+        </div>
+      </section>
+
+<!-- END OF HERO SECTION -->
+
+<!-- TICKER SECTION -->
+
+   <div class="ticker fade-in-section">
+    <div class="ticker__track">
+  
+      <!-- group 1 -->
+      <div class="ticker__group">
+        <span class="ticker__item">AI-native</span>
+        <span class="ticker__item">Secure by design</span>
+        <span class="ticker__item">Lawyer verification built in</span>
+        <!-- <span class="ticker__item">Not endorsed or certified by the NBA — the SCN check uses the NBA's public lawyer directory.</span> -->
+      </div>
+  
+      <!-- group 2 — exact duplicate, makes the loop seamless -->
+      <div class="ticker__group" aria-hidden="true">
+        <span class="ticker__item">AI-native</span>
+        <span class="ticker__item">Secure by design</span>
+        <span class="ticker__item">Lawyer verification built in</span>
+        <!-- <span class="ticker__item">Not endorsed or certified by the NBA — the SCN check uses the NBA's public lawyer directory.</span> -->
+      </div>
+  
+    </div>
+  </div>
+
+<!-- END OF TICKER SECTION -->
+
+<!-- "WHAT DEELUH DOES" SECTION -->
+
+    <section class="wdd fade-in-section" id="what">
+        <div class="wdd__inner">
+          <div class="wdd-grid">
+      
+            <!-- LEFT: pinned writeup -->
+            <div class="wdd-left">
+              <span class="wdd-left__eyebrow" id="wddEyebrow">What Deeluh does</span>
+              <h2 id="wddHeadline">Everything your firm needs in one platform.</h2>
+              <p id="wddParagraph">Most firms run on a patchwork of separate tools, spreadsheets for matters, messaging apps for clients, notebooks for trust accounts, memory for compliance. Deeluh replaces the patchwork with one connected system built specifically for legal practice.</p>
+            </div>
+      
+            <!-- RIGHT: scrolling cards -->
+            <div class="wdd-right">
+      
+              <article class="wdd-card">
+                <div class="wdd-card__top">
+                  <span class="wdd-card__index">01</span>
+                  <!-- <span class="wdd-card__status wdd-card__status--live">Available at launch</span> -->
+                </div>
+                <h3>Firm setup</h3>
+                <p>Sets up your firm structure and invites your team with the right permissions. Workspace ready in under two minutes.</p>
+              </article>
+      
+              <article class="wdd-card">
+                <div class="wdd-card__top">
+                  <span class="wdd-card__index">02</span>
+                  <!-- <span class="wdd-card__status wdd-card__status--live">Available at launch</span> -->
+                </div>
+                <h3>Matter management</h3>
+                <p>Kanban by stage. Parties, time entries, deadlines, and documents in one view. Every action audit-trailed to the minute.</p>
+              </article>
+      
+              <article class="wdd-card">
+                <div class="wdd-card__top">
+                  <span class="wdd-card__index">03</span>
+                  <!-- <span class="wdd-card__status wdd-card__status--dev">In development</span> -->
+                </div>
+                <h3>Client portal</h3>
+                <p>KA secure, branded space where your clients track their matter, see what's next, upload documents, and view funds held on their behalf, without ever calling to ask for an update.</p>
+              </article>
+      
+              <article class="wdd-card">
+                <div class="wdd-card__top">
+                  <span class="wdd-card__index">04</span>
+                  <!-- <span class="wdd-card__status wdd-card__status--dev">In development</span> -->
+                </div>
+                <h3>Billing & payments</h3>
+                <p>Track time automatically. Generate invoices instantly. Accept payments seamlessly. Get paid without the chase.</p>
+              </article>
+
+              <article class="wdd-card">
+                <div class="wdd-card__top">
+                  <span class="wdd-card__index">05</span>
+                  <!-- <span class="wdd-card__status wdd-card__status--dev">In development</span> -->
+                </div>
+                <h3>Deeluh AI</h3>
+                <p>An assistant built into the platform that helps lawyers draft contracts, review documents, and conduct research, under lawyer review at every step. Judgment stays with the lawyer, always.</p>
+              </article>
+
+              <article class="wdd-card">
+                <div class="wdd-card__top">
+                  <span class="wdd-card__index">06</span>
+                  <!-- <span class="wdd-card__status wdd-card__status--dev">In development</span> -->
+                </div>
+                <h3>Team management & communication</h3>
+                <p>Manage roles, permissions, and workload across your firm. Per-matter channels keep discussion where the work happens, with WhatsApp Business integration for client-facing threads.</p>
+              </article>
+
+              <article class="wdd-card">
+                <div class="wdd-card__top">
+                  <span class="wdd-card__index">07</span>
+                  <!-- <span class="wdd-card__status wdd-card__status--dev">In development</span> -->
+                </div>
+                <h3>Trust & compliance records</h3>
+                <p>Hash-chain audit trail. Three-pool separation of client, trust, and subscription funds. Built for professional-conduct review.</p>
+              </article>
+      
+            </div>
+      
+          </div>
+        </div>
+      </section>
+
+<!-- END OF "WHAT DEELUH DOES" SECTION -->
+
+
+<!-- APP SCREEN RECORD DEMO SECTION SECTION -->
+
+<section class="portal-demo-section">
+  <div class="portal-demo-frame">
+    <div class="portal-app">
+
+      <!-- NAV -->
+      <div class="portal-nav">
+        <div class="portal-nav__top">
+          <div class="portal-nav__brand">
+            <span class="portal-nav__logo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3v18M5 7l-3 6a3 3 0 0 0 6 0l-3-6zM19 7l-3 6a3 3 0 0 0 6 0l-3-6zM5 7h14M8 21h8"/>
+              </svg>
+            </span>
+            <div>
+              <p class="portal-nav__title">Cardinal Counsel</p>
+              <p class="portal-nav__subtitle">Secure client portal · powered by Deeluh</p>
+            </div>
+          </div>
+
+          <div class="portal-nav__right">
+            <span class="portal-nav__secure">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <span>Encrypted · you see only your own matters</span>
+            </span>
+            <span class="portal-nav__avatar">EO</span>
+          </div>
+        </div>
+
+        <nav class="portal-nav__tabs">
+          <button class="portal-nav__tab">Your matter</button>
+          <button class="portal-nav__tab">Documents <span class="portal-nav__badge">1 to sign</span></button>
+          <button class="portal-nav__tab">Invoices &amp; funds</button>
+          <button class="portal-nav__tab is-active">Messages</button>
+        </nav>
+      </div>
+
+      <!-- BODY -->
+      <div class="portal-body">
+
+        <div class="portal-chat">
+          <div class="portal-chat__header">
+            <span class="portal-chat__avatar">CC</span>
+            <div>
+              <p class="portal-chat__title">Your legal team</p>
+              <p class="portal-chat__subtitle">Replies within 1 business day · also reachable on WhatsApp +234 700 000 1122</p>
+            </div>
+          </div>
+
+          <div class="portal-chat__messages" id="portalMessages"></div>
+
+          <div class="portal-chat__inputRow">
+            <div class="portal-chat__input">
+              <span class="portal-chat__placeholder">Write to your legal team...</span>
+              <span class="portal-chat__caret"></span>
+            </div>
+            <button class="portal-chat__send" id="portalSendBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <span class="portal-footer__badge">Simulated demo data · fictional clients and figures · not Cardinal Counsel records</span>
+      </div>
+
+      <!-- BOTTOM FOOTER -->
+      <div class="portal-footer__bottom">
+        <span>Cardinal Counsel · Suite D14, 87 Adeniran Ogunsanya Street, Surulere, Lagos</span>
+        <span class="portal-footer__links">
+          <a href="javascript:void(0)">← Firm workspace</a>
+          <a href="javascript:void(0)">Audit doc</a>
+        </span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  const messagesEl = document.getElementById('portalMessages');
+  const sendBtn = document.getElementById('portalSendBtn');
+
+  const CONVERSATION = [
+    {
+      side: 'left',
+      text: 'Good afternoon Mr Obi — the revised agreement is ready. The liability cap now sits at ₦150M with the carve-out your board asked for.',
+      meta: 'Barr. B. Asein · 4 Jul, 16:40'
+    },
+    {
+      side: 'right',
+      text: 'Thank you. The board meets tomorrow morning; I will sign today so we stay on schedule.',
+      meta: 'You · 4 Jul, 17:05'
+    },
+    {
+      side: 'left',
+      text: 'Perfect. You will find it under Documents — the signing link is valid for 7 days. Anything unclear, write here anytime.',
+      meta: 'Barr. B. Asein · 4 Jul, 17:12'
+    },
+    {
+      side: 'right',
+      text: 'Ok, thank you.',
+      meta: 'You · Just now'
+    }
+  ];
+
+  const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+  function scrollToBottom() {
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function addMessage({ side, text, meta }) {
+    const msg = document.createElement('div');
+    msg.className = `portal-msg portal-msg--${side}`;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'portal-msg__bubble';
+    bubble.textContent = text;
+
+    const metaEl = document.createElement('div');
+    metaEl.className = 'portal-msg__meta';
+    metaEl.textContent = meta;
+
+    msg.appendChild(bubble);
+    msg.appendChild(metaEl);
+    messagesEl.appendChild(msg);
+
+    // double-rAF ensures the browser has painted the starting
+    // (hidden/offset) state before we flip to the visible state,
+    // so the transition reliably fires every time
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        msg.classList.add('is-visible');
+        scrollToBottom();
+      });
+    });
+
+    return msg;
+  }
+
+  function showTyping() {
+    const typing = document.createElement('div');
+    typing.className = 'portal-typing';
+    typing.id = 'portalTyping';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    messagesEl.appendChild(typing);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        typing.classList.add('is-visible');
+        scrollToBottom();
+      });
+    });
+  }
+
+  function hideTyping() {
+    const typing = document.getElementById('portalTyping');
+    if (typing) typing.remove();
+  }
+
+  function pulseSendButton() {
+    sendBtn.classList.add('is-pressed');
+    setTimeout(() => sendBtn.classList.remove('is-pressed'), 180);
+  }
+
+  async function fadeOutMessages(duration) {
+    messagesEl.classList.add('is-fading');
+    await delay(duration);
+  }
+
+  function clearMessages() {
+    messagesEl.innerHTML = '';
+    messagesEl.classList.remove('is-fading');
+  }
+
+  async function runCycle() {
+    await delay(1200);
+    addMessage(CONVERSATION[0]);
+
+    await delay(2000); // -> 3.2s
+    addMessage(CONVERSATION[1]);
+
+    await delay(2300); // -> 5.5s
+    addMessage(CONVERSATION[2]);
+
+    await delay(2000); // -> 7.5s
+    showTyping();
+
+    await delay(1300); // -> 8.8s, typing visible ~1.3s
+    hideTyping();
+    addMessage(CONVERSATION[3]);
+    pulseSendButton();
+
+    await delay(2000);       // brief pause after the last message
+    await fadeOutMessages(600); // gentle fade of the whole conversation
+
+    clearMessages();
+    await delay(500);
+
+    runCycle(); // seamless infinite loop
+  }
+
+  runCycle();
+})();
+</script>
+<!-- END OF APP SCREEN RECORD DEMO SECTION SECTION SECTION -->
+
+<!-- "FOR YOUR FIRM SIZE" SECTION -->
+
+ <section class="firm-size" id="firm-size">
+  <div class="firm-size__inner">
+    <div class="firm-grid">
+
+      <!-- LEFT: smaller firm shapes -->
+      <div class="firm-col firm-col--left">
+
+        <article class="firm-card">
+          <h3>Sole Practitioner</h3>
+          <p>You are the firm. Simplest onboarding, simplest billing, everything Deeluh ships — priced for one desk.</p>
+          <!-- <span class="firm-card__price">From ₦20,000 / month</span> -->
+        </article>
+
+        <article class="firm-card">
+          <h3>Sole Proprietorship</h3>
+          <p>You own the firm, associates work under you. Role permissions built in, billing per seat.</p>
+          <!-- <span class="firm-card__price">From ₦15,000 / seat / month</span> -->
+        </article>
+
+        <article class="firm-card">
+          <h3>Partnership</h3>
+          <p>Co-approval for firm-shaping actions. Partnership deed uploaded, Deeluh enforces the co-sign paths.</p>
+          <!-- <span class="firm-card__price">From ₦15,000 / seat / month</span> -->
+        </article>
+
+      </div>
+
+      <!-- MIDDLE: pinned writeup -->
+      <div class="firm-mid">
+        <span class="firm-mid__eyebrow" id="firmSizeEyebrow">For your firm size</span>
+        <h2 id="firmSizeHeadline">Whatever your firm's structure, Deeluh fits.</h2>
+        <p id="firmSizeParagraph">Deeluh's data model handles the role permissions, co-approval rules, and regulatory requirements specific to how your practice is actually organised.</p>
+      </div>
+
+      <!-- RIGHT: larger firm shapes -->
+      <div class="firm-col firm-col--right">
+
+        <article class="firm-card">
+          <h3>Multi-Partner / Full-Service Firm</h3>
+          <p>Department separation, associateship isolation, audit trail, per-firm knowledge vault, built for firms with distinct practice groups.</p>
+          <!-- <span class="firm-card__price">From ₦12,500 / seat / month</span> -->
+        </article>
+
+        <article class="firm-card">
+          <h3>Legal Department</h3>
+          <p> In-house teams tracking contracts, compliance, and matters across the business, without the billing and trust-accounting overhead firms need.</p>
+          <!-- <span class="firm-card__price">From ₦10,000 / seat / month</span> -->
+        </article>
+
+        <article class="firm-card">
+          <h3>Enterprise</h3>
+          <p>Dedicated data residency, per-firm configuration, custom compliance workflows, for complex or multi-entity legal organisations.</p>
+          <!-- <span class="firm-card__price">From ₦1,000,000 / month</span> -->
+        </article>
+
+      </div>
+
+    </div>
+
+    <p class="firm-size__note">Enterprise capabilities are planned; each is contracted on demand at signing.</p>
+  </div>
+ </section>
+
+<!-- END OF "FOR YOUR FIRM SIZE" SECTION -->
+
+<!-- DASHBOARD IMAGE SECTION -->
+
+<section class="dashboard-showcase fade-in-section" id="dashboard">
+    <div class="dashboard-showcase__pin">
+      <div class="dashboard-showcase__inner">
+  
+        <div class="dashboard-showcase__header">
+          <h2>One dashboard, everything your firm needs to run on.</h2>
+          <p>Billing, collections, matter distribution, and partner approvals — Deeluh's operations dashboard gives your managing partner a live read on the firm without stitching together five different tools.</p>
+        </div>
+  
+        <div class="dashboard-showcase__media" id="dashboardZoomMedia">
+          <img src="assets/images/dashboard-mockup.png" alt="Deeluh operations dashboard showing billing, collections, and matter distribution">
+        </div>
+  
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    // pinned scroll-zoom — desktop only. As the tall .dashboard-showcase
+    // runway scrolls behind the pinned 100vh window, we read how far
+    // through that runway we are (0 → 1) and use it to scale the image
+    // from small up to its full size. Scrolling back up reverses it,
+    // since it's just reading a position, not playing a one-off animation.
+    (function () {
+      const wrapper = document.querySelector('.dashboard-showcase');
+      const media = document.getElementById('dashboardZoomMedia');
+      const header = document.querySelector('.dashboard-showcase__header');
+      if (!wrapper || !media) return;
+  
+      const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+      const startScale = 0.5;
+      const endScale = 1;
+      const headerFadeEnd = 0.32; // header is fully gone by 32% through the zoom
+  
+      function update() {
+        if (!isDesktop()) {
+          media.style.transform = ''; // let the mobile CSS rule take over
+          if (header) { header.style.opacity = ''; header.style.transform = ''; }
+          return;
+        }
+  
+        const rect = wrapper.getBoundingClientRect();
+        const scrollRoom = wrapper.offsetHeight - window.innerHeight; // how much extra height the runway has
+        const progress = scrollRoom > 0
+          ? Math.min(Math.max(-rect.top / scrollRoom, 0), 1)
+          : 1;
+  
+        const scale = startScale + progress * (endScale - startScale);
+  
+        // pushes the image down at the start (clearing space for the
+        // header) then eases it back to true center as the header
+        // fades — the two motions are timed together on purpose
+        const headerT = Math.min(progress / headerFadeEnd, 1);
+        const startOffset = 90; // px of breathing room below the header at rest
+        const yOffset = (1 - headerT) * startOffset;
+  
+        media.style.transform = `translateY(${yOffset}px) scale(${scale})`;
+  
+        if (header) {
+          header.style.opacity = 1 - headerT;
+          header.style.transform = `translate(-50%, ${headerT * -30}px)`;
+        }
+      }
+  
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
+
+<!-- END OF DASHBOARD IMAGE SECTION -->
+
+<!-- PRICING SECTION -->
+
+<section class="pricing" id="pricing">
+  <span class="pricing__glow"></span>
+  <div class="pricing__inner">
+
+    <div class="pricing__header">
+      <span class="pricing__eyebrow">Pricing</span>
+      <h2>Priced for firms everywhere, in your currency.</h2>
+      <p>Naira-native pricing that converts live to USD, GBP, EUR or CAD — annual pays for ten months, monthly cancels any time.</p>
+    </div>
+
+    <div class="currency-switch-wrap">
+      <div class="currency-switch" id="currencySwitch" role="group" aria-label="Select currency">
+        <button type="button" class="is-active" data-currency="NGN">₦ NGN</button>
+        <button type="button" data-currency="USD">$ USD</button>
+        <button type="button" data-currency="GBP">£ GBP</button>
+        <button type="button" data-currency="EUR">€ EUR</button>
+        <button type="button" data-currency="CAD">C$ CAD</button>
+      </div>
+      <span class="currency-switch__meta" id="currencyMeta">
+        <span class="currency-switch__dot" id="currencyDot"></span>
+        <span id="currencyMetaText">Loading live rates…</span>
+      </span>
+    </div>
+
+    <div class="billing-toggle">
+      <span class="is-active" data-label="monthly">Monthly</span>
+      <button class="toggle-switch" id="billingToggle" aria-label="Toggle annual billing">
+        <span class="toggle-switch__knob"></span>
+      </button>
+      <span data-label="annual">Annual</span>
+    </div>
+    <span class="billing-toggle__save">Annual billing pays for ten months — two months free at every tier.</span>
+
+    <div class="pricing-grid" id="pricingGrid">
+
+      <article class="price-card" data-ngn-monthly="20000" data-ngn-annual="200000">
+        <p class="price-card__tier">Sole</p>
+        <p class="price-card__scope">One seat, flat rate</p>
+        <div class="price-card__amount price-monthly">
+          <span class="value js-amount">₦20,000</span><span class="unit">/ month</span>
+        </div>
+        <div class="price-card__amount price-annual">
+          <span class="value js-amount">₦200,000</span><span class="unit">/ year</span>
+        </div>
+        <span class="price-card__annual-note js-annual-note">≈ ₦16,667 / month, billed yearly</span>
+        <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
+      </article>
+
+      <article class="price-card price-card--popular" data-ngn-monthly="15000" data-ngn-annual="150000" data-per-seat="true">
+        <span class="price-card__badge">Most common</span>
+        <p class="price-card__tier">Boutique</p>
+        <p class="price-card__scope">2–10 seats</p>
+        <div class="price-card__amount price-monthly">
+          <span class="value js-amount">₦15,000</span><span class="unit">/ seat / month</span>
+        </div>
+        <div class="price-card__amount price-annual">
+          <span class="value js-amount">₦150,000</span><span class="unit">/ seat / yr</span>
+        </div>
+        <span class="price-card__annual-note js-annual-note">≈ ₦12,500 / seat / month, billed yearly</span>
+        <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
+      </article>
+
+      <article class="price-card" data-ngn-monthly="12500" data-ngn-annual="125000" data-per-seat="true">
+        <p class="price-card__tier">Mid</p>
+        <p class="price-card__scope">11–30 seats</p>
+        <div class="price-card__amount price-monthly">
+          <span class="value js-amount">₦12,500</span><span class="unit">/ seat / month</span>
+        </div>
+        <div class="price-card__amount price-annual">
+          <span class="value js-amount">₦125,000</span><span class="unit">/ seat / yr</span>
+        </div>
+        <span class="price-card__annual-note js-annual-note">≈ ₦10,417 / seat / month, billed yearly</span>
+        <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
+      </article>
+
+      <article class="price-card" data-ngn-monthly="10000" data-ngn-annual="100000" data-per-seat="true">
+        <p class="price-card__tier">Full</p>
+        <p class="price-card__scope">31–100 seats</p>
+        <div class="price-card__amount price-monthly">
+          <span class="value js-amount">₦10,000</span><span class="unit">/ seat / month</span>
+        </div>
+        <div class="price-card__amount price-annual">
+          <span class="value js-amount">₦100,000</span><span class="unit">/ seat / yr</span>
+        </div>
+        <span class="price-card__annual-note js-annual-note">≈ ₦8,333 / seat / month, billed yearly</span>
+        <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
+      </article>
+
+      <article class="price-card" data-ngn-monthly="1000000" data-ngn-annual="1000000" data-custom="true">
+        <p class="price-card__tier">Enterprise</p>
+        <p class="price-card__scope">100+ or custom</p>
+        <div class="price-card__amount price-monthly">
+          <span class="value js-amount">₦1M+</span><span class="unit">/ month, floor</span>
+        </div>
+        <div class="price-card__amount price-annual">
+          <span class="value js-amount">₦1M+</span><span class="unit">/ month, floor</span>
+        </div>
+        <span class="price-card__annual-note">Custom contract, negotiated at signing</span>
+        <a href="#waitlist" class="price-card__cta">Contact Sales</a>
+      </article>
+
+    </div>
+
+    <div class="feature-panel">
+  
+      <div class="feature-panel__col feature-panel__col--live">
+        <!-- <p class="feature-panel__title"><span class="dot"></span>Every plan — available at launch</p> -->
+        <p class="feature-panel__title">Every plan — available at launch</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Deeluh chat surface for onboarding, config, and invites</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Lawyer verification against the professional directory</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Firm structure setup</li>
+        </ul>
+      </div>
+
+      <div class="feature-panel__col feature-panel__col--live">
+        <p class="feature-panel__title">Also Included</p>
+        <ul>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Tier + subscription billing via Paystack</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Role permissions matrix</li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Practice-area packs</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <p class="pricing__disclaimer">Prices are set in naira. Other currencies are estimates based on live exchange rates and may vary slightly at checkout.</p>
+
+  </div>
+</section>
+
+<script>
+  (function () {
+    const pricingSection = document.querySelector('.pricing');
+  
+    /* ---------------- billing toggle (existing behaviour) ---------------- */
+    const billingToggle = document.getElementById('billingToggle');
+    const billingLabels = document.querySelectorAll('.billing-toggle span[data-label]');
+  
+    billingToggle.addEventListener('click', () => {
+      const isAnnual = pricingSection.classList.toggle('is-annual');
+      billingLabels.forEach(label => {
+        const matches = (label.dataset.label === 'annual') === isAnnual;
+        label.classList.toggle('is-active', matches);
+      });
+    });
+  
+    /* ---------------- currency conversion ---------------- */
+    const SYMBOLS = { NGN: '₦', USD: '$', GBP: '£', EUR: '€', CAD: 'C$' };
+  
+    // fallback rates (approximate, NGN → target) used only if the live
+    // fetch fails — e.g. offline preview, or the free API being down.
+    // These WILL drift out of date; they exist purely so the section
+    // never shows broken numbers, not as a source of truth.
+    let rates = { NGN: 1, USD: 0.00062, GBP: 0.00049, EUR: 0.00057, CAD: 0.00086 };
+    let currentCurrency = 'NGN';
+    let ratesAreLive = false;
+  
+    const metaText = document.getElementById('currencyMetaText');
+    const metaDot = document.getElementById('currencyDot');
+  
+    async function loadLiveRates() {
+      try {
+        const res = await fetch('https://open.er-api.com/v6/latest/NGN');
+        const data = await res.json();
+        if (data.result !== 'success') throw new Error('API error');
+  
+        rates = {
+          NGN: 1,
+          USD: data.rates.USD,
+          GBP: data.rates.GBP,
+          EUR: data.rates.EUR,
+          CAD: data.rates.CAD
+        };
+        ratesAreLive = true;
+  
+        const updated = new Date(data.time_last_update_utc);
+        metaText.textContent = `Live rates · updated ${updated.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}`;
+        metaDot.classList.remove('is-stale');
+      } catch (err) {
+        ratesAreLive = false;
+        metaText.textContent = 'Using estimated rates — live rates unavailable right now';
+        metaDot.classList.add('is-stale');
+      }
+      renderAllPrices();
+    }
+  
+    function formatAmount(ngnValue, currency) {
+      const converted = ngnValue * rates[currency];
+  
+      if (currency === 'NGN') {
+        return SYMBOLS.NGN + Math.round(converted).toLocaleString('en-NG');
+      }
+      // non-naira: round to whole units for amounts over 20, else 2dp
+      const decimals = converted >= 20 ? 0 : 2;
+      return SYMBOLS[currency] + converted.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+  
+    function renderAllPrices() {
+      document.querySelectorAll('.price-card').forEach(card => {
+        const monthlyNgn = Number(card.dataset.ngnMonthly);
+        const annualNgn = Number(card.dataset.ngnAnnual);
+        const isCustom = card.dataset.custom === 'true';
+        const amounts = card.querySelectorAll('.js-amount');
+        const annualNote = card.querySelector('.js-annual-note');
+  
+        if (isCustom) {
+          // Enterprise stays as "X+, floor" — still converts the base figure
+          const floorLabel = formatAmount(monthlyNgn, currentCurrency) + '+';
+          amounts.forEach(el => el.textContent = floorLabel);
+          return;
+        }
+  
+        const monthlyDisplay = card.querySelector('.price-monthly .js-amount');
+        const annualDisplay = card.querySelector('.price-annual .js-amount');
+  
+        monthlyDisplay.textContent = formatAmount(monthlyNgn, currentCurrency);
+        annualDisplay.textContent = formatAmount(annualNgn, currentCurrency);
+  
+        if (annualNote) {
+          const perMonthEquivalent = annualNgn / 12;
+          const seatSuffix = card.dataset.perSeat === 'true' ? ' / seat' : '';
+          annualNote.textContent = `≈ ${formatAmount(perMonthEquivalent, currentCurrency)}${seatSuffix} / month, billed yearly`;
+        }
+      });
+    }
+  
+    const currencySwitch = document.getElementById('currencySwitch');
+    currencySwitch.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentCurrency = btn.dataset.currency;
+        currencySwitch.querySelectorAll('button').forEach(b => b.classList.toggle('is-active', b === btn));
+        renderAllPrices();
+      });
+    });
+  
+    loadLiveRates();
+  
+    // refresh once an hour while the page stays open — the API itself
+    // only updates once a day, but this keeps things correct if someone
+    // leaves the tab open across that daily refresh
+    setInterval(loadLiveRates, 60 * 60 * 1000);
+  })();
+  </script>
+
+<!-- END OF PRICING SECTION -->
+
+<!-- "WHY FIRMS CHOOSE DEELUH" SECTION -->
+
+<section class="compare" id="compare">
+    <div class="compare__inner">
+      <div class="compare-grid">
+  
+        <!-- LEFT: sticky header -->
+        <div class="compare-left">
+          <span class="compare-left__eyebrow" id="compareEyebrow">The switch</span>
+          <h2 id="compareHeadline">Why firms choose Deeluh.</h2>
+          <p id="compareParagraph">Seven ways the old stack falls short — and what replaces it, module by module.</p>
+        </div>
+  
+        <!-- RIGHT: sticky label header + scrolling comparison rows -->
+        <div class="compare-right">
+  
+          <div class="compare-header">
+            <div class="compare-header__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>Traditional Tool</span>
+            </div>
+            <div class="compare-header__divider"></div>
+            <div class="compare-header__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>Deeluh</span>
+            </div>
+          </div>
+  
+          <div class="compare-rows">
+  
+          <div class="compare-row">
+            <div class="compare-row__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>Multiple disconnected applications</span>
+            </div>
+            <div class="compare-row__divider"></div>
+            <div class="compare-row__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>One intelligent platform</span>
+            </div>
+          </div>
+  
+          <div class="compare-row">
+            <div class="compare-row__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>Manual administration</span>
+            </div>
+            <div class="compare-row__divider"></div>
+            <div class="compare-row__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>AI-powered workflows</span>
+            </div>
+          </div>
+  
+          <div class="compare-row">
+            <div class="compare-row__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>Fragmented client information</span>
+            </div>
+            <div class="compare-row__divider"></div>
+            <div class="compare-row__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>Unified matter workspace</span>
+            </div>
+          </div>
+  
+          <div class="compare-row">
+            <div class="compare-row__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>Compliance added later</span>
+            </div>
+            <div class="compare-row__divider"></div>
+            <div class="compare-row__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>Compliance by design</span>
+            </div>
+          </div>
+  
+          <div class="compare-row">
+            <div class="compare-row__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>Dollar pricing that doesn't map locally</span>
+            </div>
+            <div class="compare-row__divider"></div>
+            <div class="compare-row__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>Local-currency pricing, no conversion friction</span>
+            </div>
+          </div>
+  
+          <div class="compare-row">
+            <div class="compare-row__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>Generic business software</span>
+            </div>
+            <div class="compare-row__divider"></div>
+            <div class="compare-row__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>Built specifically for legal practice</span>
+            </div>
+          </div>
+  
+          <div class="compare-row">
+            <div class="compare-row__old">
+              <span class="compare-row__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+              </span>
+              <span>No professional-body verification</span>
+            </div>
+            <div class="compare-row__divider"></div>
+            <div class="compare-row__new">
+              <span class="compare-row__icon compare-row__icon--check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+              <span>Lawyer verification built into onboarding</span>
+            </div>
+          </div>
+  
+          </div>
+          <!-- /.compare-rows -->
+  
+        </div>
+        <!-- /.compare-right -->
+  
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // reveals each row independently as it enters view, and reverses
+    // if you scroll back up past it — remove the unobserve line below
+    // if you'd rather it only ever play once
+    (function () {
+      const rows = document.querySelectorAll('.compare-row');
+      if (!rows.length) return;
+  
+      const rowObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          entry.target.classList.toggle('is-visible', entry.isIntersecting);
+        });
+      }, { threshold: 0.25, rootMargin: '0px 0px -10% 0px' });
+  
+      rows.forEach(row => rowObserver.observe(row));
+    })();
+  
+    // adds a stronger shadow to the "Traditional Tool | Deeluh" header
+    // once it's actually pinned to the top (as opposed to just sitting
+    // in normal flow before scrolling reaches it)
+    (function () {
+      const header = document.querySelector('.compare-header');
+      const rightCol = document.querySelector('.compare-right');
+      if (!header || !rightCol) return;
+  
+      // a 1px-tall sentinel placed right before the header — when it
+      // scrolls out of view, we know the header has become stuck
+      const sentinel = document.createElement('div');
+      sentinel.style.height = '1px';
+      rightCol.insertBefore(sentinel, header);
+  
+      const stickyObserver = new IntersectionObserver(
+        ([entry]) => header.classList.toggle('is-stuck', !entry.isIntersecting),
+        { threshold: 0 } // header now pins at top:0, so no offset margin needed
+      );
+      stickyObserver.observe(sentinel);
+    })();
+  </script>
+  
+  <!-- "WHY FIRMS CHOOSE DEELUH" SECTION WRITEUP EFFECT -->
+  <script>
+    (function () {
+      const gridEl = document.querySelector('.compare-grid');
+      const headline = document.getElementById('compareHeadline');
+      const eyebrow = document.getElementById('compareEyebrow');
+      const paragraph = document.getElementById('compareParagraph');
+      if (!gridEl || !headline) return;
+  
+      const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+  
+      const originalText = headline.textContent;
+      headline.textContent = '';
+      headline.setAttribute('aria-label', originalText);
+
+      const letterSpans = [];
+      const words = originalText.split(' ');
+
+      words.forEach((word, wordIndex) => {
+        const wordWrapper = document.createElement('span');
+        wordWrapper.style.display = 'inline-block';
+        wordWrapper.style.whiteSpace = 'nowrap';
+
+        [...word].forEach(char => {
+          const span = document.createElement('span');
+          span.className = 'letter';
+          span.textContent = char;
+          span.style.display = 'inline-block';
+          span.style.opacity = 0;
+          span.style.transform = 'translateY(10px)';
+          wordWrapper.appendChild(span);
+          letterSpans.push(span);
+        });
+
+        headline.appendChild(wordWrapper);
+
+        if (wordIndex < words.length - 1) {
+          headline.appendChild(document.createTextNode(' '));
+        }
+      });
+  
+      const totalLetters = letterSpans.length;
+      const completeAt = 0.84;
+      const letterWindow = 0.1;
+  
+      function update() {
+        if (!isDesktop()) {
+          letterSpans.forEach(s => { s.style.opacity = 1; s.style.transform = 'none'; });
+          if (eyebrow) eyebrow.style.opacity = 1;
+          if (paragraph) { paragraph.style.opacity = 1; paragraph.style.transform = 'none'; }
+          return;
+        }
+  
+        const rect = gridEl.getBoundingClientRect();
+        const scrollRange = rect.height - window.innerHeight;
+  
+        const entryPoint = window.innerHeight;
+        const exitPoint = -scrollRange;
+        const totalTravel = entryPoint - exitPoint;
+        const progress = totalTravel > 0
+          ? Math.min(Math.max((entryPoint - rect.top) / totalTravel, 0), 1)
+          : 0;
+  
+        if (eyebrow) {
+          eyebrow.style.opacity = Math.min(progress / 0.12, 1);
+        }
+  
+        if (paragraph) {
+          const p = Math.min(Math.max((progress - 0.05) / 0.17, 0), 1);
+          paragraph.style.opacity = p;
+          paragraph.style.transform = `translateY(${(1 - p) * 12}px)`;
+        }
+  
+        letterSpans.forEach((span, i) => {
+          const start = (i / (totalLetters - 1)) * (completeAt - letterWindow);
+          const t = Math.min(Math.max((progress - start) / letterWindow, 0), 1);
+          span.style.opacity = t;
+          span.style.transform = `translateY(${(1 - t) * 10}px)`;
+        });
+      }
+  
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
+  <!-- END OF "WHY FIRMS CHOOSE DEELUH" SECTION WRITEUP EFFECT -->
+
+  <!-- END OF "WHY FIRMS CHOOSE DEELUH" SECTION -->
+
+<!-- FAQ SECTION -->
+
+  <section class="faq" id="faq">
+    <div class="faq__inner">
+  
+      <div class="faq__header">
+        <span class="faq__eyebrow">FAQ</span>
+        <h2>Frequently asked questions</h2>
+        <p>Answers we get asked before firms sign up.</p>
+      </div>
+  
+      <div class="faq-list">
+  
+        <div class="faq-item">
+          <button class="faq-item__trigger" aria-expanded="false">
+            <span class="faq-item__question">Is Deeluh affiliated with any bar association?</span>
+            <span class="faq-item__icon"></span>
+          </button>
+          <div class="faq-item__panel">
+            <div class="faq-item__panel-inner">
+              <p class="faq-item__answer">No. Deeluh checks lawyers against the relevant professional directory to confirm enrolment, as a factual record. Deeluh is not endorsed by or affiliated with any regulatory body.</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="faq-item">
+          <button class="faq-item__trigger" aria-expanded="false">
+            <span class="faq-item__question">How does Deeluh handle trust-account money?</span>
+            <span class="faq-item__icon"></span>
+          </button>
+          <div class="faq-item__panel">
+            <div class="faq-item__panel-inner">
+              <p class="faq-item__answer">Deeluh records movement into and out of your trust account, reconciles against your bank record, and flags misroutes. Deeluh never holds client money, it always sits in your firm's bank account.</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="faq-item">
+          <button class="faq-item__trigger" aria-expanded="false">
+            <span class="faq-item__question">What runs the AI in Deeluh?</span>
+            <span class="faq-item__icon"></span>
+          </button>
+          <div class="faq-item__panel">
+            <div class="faq-item__panel-inner">
+              <p class="faq-item__answer">Deeluh's intelligence runs on secure inference infrastructure, with per-firm data-residency options and PII redaction.</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="faq-item">
+          <button class="faq-item__trigger" aria-expanded="false">
+            <span class="faq-item__question">What happens if Deeluh goes away?</span>
+            <span class="faq-item__icon"></span>
+          </button>
+          <div class="faq-item__panel">
+            <div class="faq-item__panel-inner">
+              <p class="faq-item__answer">Every firm can export its full data set, firm profile, roster, matter records, invoices, and audit trail, at any time, in a machine-readable format. Your data is yours; Deeluh runs on top of it.</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="faq-item">
+          <button class="faq-item__trigger" aria-expanded="false">
+            <span class="faq-item__question">Is my data protected under local data-protection law?</span>
+            <span class="faq-item__icon"></span>
+          </button>
+          <div class="faq-item__panel">
+            <div class="faq-item__panel-inner">
+              <p class="faq-item__answer">Yes. Our data practices are set out in our Privacy Policy and Data Processing Agreement, both available for review.</p>
+            </div>
+          </div>
+        </div>
+  
+  
+      </div>
+  
+    </div>
+  </section>
+  
+  <script>
+    document.querySelectorAll('.faq-item__trigger').forEach(trigger => {
+      trigger.addEventListener('click', () => {
+        const item = trigger.closest('.faq-item');
+        const isOpen = item.classList.contains('is-open');
+  
+        // uncomment the block below if you want only one answer open at a time
+        // document.querySelectorAll('.faq-item.is-open').forEach(openItem => {
+        //   if (openItem !== item) {
+        //     openItem.classList.remove('is-open');
+        //     openItem.querySelector('.faq-item__trigger').setAttribute('aria-expanded', 'false');
+        //   }
+        // });
+  
+        item.classList.toggle('is-open', !isOpen);
+        trigger.setAttribute('aria-expanded', String(!isOpen));
+      });
+    });
+  </script>
+
+<!-- END OF FAQ SECTION -->
+
+<!-- CTA SECTION -->
+
+<section class="waitlist" id="waitlist">
+  <span class="waitlist__glow waitlist__glow--one"></span>
+  <span class="waitlist__glow waitlist__glow--two"></span>
+
+  <div class="waitlist__inner">
+    <h2>The future of legal practice starts here.</h2>
+    <p class="waitlist__lede">Join the firms building what's next.</p>
+
+    <form class="waitlist__form" id="waitlistForm">
+      <input
+        type="email"
+        class="waitlist__input"
+        placeholder="Work email"
+        aria-label="Work email"
+        required
+      >
+      <button type="submit" class="waitlist__btn">Join Waitlist</button>
+    </form>
+
+    <div class="waitlist__success">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      You're on the list — we'll be in touch.
+    </div>
+
+    <p class="waitlist__fine-print">
+      BNo credit card. No commitment. Just early access to the future of legal practice.
+    </p>
+  </div>
+</section>
+
+<script>
+
+  const waitlistSection = document.getElementById('waitlist');
+const waitlistForm = document.getElementById('waitlistForm');
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxrM4OFDHd6yGsWIPrdc_9VJlXrSyB5zFQurdel7OSWsdio1jBqNYAZhsWxa7xRYnH0QA/exec'; 
+
+waitlistForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const submitBtn = waitlistForm.querySelector('.waitlist__btn');
+  const email = waitlistForm.querySelector('.waitlist__input').value;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Joining...';
+
+  try {
+    await fetch(SHEET_URL, {
+      method: 'POST',
+      mode: 'no-cors', 
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ email })
+    });
+
+    waitlistSection.classList.add('is-submitted');
+  } catch (err) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Join Waitlist';
+    alert('Something went wrong — please try again or email us directly.');
+  }
+});
+</script>
+
+<!-- END OF CTA SECTION -->
+
+<!-- BIG LOGO BEFORE FOOTER SECTION -->
+
+<section class="logo-section">
+    <div class="logo-wrap">
+      <span class="logo-text" id="deeluhLogo">Deeluh</span>
+    </div>
+  </section>
+
+<!-- END OF BIG LOGO BEFORE FOOTER SECTION -->
+
+<!-- FOOTER -->
+
+<footer class="site-footer">
+    <div class="site-footer__inner">
+  
+      <div class="footer-grid">
+  
+        <div class="footer-brand">
+          <!-- <p class="footer-brand__name">Deeluh</p> -->
+          <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
+          <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+        </div>
+  
+        <div class="footer-col">
+          <p class="footer-col__title">Product</p>
+          <ul>
+            <li><a href="#what">What Deeluh does</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="javascript:void(0)">Security</a></li>
+          </ul>
+        </div>
+  
+        <div class="footer-col">
+          <p class="footer-col__title">Company</p>
+          <ul>
+            <li><a href="company.html">About</a></li>
+            <li><a href="company.html#contactSection">Contact sales</a></li>
+            <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+            <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
+          </ul>
+        </div>
+  
+        <div class="footer-col">
+          <p class="footer-col__title">Legal</p>
+          <ul>
+            <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
+            <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
+            <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
+            <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+          </ul>
+        </div>
+  
+      </div>
+  
+      <div class="footer-bottom">
+        <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+  
+        <div class="footer-bottom__social">
+          <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
+          </a>
+        </div>
+      </div>
+  
+    </div>
+  </footer>
+
+<!-- END OF FOOTER -->
+
+<!-- HERO FADE IN FADE OUT EFFECT -->
+
+<script>
+    // 1) FADE IN — ticker + "what deeluh does" (or any section you tag)
+    const fadeEls = document.querySelectorAll('.fade-in-section');
+  
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target); // remove this line if you want it to re-fade every time it re-enters view
+        }
+      });
+    }, { threshold: 0.15 }); // fires once 15% of the section is visible — raise/lower to trigger earlier or later
+  
+    fadeEls.forEach(el => revealObserver.observe(el));
+  
+    // 2) FADE OUT — the hero, as you scroll past it
+    const hero = document.querySelector('.hero');
+  
+    function fadeHero() {
+      const rect = hero.getBoundingClientRect();
+      const heroHeight = hero.offsetHeight;
+      // progress goes 0 → 1 as the hero's top scrolls from the viewport top to fully off-screen
+      const progress = Math.min(Math.max(-rect.top / heroHeight, 0), 1);
+      hero.style.opacity = 1 - progress;
+      hero.style.transform = `translateY(${progress * -40}px)`;
+    }
+  
+    window.addEventListener('scroll', fadeHero, { passive: true });
+    fadeHero(); // run once on load in case the page loads already scrolled
+  </script>
+
+  <!-- END OF HERO FADE IN FADE OUT EFFECT -->
+
+
+<!-- "FOR YOUR FIRM SIZE" SECTION WRITEUP EFFECT -->
+
+  <script>
+    (function () {
+      const gridEl = document.querySelector('.firm-grid');
+      const headline = document.getElementById('firmSizeHeadline');
+      const eyebrow = document.getElementById('firmSizeEyebrow');
+      const paragraph = document.getElementById('firmSizeParagraph');
+      if (!gridEl || !headline) return;
+    
+      const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+    
+      // split into WORD-wrapper spans (white-space:nowrap = can never
+      // break internally) each containing one animated span per letter.
+      // Only the real spaces BETWEEN word-wrappers are valid break points.
+      const originalText = headline.textContent;
+      headline.textContent = '';
+      headline.setAttribute('aria-label', originalText); // keeps it readable to screen readers
+
+      const letterSpans = [];
+      const words = originalText.split(' ');
+
+      words.forEach((word, wordIndex) => {
+        const wordWrapper = document.createElement('span');
+        wordWrapper.style.display = 'inline-block';
+        wordWrapper.style.whiteSpace = 'nowrap';
+
+        [...word].forEach(char => {
+          const span = document.createElement('span');
+          span.className = 'letter';
+          span.textContent = char;
+          span.style.display = 'inline-block';
+          span.style.opacity = 0;
+          span.style.transform = 'translateY(10px)';
+          wordWrapper.appendChild(span);
+          letterSpans.push(span);
+        });
+
+        headline.appendChild(wordWrapper);
+
+        if (wordIndex < words.length - 1) {
+          headline.appendChild(document.createTextNode(' '));
+        }
+      });
+    
+      const totalLetters = letterSpans.length;
+      const completeAt = 0.84;   // headline is fully spelled out by 65% through the section's scroll range
+      const letterWindow = 0.1; // how gradual each letter's own fade-in is
+    
+
+
+
+
+    function update() {
+     if (!isDesktop()) {
+    letterSpans.forEach(s => { s.style.opacity = 1; s.style.transform = 'none'; });
+    if (eyebrow) eyebrow.style.opacity = 1;
+    if (paragraph) { paragraph.style.opacity = 1; paragraph.style.transform = 'none'; }
+    return;
+  }
+
+  const rect = gridEl.getBoundingClientRect();
+  const scrollRange = rect.height - window.innerHeight;
+
+  // progress now starts counting the moment the section's top edge
+  // enters the bottom of the viewport — not when it reaches the top
+  const entryPoint = window.innerHeight;
+  const exitPoint = -scrollRange;
+  const totalTravel = entryPoint - exitPoint;
+  const progress = totalTravel > 0
+    ? Math.min(Math.max((entryPoint - rect.top) / totalTravel, 0), 1)
+    : 0;
+
+  if (eyebrow) {
+    eyebrow.style.opacity = Math.min(progress / 0.12, 1);
+  }
+
+  if (paragraph) {
+    const p = Math.min(Math.max((progress - 0.05) / 0.17, 0), 1);
+    paragraph.style.opacity = p;
+    paragraph.style.transform = `translateY(${(1 - p) * 12}px)`;
+  }
+
+  letterSpans.forEach((span, i) => {
+    // last letter now finishes exactly AT completeAt, regardless of letterWindow size
+    const start = (i / (totalLetters - 1)) * (completeAt - letterWindow);
+    const t = Math.min(Math.max((progress - start) / letterWindow, 0), 1);
+    span.style.opacity = t;
+    span.style.transform = `translateY(${(1 - t) * 10}px)`;
+  });
+}
+    
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+    </script>
+
+    <!-- END OF "FOR YOUR FIRM SIZE" SECTION WRITEUP EFFECT -->
+
+    <!-- "WHAT DEELUH DOES" SECTION WRITEUP EFFECT -->
+<script>
+    (function () {
+      const gridEl = document.querySelector('.wdd-grid');
+      const headline = document.getElementById('wddHeadline');
+      const eyebrow = document.getElementById('wddEyebrow');
+      const paragraph = document.getElementById('wddParagraph');
+      if (!gridEl || !headline) return;
+  
+      const isDesktop = () => window.matchMedia('(min-width: 901px)').matches;
+  
+      const originalText = headline.textContent;
+      headline.textContent = '';
+      headline.setAttribute('aria-label', originalText);
+
+      const letterSpans = [];
+      const words = originalText.split(' ');
+
+      words.forEach((word, wordIndex) => {
+        const wordWrapper = document.createElement('span');
+        wordWrapper.style.display = 'inline-block';
+        wordWrapper.style.whiteSpace = 'nowrap';
+
+        [...word].forEach(char => {
+          const span = document.createElement('span');
+          span.className = 'letter';
+          span.textContent = char;
+          span.style.display = 'inline-block';
+          span.style.opacity = 0;
+          span.style.transform = 'translateY(10px)';
+          wordWrapper.appendChild(span);
+          letterSpans.push(span);
+        });
+
+        headline.appendChild(wordWrapper);
+
+        if (wordIndex < words.length - 1) {
+          headline.appendChild(document.createTextNode(' '));
+        }
+      });
+  
+      const totalLetters = letterSpans.length;
+      const completeAt = 0.84;
+      const letterWindow = 0.1;
+  
+      function update() {
+        if (!isDesktop()) {
+          letterSpans.forEach(s => { s.style.opacity = 1; s.style.transform = 'none'; });
+          if (eyebrow) eyebrow.style.opacity = 1;
+          if (paragraph) { paragraph.style.opacity = 1; paragraph.style.transform = 'none'; }
+          return;
+        }
+  
+        const rect = gridEl.getBoundingClientRect();
+        const scrollRange = rect.height - window.innerHeight;
+  
+        const entryPoint = window.innerHeight;
+        const exitPoint = -scrollRange;
+        const totalTravel = entryPoint - exitPoint;
+        const progress = totalTravel > 0
+          ? Math.min(Math.max((entryPoint - rect.top) / totalTravel, 0), 1)
+          : 0;
+  
+        if (eyebrow) {
+          eyebrow.style.opacity = Math.min(progress / 0.12, 1);
+        }
+  
+        if (paragraph) {
+          const p = Math.min(Math.max((progress - 0.05) / 0.17, 0), 1);
+          paragraph.style.opacity = p;
+          paragraph.style.transform = `translateY(${(1 - p) * 12}px)`;
+        }
+  
+        letterSpans.forEach((span, i) => {
+          const start = (i / (totalLetters - 1)) * (completeAt - letterWindow);
+          const t = Math.min(Math.max((progress - start) / letterWindow, 0), 1);
+          span.style.opacity = t;
+          span.style.transform = `translateY(${(1 - t) * 10}px)`;
+        });
+      }
+  
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+  </script>
+  <!-- END OF "WHAT DEELUH DOES" SECTION WRITEUP EFFECT -->
+
+  <!-- "BIG LOGO SECTION BEFORE FOOTER" -->
+  <script>
+    // fits the wordmark exactly to the width of its container, every time —
+    // more reliable than guessing a vw-based font-size, since it accounts
+    // for the actual rendered font metrics on the user's device
+    function fitLogoText() {
+      const wrap = document.querySelector('.logo-wrap');
+      const text = document.getElementById('deeluhLogo');
+      if (!wrap || !text) return;
+  
+      const targetWidth = wrap.clientWidth;
+      text.style.fontSize = '100px'; // baseline to measure against
+      const measuredWidth = text.getBoundingClientRect().width;
+      const scale = targetWidth / measuredWidth;
+  
+      // clamp so it can't get absurdly huge/tiny on extreme viewport sizes
+      const newSize = Math.min(Math.max(100 * scale, 40), 520);
+      text.style.fontSize = newSize + 'px';
+    }
+  
+    window.addEventListener('resize', fitLogoText);
+    window.addEventListener('load', fitLogoText);
+    fitLogoText();
+  
+    /* ==========================================================
+       HOW TO CONTROL THE REPEAT TIMING
+       ========================================================== */
+  
+    function setLogoShineInterval(seconds) {
+      document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
+    }
+    // example: setLogoShineInterval(8);
+  </script>
+  <!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
+
+</body>
+</html>
