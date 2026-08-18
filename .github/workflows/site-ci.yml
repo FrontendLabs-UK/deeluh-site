@@ -38,10 +38,20 @@ jobs:
         run: |
           set -euo pipefail
           GL_VER=8.28.0
-          GL_SHA256=5bc41815076e6ed6ef8fbecc9d9b75bcae31f39029ceb55da08086315316e3ba
+          # Verified against gitleaks_8.28.0_checksums.txt on 2026-08-18. The first version of
+          # this file carried 8.21.2's hash against an 8.28.0 URL — copied from the app repo's
+          # workflow while changing the version, which is exactly the mistake a pinned checksum
+          # exists to catch, and it did.
+          GL_SHA256=a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb
           curl -sSL -o gl.tar.gz "https://github.com/gitleaks/gitleaks/releases/download/v${GL_VER}/gitleaks_${GL_VER}_linux_x64.tar.gz"
           echo "${GL_SHA256}  gl.tar.gz" | sha256sum -c -
           tar -xzf gl.tar.gz gitleaks
+          # A matching checksum proves the bytes, not the VERSION. Assert what we actually ran,
+          # so a future bump that forgets the hash cannot pass by downloading something older.
+          GL_ACTUAL=$(./gitleaks version 2>/dev/null | tr -d 'v \n')
+          if [ "$GL_ACTUAL" != "$GL_VER" ]; then
+            echo "::error::pinned ${GL_VER} but the binary reports ${GL_ACTUAL}"; exit 1
+          fi
           ./gitleaks detect --no-banner --redact --exit-code 1
 
       # ── DEAD LINKS ──────────────────────────────────────────────────────────────────────────
