@@ -22,9 +22,9 @@
     padding: 7rem 1.5rem 8rem;
     background-color: #fff;
     background-image:
-      radial-gradient(42% 40% at 92% 6%, var(--brand-clay-tint) 0%, transparent 65%),
-      radial-gradient(45% 38% at 4% 92%, var(--brand-primary-tint) 0%, transparent 65%),
-      radial-gradient(38% 34% at 50% 100%, var(--brand-primary-tint) 0%, transparent 70%);
+      radial-gradient(42% 40% at 92% 6%, var(--brand-clay-tint) 0%, rgba(247, 236, 231, 0) 65%),
+      radial-gradient(45% 38% at 4% 92%, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 65%),
+      radial-gradient(38% 34% at 50% 100%, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 70%);
     background-repeat: no-repeat;
     overflow: hidden;
   }
@@ -78,7 +78,7 @@
     line-height: 1.65;
     color: var(--ink-2);
     margin: 0 auto;
-    /* max-width: 56ch; */
+    max-width: 56ch;
   }
 
   /* ==========================================================
@@ -446,13 +446,13 @@
   .modules__aurora--one {
     width: 46vw; height: 46vw; max-width: 620px; max-height: 620px;
     top: -12%; left: -8%;
-    background: radial-gradient(circle, rgba(188, 91, 60, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(188, 91, 60, 0.4) 0%, rgba(188, 91, 60, 0) 70%);
     animation: modules-drift-a 42s cubic-bezier(.45,0,.55,1) infinite;
   }
   .modules__aurora--two {
     width: 40vw; height: 40vw; max-width: 560px; max-height: 560px;
     bottom: -14%; right: -6%;
-    background: radial-gradient(circle, rgba(15, 61, 58, 0.55) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(15, 61, 58, 0.55) 0%, rgba(15, 61, 58, 0) 70%);
     animation: modules-drift-b 50s cubic-bezier(.45,0,.55,1) infinite;
     animation-delay: -18s;
   }
@@ -1372,7 +1372,7 @@
         </button>
         <p class="modules__m-short">Your firm, structured correctly, from day one.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/images/Dashboard.png" alt="Firm Setup" loading="lazy"></div>
+          <div class="modules__m-shot-frame"><img src="assets/screenshots/firm-setup.png" alt="Firm Setup" loading="lazy"></div>
           <p>Set up your firm structure and invite your team with the right permissions in under two minutes. Whether you're a sole practitioner or a multi-partner firm, Deeluh asks the right questions upfront so everything downstream—billing, approvals and access—is configured correctly from the start.</p>
         </div></div>
       </div>
@@ -1384,7 +1384,7 @@
         </button>
         <p class="modules__m-short">Every matter, organized the way your firm actually works.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/images/Matters.png" alt="Matter Management" loading="lazy"></div>
+          <div class="modules__m-shot-frame"><img src="assets/screenshots/matter-management.png" alt="Matter Management" loading="lazy"></div>
           <p>Track every matter from intake to close in a Kanban view built specifically for legal work—not repurposed project management software. Parties, deadlines, documents, time entries and activity history all live together with every action recorded in a complete audit trail.</p>
         </div></div>
       </div>
@@ -1396,7 +1396,7 @@
         </button>
         <p class="modules__m-short">Give clients answers before they have to ask.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/images/Clientsandconflicts.png" alt="Client Portal" loading="lazy"></div>
+          <div class="modules__m-shot-frame"><img src="assets/screenshots/client-portal.png" alt="Client Portal" loading="lazy"></div>
           <p>A secure branded portal where clients can monitor progress, upload documents, view upcoming milestones and see funds held on their behalf without calling your office for updates.</p>
         </div></div>
       </div>
@@ -1408,7 +1408,7 @@
         </button>
         <p class="modules__m-short">Get paid without the chase.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/images/Timeandbilling.png" alt="Billing and Payments" loading="lazy"></div>
+          <div class="modules__m-shot-frame"><img src="assets/screenshots/billing.png" alt="Billing and Payments" loading="lazy"></div>
           <p>Track billable time automatically, generate invoices instantly and accept payments seamlessly. Built specifically for Nigerian legal practice with Naira-denominated billing.</p>
         </div></div>
       </div>
@@ -1420,7 +1420,7 @@
         </button>
         <p class="modules__m-short">An assistant, not a replacement.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/images/Deeluhai.png" alt="Deeluh AI" loading="lazy"></div>
+          <div class="modules__m-shot-frame"><img src="assets/screenshots/deeluh-ai.png" alt="Deeluh AI" loading="lazy"></div>
           <p>Deeluh AI assists with legal drafting, document review, legal research and analysis while ensuring lawyers remain fully in control. Every result is transparent, reviewable and verifiable.</p>
         </div></div>
       </div>
@@ -1432,7 +1432,7 @@
         </button>
         <p class="modules__m-short">Keep the conversation where the work happens.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/images/Team.png" alt="Team Management" loading="lazy"></div>
+          <div class="modules__m-shot-frame"><img src="assets/screenshots/team-management.png" alt="Team Management" loading="lazy"></div>
           <p>Manage permissions, workloads and collaboration across your entire firm. Matter-specific communication keeps conversations attached to the work while WhatsApp Business integration keeps client communication connected.</p>
         </div></div>
       </div>
@@ -1444,7 +1444,7 @@
         </button>
         <p class="modules__m-short">Built for professional-conduct review, not just bookkeeping.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/images/Yourmatter.png" alt="Trust and Compliance" loading="lazy"></div>
+          <div class="modules__m-shot-frame"><img src="assets/screenshots/trust-compliance.png" alt="Trust and Compliance" loading="lazy"></div>
           <p>Every financial activity is protected by a tamper-evident hash-chain audit trail together with strict separation of client funds, trust funds and operating funds.</p>
           <div class="modules__badges">
             <span class="modules__badge">
@@ -1600,9 +1600,9 @@
       <div class="footer-col">
         <p class="footer-col__title">Product</p>
         <ul>
-          <li><a href="index.html#what">What Deeluh does</a></li>
-          <li><a href="index.html#pricing">Pricing</a></li>
-          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="#what">What Deeluh does</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
           <li><a href="javascript:void(0)">Security</a></li>
         </ul>
       </div>
