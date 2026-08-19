@@ -65,6 +65,15 @@ sed -i 's/^from="100.64.0.0\/10",restrict //' /home/deeluh-site-deploy/.ssh/auth
 bash /work/scripts/host-bootstrap.sh "$(cat /tmp/k.pub)" | grep -q 'rewritten' && echo "  ok  unrestricted line for the same key was rewritten"
 assert_eq "$(grep -c '^from="100.64.0.0/10",restrict ssh-ed25519' /home/deeluh-site-deploy/.ssh/authorized_keys)" "1" "exactly one restricted line after convergence"
 assert_eq "$(grep -c '^ssh-ed25519' /home/deeluh-site-deploy/.ssh/authorized_keys)" "0" "no unrestricted line remains"
+# restricted line PLUS a weaker duplicate for the same key: the duplicate must go too
+printf 'no-pty %s\n' "$(cat /tmp/k.pub)" >> /home/deeluh-site-deploy/.ssh/authorized_keys
+bash /work/scripts/host-bootstrap.sh "$(cat /tmp/k.pub)" >/dev/null
+assert_eq "$(grep -c "$(awk '{print $2}' /tmp/k.pub)" /home/deeluh-site-deploy/.ssh/authorized_keys)" "1" "weak duplicate beside the restricted line was removed"
+assert_eq "$(grep -c '^from="100.64.0.0/10",restrict ssh-ed25519' /home/deeluh-site-deploy/.ssh/authorized_keys)" "1" "the one line left is the restricted one"
+# an unrelated key is left alone
+printf 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOtherKeyOtherKeyOtherKeyOtherKeyOtherKey0 other\n' >> /home/deeluh-site-deploy/.ssh/authorized_keys
+bash /work/scripts/host-bootstrap.sh "$(cat /tmp/k.pub)" >/dev/null
+assert_eq "$(grep -c 'OtherKey' /home/deeluh-site-deploy/.ssh/authorized_keys)" "1" "unrelated key untouched"
 # interruption between the mv and the final ln (the only window): a re-run converges
 rm /var/www/deeluh
 assert_eq "$(code /)" "404 " "simulated interruption: site root missing -> 404"

@@ -61,16 +61,17 @@ install -d -m 700 -o "$DEPLOY_USER" -g "$DEPLOY_USER" "$SSH_DIR"
 touch "$AK"; chown "$DEPLOY_USER:$DEPLOY_USER" "$AK"; chmod 600 "$AK"
 KEY_BODY="$(printf '%s' "$PUBKEY" | awk '{print $1" "$2}')"
 WANT_LINE="from=\"100.64.0.0/10\",restrict ${PUBKEY}"
-if grep -qxF "$WANT_LINE" "$AK"; then
+# Converge unconditionally: drop EVERY line carrying this key body (restricted, unrestricted, duplicated,
+# differently-optioned), then write exactly one restricted line. The end state is the same whatever the
+# file held before, so no weaker line for this key can survive a run.
+before="$(cat "$AK")"
+{ grep -vF "$KEY_BODY" "$AK" || true; printf '%s\n' "$WANT_LINE"; } > "${AK}.new"
+cat "${AK}.new" > "$AK"; rm -f "${AK}.new"
+if [ "$before" = "$(cat "$AK")" ]; then
   echo "   key already present with the restricted options"
+elif printf '%s\n' "$before" | grep -qF "$KEY_BODY"; then
+  echo "   key was present with different/duplicate options — rewritten to one restricted line"
 else
-  if grep -qF "$KEY_BODY" "$AK"; then
-    # Same key, weaker (or different) options: converge, never leave an unrestricted line behind.
-    grep -vF "$KEY_BODY" "$AK" > "${AK}.new" || true
-    cat "${AK}.new" > "$AK"; rm -f "${AK}.new"
-    echo "   key was present with different options — rewritten"
-  fi
-  printf '%s\n' "$WANT_LINE" >> "$AK"
   echo "   key added (restricted)"
 fi
 
