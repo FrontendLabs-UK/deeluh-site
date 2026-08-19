@@ -58,7 +58,8 @@ first. Secrets live on the `production` environment of this repo (ssh key, host,
 key, tailnet auth key, Slack webhook) and are reachable only from `main`; nothing secret is ever in
 the tree, and the deploy identity can write one directory on the host and nothing else. Rotating the
 key is: new keypair → re-run `host-bootstrap.sh` with the new public key → replace `DEPLOY_SSH_KEY`
-(the old line is removed from the deploy user's `authorized_keys` by the re-run).
+→ delete the OLD key's line from the deploy user's `authorized_keys` by hand (the re-run only
+converges the key it was given; it does not know which other line is the retired one).
 
 ## What CI checks
 
