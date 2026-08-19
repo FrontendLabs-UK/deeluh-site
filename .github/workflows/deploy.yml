@@ -31,6 +31,12 @@ name: deploy
 #   else — see scripts/host-bootstrap.sh for the exact grant. What runs on the host is
 #   scripts/deploy-remote.sh, streamed over ssh from this checkout, so it is reviewed like any change.
 #
+# PAUSE SWITCH
+#   Repository variable DEPLOY_PAUSED=true makes merges to `main` NOT deploy (the job is skipped, no
+#   Slack). Manual dispatch by an admin still works, so a chosen commit can be shipped while the
+#   automatic path is held — e.g. "the first real deploy target is decided by a person". Only repo
+#   admins can set variables. Remove the variable (or set it to anything but `true`) to resume.
+#
 # Secrets (environment `production`):
 #   DEPLOY_SSH_KEY       ed25519 private key for deeluh-site-deploy (dedicated; NOT the app's root key)
 #   DEPLOY_HOST          the host's tailnet address
@@ -63,6 +69,8 @@ concurrency:
 jobs:
   deploy:
     name: deploy deeluh.com
+    # push events honour the pause switch; an admin's dispatch is an explicit decision and does not
+    if: github.event_name != 'push' || vars.DEPLOY_PAUSED != 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
