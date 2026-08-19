@@ -30,9 +30,9 @@ a.text-link {
     padding: 10rem 1.5rem 8rem;
     background-color: #fff;
     background-image:
-      radial-gradient(40% 34% at 90% 4%, var(--brand-clay-tint) 0%, transparent 65%),
-      radial-gradient(38% 32% at 4% 40%, var(--brand-primary-tint) 0%, transparent 65%),
-      radial-gradient(36% 30% at 94% 96%, var(--brand-clay-tint) 0%, transparent 65%);
+      radial-gradient(40% 34% at 90% 4%, var(--brand-clay-tint) 0%, rgba(247, 236, 231, 0) 65%),
+      radial-gradient(38% 32% at 4% 40%, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 65%),
+      radial-gradient(36% 30% at 94% 96%, var(--brand-clay-tint) 0%, rgba(247, 236, 231, 0) 65%);
     background-repeat: no-repeat;
     overflow: hidden;
   }
@@ -226,82 +226,6 @@ a.text-link {
   @media (prefers-reduced-motion: reduce) {
     .fade-up { transition: none; opacity: 1; transform: none; }
   }
-
-   /* ==========================================================
-     BIG LOGO SECTION BEFORE FOOTER
-     ========================================================== */
-     .logo-section {
-    position: relative;
-    min-height: 55vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* padding: 2rem 2rem; */
-    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
-    overflow: hidden;
-  }
-
-  .logo-wrap {
-    width: 100%;
-    max-width: 1400px;
-    text-align: center;
-  }
-
-  /* the wordmark itself — width is set by JS so it always spans
-     edge-to-edge regardless of font metrics or viewport size */
-  .logo-text {
-    display: inline-block;
-    /* font-family: var(--font-body); */
-    font-family: var(--font-display);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    white-space: nowrap;
-
-    /* the shimmer: a soft translucent base with a bright band that
-       sweeps across it — the "light passing over metal" look */
-    background-image: linear-gradient(
-      100deg,
-      rgba(255, 255, 255, 0.28) 0%,
-      rgba(255, 255, 255, 0.28) 40%,
-      rgba(255, 255, 255, 0.95) 50%,
-      rgba(255, 255, 255, 0.28) 60%,
-      rgba(255, 255, 255, 0.28) 100%
-    );
-    background-size: 300% 100%;
-    background-position: -100% 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-
-    animation-name: shine-sweep;
-    animation-duration: var(--shine-cycle);
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-  }
-
-  /* the sweep itself happens fast, early in the cycle, then holds
-     and waits for the next loop — that pause is what makes the
-     "cycle length" feel like a repeat interval rather than a
-     constant back-and-forth shimmer */
-  @keyframes shine-sweep {
-    0%   { background-position: -120% 0; }
-    18%  { background-position: 220% 0; }
-    100% { background-position: 220% 0; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .logo-text {
-      animation: none;
-      background-position: 0 0;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .logo-section { min-height: 38vh; padding: 3rem 1.25rem; }
-  }
-
- 
 
   
 </style>
@@ -501,16 +425,6 @@ a.text-link {
   </div>
 </section>
 
-<!-- BIG LOGO BEFORE FOOTER SECTION -->
-
-<section class="logo-section">
-  <div class="logo-wrap">
-    <span class="logo-text" id="deeluhLogo">Deeluh</span>
-  </div>
-</section>
-
-<!-- END OF BIG LOGO BEFORE FOOTER SECTION -->
-
 <!-- FOOTER -->
 
 <footer class="site-footer">
@@ -527,9 +441,9 @@ a.text-link {
       <div class="footer-col">
         <p class="footer-col__title">Product</p>
         <ul>
-          <li><a href="index.html#what">What Deeluh does</a></li>
-          <li><a href="index.html#pricing">Pricing</a></li>
-          <li><a href="index.html#faq">FAQ</a></li>
+          <li><a href="#what">What Deeluh does</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
           <li><a href="javascript:void(0)">Security</a></li>
         </ul>
       </div>
@@ -584,41 +498,6 @@ a.text-link {
   }, { threshold: 0.05 });
   revealObserver.observe(resSection);
 </script>
-
-<!-- "BIG LOGO SECTION BEFORE FOOTER" -->
-<script>
-  // fits the wordmark exactly to the width of its container, every time —
-  // more reliable than guessing a vw-based font-size, since it accounts
-  // for the actual rendered font metrics on the user's device
-  function fitLogoText() {
-    const wrap = document.querySelector('.logo-wrap');
-    const text = document.getElementById('deeluhLogo');
-    if (!wrap || !text) return;
-
-    const targetWidth = wrap.clientWidth;
-    text.style.fontSize = '100px'; // baseline to measure against
-    const measuredWidth = text.getBoundingClientRect().width;
-    const scale = targetWidth / measuredWidth;
-
-    // clamp so it can't get absurdly huge/tiny on extreme viewport sizes
-    const newSize = Math.min(Math.max(100 * scale, 40), 520);
-    text.style.fontSize = newSize + 'px';
-  }
-
-  window.addEventListener('resize', fitLogoText);
-  window.addEventListener('load', fitLogoText);
-  fitLogoText();
-
-  /* ==========================================================
-     HOW TO CONTROL THE REPEAT TIMING
-     ========================================================== */
-
-  function setLogoShineInterval(seconds) {
-    document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
-  }
-  // example: setLogoShineInterval(8);
-</script>
-<!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
 
 </body>
 </html>
