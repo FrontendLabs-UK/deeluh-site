@@ -53,12 +53,12 @@ can run the same check from a laptop: `scripts/deploy-check.sh --sha <40-hex>`.
 To re-deploy an older commit (a rollback by another name) use *Actions → deploy → Run workflow* and
 give the sha; it must already be on `main` and the dispatcher must be a repo admin, anything else is
 refused. A repository variable `DEPLOY_PAUSED=true` holds the automatic path (merges to `main` do not
-deploy) while admin dispatch still works — that is how a person, not a merge, decides what ships first. Secrets live on the `production`
-environment of this repo (ssh key, host, user, pinned host key, tailnet auth key, Slack webhook) and
-are reachable only from `main`; nothing secret is ever in the tree, and the deploy identity can write
-one directory on the host and nothing else. Rotating the key is: new keypair → re-run
-`host-bootstrap.sh` with the new public key → replace `DEPLOY_SSH_KEY` → remove the old line from
-the deploy user's `authorized_keys`.
+deploy) while admin dispatch still works — that is how a person, not a merge, decides what ships
+first. Secrets live on the `production` environment of this repo (ssh key, host, user, pinned host
+key, tailnet auth key, Slack webhook) and are reachable only from `main`; nothing secret is ever in
+the tree, and the deploy identity can write one directory on the host and nothing else. Rotating the
+key is: new keypair → re-run `host-bootstrap.sh` with the new public key → replace `DEPLOY_SSH_KEY`
+(the old line is removed from the deploy user's `authorized_keys` by the re-run).
 
 ## What CI checks
 
