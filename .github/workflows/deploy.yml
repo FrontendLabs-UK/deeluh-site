@@ -1,0 +1,261 @@
+name: deploy
+
+# WHAT THIS DOES
+#
+# Publishes the static site to deeluh.com. Every merge to `main` ships; `workflow_dispatch` re-ships a
+# chosen commit, which MUST already be on `main` (rolling back to an older commit is a dispatch of it).
+# There is no build step — the files in this repo are the files that are served.
+#
+# HOW
+#   1. The runner joins the tailnet (the host's provider drops GitHub-runner address ranges on :22
+#      since 2026-07-30, so the public IP is not an option) and connects with its OWN ed25519 key, as
+#      the unprivileged user `deeluh-site-deploy`, to a host key pinned in a secret. Never accept-new.
+#   2. rsync the site into a NEW directory /var/www/deeluh-releases/<UTC stamp>-<sha12>/ (plus a
+#      `.deploy-sha` marker), then flip the `current` symlink atomically. The Caddy root
+#      /var/www/deeluh is a symlink to that `current`; Caddy is not touched or reloaded. The
+#      `redir /privacy` + `redir /terms` -> app.deeluh.com lines in the Caddyfile stay exactly as they are.
+#   3. scripts/deploy-check.sh proves, from the runner, that the public site serves the new sha, every
+#      page is 200, and /privacy + /terms + www still redirect. Any failure -> the symlink is flipped
+#      back to the previous release and the run fails loudly. Success -> old releases pruned to five.
+#   4. Slack deploy-status message either way (site, release, sha, result, run link).
+#
+# WHY THE SHAPE
+#   The repo is public and an external contributor has write access, so: the workflow only runs from
+#   `main` (which requires a reviewed PR), dispatch refuses a sha that is not on `main`, the job runs in
+#   the `production` environment (whose deployment-branch policy is `main` only, so the secrets are
+#   unreachable from any other ref), and the ssh identity can write ONE directory on the host and
+#   nothing else — see scripts/host-bootstrap.sh for the exact grant. What runs on the host is
+#   scripts/deploy-remote.sh, streamed over ssh from this checkout, so it is reviewed like any change.
+#
+# Secrets (environment `production`):
+#   DEPLOY_SSH_KEY       ed25519 private key for deeluh-site-deploy (dedicated; NOT the app's root key)
+#   DEPLOY_HOST          the host's tailnet address
+#   DEPLOY_USER          deeluh-site-deploy
+#   DEPLOY_HOST_KEY      one known_hosts line: "<DEPLOY_HOST> ssh-ed25519 AAAA..." (pinned, never accept-new)
+#   TS_CI_AUTHKEY        Tailscale auth key: ephemeral + reusable + pre-approved, tag:ci, 90-day expiry
+#   SLACK_DEPLOY_WEBHOOK optional — Deeluh deploy-status channel
+#   CF_ZONE_ID + CF_CACHE_PURGE_TOKEN  optional — purge Cloudflare's cache after the swap so a changed
+#                        styles.css is not served stale for the default edge TTL. Skipped when absent.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: "Commit to deploy (40 hex). Must already be on main. Blank = head of main."
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  # One deploy at a time, in order. Never cancel a deploy mid-flight — a half-finished rsync is
+  # harmless (it is in a directory nobody serves) but a cancelled run cannot roll back.
+  group: deploy-deeluh-com
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: deploy deeluh.com
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: production
+      url: https://deeluh.com
+    env:
+      SITE_URL: https://deeluh.com
+      RELEASES_DIR: /var/www/deeluh-releases
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.event.inputs.sha || github.sha }}
+          fetch-depth: 0   # full history: we need origin/main to prove the sha is on it
+
+      - name: resolve sha (must be on main)
+        id: sha
+        env:
+          REQUESTED: ${{ github.event.inputs.sha }}
+        run: |
+          set -euo pipefail
+          if [ -n "$REQUESTED" ] && ! [[ "$REQUESTED" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::sha input must be 40 lowercase hex, got '${REQUESTED}'"; exit 1
+          fi
+          SHA="$(git rev-parse HEAD)"
+          git fetch --quiet origin main
+          if ! git merge-base --is-ancestor "$SHA" origin/main; then
+            echo "::error::${SHA} is not on main — only reviewed, merged commits deploy to deeluh.com"; exit 1
+          fi
+          RELEASE="$(date -u +%Y%m%dT%H%M%SZ)-${SHA:0:12}"
+          echo "sha=${SHA}"         >> "$GITHUB_OUTPUT"
+          echo "release=${RELEASE}" >> "$GITHUB_OUTPUT"
+          echo "deploying ${SHA} as release ${RELEASE}"
+
+      - name: preflight (secrets present, scripts sane)
+        env:
+          DEPLOY_SSH_KEY:  ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST:     ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER:     ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST_KEY: ${{ secrets.DEPLOY_HOST_KEY }}
+          TS_CI_AUTHKEY:   ${{ secrets.TS_CI_AUTHKEY }}
+        run: |
+          set -euo pipefail
+          missing=""
+          for v in DEPLOY_SSH_KEY DEPLOY_HOST DEPLOY_USER DEPLOY_HOST_KEY TS_CI_AUTHKEY; do
+            [ -n "${!v:-}" ] || missing="${missing} ${v}"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::missing secret(s):${missing} — set them on the 'production' environment"; exit 1
+          fi
+          # the pinned host key must be for the host we are about to dial, or StrictHostKeyChecking
+          # would fail with a message that looks like an outage rather than a config slip
+          case "$DEPLOY_HOST_KEY" in
+            "${DEPLOY_HOST} "*) ;;
+            *) echo "::error::DEPLOY_HOST_KEY does not start with '${DEPLOY_HOST} ' — it must be the known_hosts line for DEPLOY_HOST"; exit 1 ;;
+          esac
+          bash -n scripts/deploy-remote.sh
+          bash -n scripts/deploy-check.sh
+          test -f index.html
+
+      - name: join tailnet
+        uses: tailscale/github-action@6cae46e2d796f265265cfcf628b72a32b4d7cade # v3.3.0
+        with:
+          authkey: ${{ secrets.TS_CI_AUTHKEY }}
+
+      - name: ssh identity (pinned host key)
+        env:
+          DEPLOY_SSH_KEY:  ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_HOST_KEY: ${{ secrets.DEPLOY_HOST_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY"  > ~/.ssh/deeluh_site_key;  chmod 600 ~/.ssh/deeluh_site_key
+          printf '%s\n' "$DEPLOY_HOST_KEY" > ~/.ssh/deeluh_site_hosts; chmod 600 ~/.ssh/deeluh_site_hosts
+          # one place for every ssh/rsync invocation below
+          printf 'ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=%s -o IdentitiesOnly=yes -i %s -o ConnectTimeout=20\n' \
+            "$HOME/.ssh/deeluh_site_hosts" "$HOME/.ssh/deeluh_site_key" > ~/.ssh/deeluh_site_ssh_cmd
+          echo "SSH_CMD=$(cat ~/.ssh/deeluh_site_ssh_cmd)" >> "$GITHUB_ENV"
+
+      - name: ssh preflight (reach host, layout present)
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          $SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- status" < scripts/deploy-remote.sh
+
+      - name: stage release (rsync into a directory nobody serves yet)
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          SHA:     ${{ steps.sha.outputs.sha }}
+          RELEASE: ${{ steps.sha.outputs.release }}
+        run: |
+          set -euo pipefail
+          printf '%s\n' "$SHA" > .deploy-sha
+          $SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- prepare ${RELEASE}" < scripts/deploy-remote.sh
+          # Exactly the served tree: html, css, assets, the marker. Not the repo plumbing.
+          rsync -rlpt --delete --chmod=D755,F644 \
+            --exclude='.git' --exclude='.github' --exclude='README.md' --exclude='.gitignore' \
+            --exclude='scripts' --exclude='.DS_Store' --exclude='__MACOSX' --exclude='._*' \
+            -e "$SSH_CMD" \
+            ./ "${DEPLOY_USER}@${DEPLOY_HOST}:${RELEASES_DIR}/${RELEASE}/"
+          echo "staged ${RELEASE}"
+
+      - name: activate (atomic symlink swap)
+        id: activate
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          RELEASE: ${{ steps.sha.outputs.release }}
+        run: |
+          set -euo pipefail
+          PREV="$($SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- activate ${RELEASE}" < scripts/deploy-remote.sh)"
+          echo "PREV_RELEASE=${PREV}" >> "$GITHUB_ENV"
+          echo "ACTIVATED=1"          >> "$GITHUB_ENV"
+          echo "current -> ${RELEASE} (was: ${PREV:-<none>})"
+
+      - name: purge Cloudflare cache (optional)
+        env:
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          CF_TOKEN:   ${{ secrets.CF_CACHE_PURGE_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CF_ZONE_ID:-}" ] || [ -z "${CF_TOKEN:-}" ]; then
+            echo "no CF_ZONE_ID/CF_CACHE_PURGE_TOKEN — skipping purge (assets keep Cloudflare's default edge TTL)"; exit 0
+          fi
+          out="$(curl -sS --max-time 20 -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+            -H "Authorization: Bearer ${CF_TOKEN}" -H "Content-Type: application/json" \
+            --data '{"purge_everything":true}')"
+          if echo "$out" | grep -q '"success":true'; then echo "purged"; else echo "::warning::purge did not report success: ${out}"; fi
+
+      - name: verify from the outside
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          SHA: ${{ steps.sha.outputs.sha }}
+        run: |
+          set -euo pipefail
+          PAGES="$(find . -maxdepth 1 -name '*.html' -printf '%f ' | sort)"
+          bash scripts/deploy-check.sh --sha "$SHA" --base "$SITE_URL" --pages "$PAGES" --origin "$DEPLOY_HOST" --timeout 90
+
+      - name: prune old releases
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          $SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} KEEP=5 bash -s -- prune" < scripts/deploy-remote.sh
+
+      # ── failure path ──────────────────────────────────────────────────────────────────────────
+      - name: roll back (checks failed after activation)
+        if: failure() && env.ACTIVATED == '1' && env.PREV_RELEASE != ''
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          echo "::error::post-deploy checks failed — rolling back to ${PREV_RELEASE}"
+          $SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- rollback ${PREV_RELEASE}" < scripts/deploy-remote.sh
+          echo "ROLLED_BACK=1" >> "$GITHUB_ENV"
+          # best-effort: confirm the previous release answers again (the sha marker is whatever that
+          # release carried, so only the page + redirects are asserted here)
+          bash scripts/deploy-check.sh --skip-marker --base "$SITE_URL" || true
+
+      # ── notify ────────────────────────────────────────────────────────────────────────────────
+      - name: slack (success)
+        if: success()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_DEPLOY_WEBHOOK }}
+          SHA:     ${{ steps.sha.outputs.sha }}
+          RELEASE: ${{ steps.sha.outputs.release }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK" ]; then echo "no webhook — skipping"; exit 0; fi
+          curl -sS --max-time 15 -X POST -H "Content-Type: application/json" \
+            -d "{\"text\":\":rocket: deeluh-site deployed — <https://deeluh.com|deeluh.com> now on commit \`${SHA:0:12}\` (release \`${RELEASE}\`, was \`${PREV_RELEASE:-?}\`) — <${RUN_URL}|run>\"}" \
+            "$SLACK_WEBHOOK" || true
+
+      - name: slack (failure)
+        if: failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_DEPLOY_WEBHOOK }}
+          SHA:     ${{ steps.sha.outputs.sha }}
+          RELEASE: ${{ steps.sha.outputs.release }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK" ]; then echo "no webhook — skipping"; exit 0; fi
+          if [ "${ROLLED_BACK:-}" = "1" ]; then
+            STATE="rolled back to \`${PREV_RELEASE}\`"
+          elif [ "${ACTIVATED:-}" = "1" ]; then
+            STATE="ACTIVATED BUT ROLLBACK DID NOT RUN — check the host"
+          else
+            STATE="nothing was activated; site unchanged"
+          fi
+          curl -sS --max-time 15 -X POST -H "Content-Type: application/json" \
+            -d "{\"text\":\":rotating_light: deeluh-site deploy FAILED — commit \`${SHA:0:12}\` (release \`${RELEASE:-?}\`): ${STATE} — <${RUN_URL}|run>\"}" \
+            "$SLACK_WEBHOOK" || true
+
+      - name: cleanup
+        if: always()
+        run: rm -f ~/.ssh/deeluh_site_key ~/.ssh/deeluh_site_hosts ~/.ssh/deeluh_site_ssh_cmd .deploy-sha
