@@ -60,6 +60,16 @@ grep -q 'from="100.64.0.0/10",restrict ssh-ed25519' /home/deeluh-site-deploy/.ss
 # idempotent
 bash /work/scripts/host-bootstrap.sh "$(cat /tmp/k.pub)" >/dev/null && echo "  ok  bootstrap re-run is a no-op"
 assert_eq "$(grep -c ssh-ed25519 /home/deeluh-site-deploy/.ssh/authorized_keys)" "1" "key not duplicated on re-run"
+# a weaker line for the same key is converged to the restricted form, not left beside it
+sed -i 's/^from="100.64.0.0\/10",restrict //' /home/deeluh-site-deploy/.ssh/authorized_keys
+bash /work/scripts/host-bootstrap.sh "$(cat /tmp/k.pub)" | grep -q 'rewritten' && echo "  ok  unrestricted line for the same key was rewritten"
+assert_eq "$(grep -c '^from="100.64.0.0/10",restrict ssh-ed25519' /home/deeluh-site-deploy/.ssh/authorized_keys)" "1" "exactly one restricted line after convergence"
+assert_eq "$(grep -c '^ssh-ed25519' /home/deeluh-site-deploy/.ssh/authorized_keys)" "0" "no unrestricted line remains"
+# interruption between the mv and the final ln (the only window): a re-run converges
+rm /var/www/deeluh
+assert_eq "$(code /)" "404 " "simulated interruption: site root missing -> 404"
+bash /work/scripts/host-bootstrap.sh "$(cat /tmp/k.pub)" >/dev/null
+assert_eq "$(get /)" '<html><body>LEGACY SITE</body></html>' "re-run after interruption restores serving"
 
 # now act as the deploy user, exactly as the workflow does
 DR="su -s /bin/bash deeluh-site-deploy -c"
@@ -67,7 +77,7 @@ deploy() {  # $1 = release name, $2 = sha, $3 = body
   local rel="$1" sha="$2" body="$3" src; src="$(mktemp -d)"; chmod 755 "$src"
   printf '<html><body>%s</body></html>' "$body" > "$src/index.html"; echo "$sha" > "$src/.deploy-sha"; echo "x" > "$src/styles.css"
   $DR "bash -s -- prepare $rel" < /work/scripts/deploy-remote.sh >/dev/null
-  $DR "rsync -rlpt --chmod=D755,F644 $src/ /var/www/deeluh-releases/$rel/"
+  $DR "rsync -rpt --chmod=D755,F644 $src/ /var/www/deeluh-releases/$rel/"
   $DR "bash -s -- activate $rel" < /work/scripts/deploy-remote.sh
 }
 SHA1=1111111111111111111111111111111111111111

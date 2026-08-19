@@ -54,6 +54,17 @@ jobs:
           fi
           ./gitleaks detect --no-banner --redact --exit-code 1
 
+      # ── SYMLINKS ────────────────────────────────────────────────────────────────────────────
+      # The production web server follows symlinks. A symlink committed anywhere in the served tree
+      # (assets/x -> /etc/passwd) would publish whatever the server can read. The deploy workflow
+      # refuses such a tree too; this is the earlier, friendlier place to hear about it.
+      - name: no symlinks in the tree
+        run: |
+          set -euo pipefail
+          if find . -path ./.git -prune -o -type l -print | grep -q .; then
+            echo "::error::symlink(s) committed — the site is served by a server that follows them:"; find . -path ./.git -prune -o -type l -print; exit 1
+          fi
+
       # ── DEAD LINKS ──────────────────────────────────────────────────────────────────────────
       # The failure mode of a hand-built static site. A nav item that goes nowhere reads as a
       # broken product to someone deciding whether to trust you with their clients' files.

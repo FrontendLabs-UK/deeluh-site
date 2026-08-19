@@ -60,11 +60,18 @@ AK="${SSH_DIR}/authorized_keys"
 install -d -m 700 -o "$DEPLOY_USER" -g "$DEPLOY_USER" "$SSH_DIR"
 touch "$AK"; chown "$DEPLOY_USER:$DEPLOY_USER" "$AK"; chmod 600 "$AK"
 KEY_BODY="$(printf '%s' "$PUBKEY" | awk '{print $1" "$2}')"
-if grep -qF "$KEY_BODY" "$AK"; then
-  echo "   key already present"
+WANT_LINE="from=\"100.64.0.0/10\",restrict ${PUBKEY}"
+if grep -qxF "$WANT_LINE" "$AK"; then
+  echo "   key already present with the restricted options"
 else
-  printf 'from="100.64.0.0/10",restrict %s\n' "$PUBKEY" >> "$AK"
-  echo "   key added"
+  if grep -qF "$KEY_BODY" "$AK"; then
+    # Same key, weaker (or different) options: converge, never leave an unrestricted line behind.
+    grep -vF "$KEY_BODY" "$AK" > "${AK}.new" || true
+    cat "${AK}.new" > "$AK"; rm -f "${AK}.new"
+    echo "   key was present with different options — rewritten"
+  fi
+  printf '%s\n' "$WANT_LINE" >> "$AK"
+  echo "   key added (restricted)"
 fi
 
 echo "== 3. rsync present"
@@ -95,20 +102,35 @@ elif [ -d "$SITE_ROOT" ]; then
     echo "   ERROR: ${SITE_ROOT} is a real directory AND ${RELEASES_DIR}/${LEGACY_NAME} already exists. Not guessing — fix by hand." >&2
     exit 1
   fi
+  # Order matters so an interruption at any point leaves a state a re-run converges from:
+  #   (a) `current` -> legacy (dangling for an instant; nothing reads it yet)
+  #   (b) mv the real dir into place — ONE rename(2) on the same filesystem (both paths are under
+  #       /var/www), so it either happened or it did not; there is no half-moved state
+  #   (c) the site-root symlink. Between (b) and (c) Caddy 404s — microseconds when uninterrupted;
+  #       if interrupted here, a re-run takes the `! -e` branch below and finishes the job.
+  if [ ! -L "${RELEASES_DIR}/current" ]; then
+    ln -s "${LEGACY_NAME}" "${RELEASES_DIR}/current"
+    chown -h "$DEPLOY_USER:$DEPLOY_USER" "${RELEASES_DIR}/current"
+  fi
+  mv "$SITE_ROOT" "${RELEASES_DIR}/${LEGACY_NAME}"
+  ln -s "${RELEASES_DIR}/current" "$SITE_ROOT"
   # Preserve the pre-pipeline site as the first release. Ownership normalised to root (it was uid 501);
   # world-readable is all Caddy needs, and the deploy user must NOT be able to alter history.
-  mv "$SITE_ROOT" "${RELEASES_DIR}/${LEGACY_NAME}"
   chown -R root:root "${RELEASES_DIR}/${LEGACY_NAME}"
   find "${RELEASES_DIR}/${LEGACY_NAME}" -type d -exec chmod 755 {} + -o -type f -exec chmod 644 {} +
-  ln -s "${LEGACY_NAME}" "${RELEASES_DIR}/current"
-  chown -h "$DEPLOY_USER:$DEPLOY_USER" "${RELEASES_DIR}/current"
-  ln -s "${RELEASES_DIR}/current" "$SITE_ROOT"
   echo "   moved old site to ${RELEASES_DIR}/${LEGACY_NAME}; ${SITE_ROOT} is now a symlink; serving unchanged"
 elif [ ! -e "$SITE_ROOT" ]; then
-  install -d -m 755 -o root -g root "${RELEASES_DIR}/${LEGACY_NAME}"
-  [ -e "${RELEASES_DIR}/current" ] || { ln -s "${LEGACY_NAME}" "${RELEASES_DIR}/current"; chown -h "$DEPLOY_USER:$DEPLOY_USER" "${RELEASES_DIR}/current"; }
+  # Either a fresh host, or a previous run was interrupted between the mv and the final ln.
+  if [ ! -d "${RELEASES_DIR}/${LEGACY_NAME}" ]; then
+    install -d -m 755 -o root -g root "${RELEASES_DIR}/${LEGACY_NAME}"
+  fi
+  if [ ! -L "${RELEASES_DIR}/current" ]; then
+    ln -s "${LEGACY_NAME}" "${RELEASES_DIR}/current"
+    chown -h "$DEPLOY_USER:$DEPLOY_USER" "${RELEASES_DIR}/current"
+  fi
   ln -s "${RELEASES_DIR}/current" "$SITE_ROOT"
-  echo "   ${SITE_ROOT} did not exist; created symlink (empty until first deploy)"
+  chown -R root:root "${RELEASES_DIR}/${LEGACY_NAME}"
+  echo "   ${SITE_ROOT} did not exist; created the symlink (serving ${RELEASES_DIR}/$(readlink "${RELEASES_DIR}/current"))"
 else
   echo "   ERROR: ${SITE_ROOT} exists and is neither a directory nor a symlink" >&2; exit 1
 fi

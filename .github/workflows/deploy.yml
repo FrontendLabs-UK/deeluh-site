@@ -21,10 +21,14 @@ name: deploy
 #
 # WHY THE SHAPE
 #   The repo is public and an external contributor has write access, so: the workflow only runs from
-#   `main` (which requires a reviewed PR), dispatch refuses a sha that is not on `main`, the job runs in
-#   the `production` environment (whose deployment-branch policy is `main` only, so the secrets are
-#   unreachable from any other ref), and the ssh identity can write ONE directory on the host and
-#   nothing else — see scripts/host-bootstrap.sh for the exact grant. What runs on the host is
+#   `main` (which requires a reviewed PR), dispatch refuses a sha that is not on `main` AND refuses any
+#   actor not on the short admin list below (branch protection does not gate a manual dispatch, and
+#   "an older commit of main" is still an unreviewed production change), the job runs in the
+#   `production` environment (whose deployment-branch policy is `main` only, so the secrets are
+#   unreachable from any other ref — including a dispatch of a modified copy of this file on a branch),
+#   the served tree is refused if it contains a symlink (Caddy follows them; a symlink in `assets/`
+#   could publish host files), and the ssh identity can write ONE directory on the host and nothing
+#   else — see scripts/host-bootstrap.sh for the exact grant. What runs on the host is
 #   scripts/deploy-remote.sh, streamed over ssh from this checkout, so it is reviewed like any change.
 #
 # Secrets (environment `production`):
@@ -73,6 +77,18 @@ jobs:
           ref: ${{ github.event.inputs.sha || github.sha }}
           fetch-depth: 0   # full history: we need origin/main to prove the sha is on it
 
+      - name: dispatch guard (manual deploys are for repo admins only)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          ACTOR: ${{ github.actor }}
+          # Repo admins. Deliberately a literal list in a reviewed file, not a variable someone can edit
+          # in the UI. Extend by PR.
+          ALLOWED: "mobileappconsultant bayo-code"
+        run: |
+          set -euo pipefail
+          for a in $ALLOWED; do [ "$a" = "$ACTOR" ] && { echo "dispatch by ${ACTOR}: allowed"; exit 0; }; done
+          echo "::error::manual deploys are restricted to repo admins; '${ACTOR}' is not on the list. Merge a PR instead."; exit 1
+
       - name: resolve sha (must be on main)
         id: sha
         env:
@@ -83,7 +99,7 @@ jobs:
             echo "::error::sha input must be 40 lowercase hex, got '${REQUESTED}'"; exit 1
           fi
           SHA="$(git rev-parse HEAD)"
-          git fetch --quiet origin main
+          git fetch --quiet origin +refs/heads/main:refs/remotes/origin/main
           if ! git merge-base --is-ancestor "$SHA" origin/main; then
             echo "::error::${SHA} is not on main — only reviewed, merged commits deploy to deeluh.com"; exit 1
           fi
@@ -117,6 +133,12 @@ jobs:
           bash -n scripts/deploy-remote.sh
           bash -n scripts/deploy-check.sh
           test -f index.html
+          # Caddy follows symlinks. A symlink anywhere in the served tree (assets/x -> /etc/passwd) would
+          # publish whatever the web server can read. Refuse the whole deploy; rsync below also runs
+          # without -l so even a missed one is never copied as a link.
+          if find . -path ./.git -prune -o -type l -print | grep -q .; then
+            echo "::error::symlink(s) in the tree — refusing to deploy:"; find . -path ./.git -prune -o -type l -print; exit 1
+          fi
 
       - name: join tailnet
         uses: tailscale/github-action@6cae46e2d796f265265cfcf628b72a32b4d7cade # v3.3.0
@@ -156,25 +178,37 @@ jobs:
           printf '%s\n' "$SHA" > .deploy-sha
           $SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- prepare ${RELEASE}" < scripts/deploy-remote.sh
           # Exactly the served tree: html, css, assets, the marker. Not the repo plumbing.
-          rsync -rlpt --delete --chmod=D755,F644 \
+          rsync -rpt --delete --chmod=D755,F644 \
             --exclude='.git' --exclude='.github' --exclude='README.md' --exclude='.gitignore' \
             --exclude='scripts' --exclude='.DS_Store' --exclude='__MACOSX' --exclude='._*' \
             -e "$SSH_CMD" \
             ./ "${DEPLOY_USER}@${DEPLOY_HOST}:${RELEASES_DIR}/${RELEASE}/"
           echo "staged ${RELEASE}"
 
+      - name: record rollback target BEFORE activating
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+        run: |
+          set -euo pipefail
+          # Captured before the swap, and the "activation intended" flag is set before the ssh call that
+          # performs it: if that session dies after the remote rename but before its stdout comes back,
+          # the rollback step still has a target and still runs.
+          PREV="$($SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- current" < scripts/deploy-remote.sh)"
+          [ -n "$PREV" ] || { echo "::error::host has no live release (current symlink missing) — run host-bootstrap.sh"; exit 1; }
+          echo "PREV_RELEASE=${PREV}" >> "$GITHUB_ENV"
+          echo "ACTIVATED=1"          >> "$GITHUB_ENV"
+          echo "rollback target: ${PREV}"
+
       - name: activate (atomic symlink swap)
-        id: activate
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           RELEASE: ${{ steps.sha.outputs.release }}
         run: |
           set -euo pipefail
-          PREV="$($SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- activate ${RELEASE}" < scripts/deploy-remote.sh)"
-          echo "PREV_RELEASE=${PREV}" >> "$GITHUB_ENV"
-          echo "ACTIVATED=1"          >> "$GITHUB_ENV"
-          echo "current -> ${RELEASE} (was: ${PREV:-<none>})"
+          WAS="$($SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} bash -s -- activate ${RELEASE}" < scripts/deploy-remote.sh)"
+          echo "current -> ${RELEASE} (was: ${WAS:-<none>})"
 
       - name: purge Cloudflare cache (optional)
         env:
@@ -196,20 +230,25 @@ jobs:
           SHA: ${{ steps.sha.outputs.sha }}
         run: |
           set -euo pipefail
-          PAGES="$(find . -maxdepth 1 -name '*.html' -printf '%f ' | sort)"
+          PAGES="$(find . -maxdepth 1 -name '*.html' -printf '%f ')"
           bash scripts/deploy-check.sh --sha "$SHA" --base "$SITE_URL" --pages "$PAGES" --origin "$DEPLOY_HOST" --timeout 90
+          echo "VERIFIED=1" >> "$GITHUB_ENV"
 
       - name: prune old releases
+        # Housekeeping after a VERIFIED deploy. Must never undo a good release: non-fatal, and the
+        # rollback step below is gated on VERIFIED so a prune hiccup cannot trigger it.
+        continue-on-error: true
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
           set -euo pipefail
-          $SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} KEEP=5 bash -s -- prune" < scripts/deploy-remote.sh
+          $SSH_CMD "${DEPLOY_USER}@${DEPLOY_HOST}" "RELEASES_DIR=${RELEASES_DIR} KEEP=5 bash -s -- prune" < scripts/deploy-remote.sh \
+            || echo "::warning::prune failed — the deploy is live and verified; old releases were not cleaned up"
 
       # ── failure path ──────────────────────────────────────────────────────────────────────────
-      - name: roll back (checks failed after activation)
-        if: failure() && env.ACTIVATED == '1' && env.PREV_RELEASE != ''
+      - name: roll back (activation began, verification did not pass)
+        if: failure() && env.ACTIVATED == '1' && env.VERIFIED != '1' && env.PREV_RELEASE != ''
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
@@ -245,7 +284,9 @@ jobs:
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           if [ -z "$SLACK_WEBHOOK" ]; then echo "no webhook — skipping"; exit 0; fi
-          if [ "${ROLLED_BACK:-}" = "1" ]; then
+          if [ "${VERIFIED:-}" = "1" ]; then
+            STATE="release is LIVE and verified; a later housekeeping step failed"
+          elif [ "${ROLLED_BACK:-}" = "1" ]; then
             STATE="rolled back to \`${PREV_RELEASE}\`"
           elif [ "${ACTIVATED:-}" = "1" ]; then
             STATE="ACTIVATED BUT ROLLBACK DID NOT RUN — check the host"

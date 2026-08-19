@@ -14,6 +14,8 @@
 #
 # Commands:
 #   status                       print the live release and the list of releases
+#   current                      print ONLY the live release name (the workflow records it BEFORE activating,
+#                                so a rollback target exists even if the activate call's ssh session dies)
 #   prepare <release>            create the (empty) release directory for rsync to fill
 #   activate <release>           atomically point `current` at <release>; prints the PREVIOUS target on stdout
 #   rollback <release>           same swap, used by the workflow when post-deploy checks fail
@@ -64,6 +66,10 @@ case "$cmd" in
     find "$RELEASES_DIR" -mindepth 1 -maxdepth 1 -type d -printf '  %f\n' | sort
     ;;
 
+  current)
+    current_target
+    ;;
+
   prepare)
     rel="${1:-}"; valid_release "$rel" || die "invalid release name '${rel}'"
     [ "$rel" != "$LEGACY_NAME" ] || die "cannot prepare the legacy release"
@@ -104,6 +110,6 @@ case "$cmd" in
     ;;
 
   *)
-    die "usage: deploy-remote.sh status|prepare <release>|activate <release>|rollback <release>|prune"
+    die "usage: deploy-remote.sh status|current|prepare <release>|activate <release>|rollback <release>|prune"
     ;;
 esac
