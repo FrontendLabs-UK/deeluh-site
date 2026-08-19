@@ -61,8 +61,9 @@ jobs:
       - name: no symlinks in the tree
         run: |
           set -euo pipefail
-          if find . -path ./.git -prune -o -type l -print | grep -q .; then
-            echo "::error::symlink(s) committed — the site is served by a server that follows them:"; find . -path ./.git -prune -o -type l -print; exit 1
+          links="$(find . -path ./.git -prune -o -type l -print)"
+          if [ -n "$links" ]; then
+            echo "::error::symlink(s) committed — the site is served by a server that follows them:"; echo "$links"; exit 1
           fi
 
       # ── DEAD LINKS ──────────────────────────────────────────────────────────────────────────

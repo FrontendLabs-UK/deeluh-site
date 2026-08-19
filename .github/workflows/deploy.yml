@@ -136,8 +136,9 @@ jobs:
           # Caddy follows symlinks. A symlink anywhere in the served tree (assets/x -> /etc/passwd) would
           # publish whatever the web server can read. Refuse the whole deploy; rsync below also runs
           # without -l so even a missed one is never copied as a link.
-          if find . -path ./.git -prune -o -type l -print | grep -q .; then
-            echo "::error::symlink(s) in the tree — refusing to deploy:"; find . -path ./.git -prune -o -type l -print; exit 1
+          links="$(find . -path ./.git -prune -o -type l -print)"
+          if [ -n "$links" ]; then
+            echo "::error::symlink(s) in the tree — refusing to deploy:"; echo "$links"; exit 1
           fi
 
       - name: join tailnet
@@ -219,9 +220,13 @@ jobs:
           if [ -z "${CF_ZONE_ID:-}" ] || [ -z "${CF_TOKEN:-}" ]; then
             echo "no CF_ZONE_ID/CF_CACHE_PURGE_TOKEN — skipping purge (assets keep Cloudflare's default edge TTL)"; exit 0
           fi
-          out="$(curl -sS --max-time 20 -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
+          # Optional means optional: a purge that cannot be sent must not fail the deploy (and so must
+          # never be what triggers a rollback of a healthy release).
+          if ! out="$(curl -sS --max-time 20 -X POST "https://api.cloudflare.com/client/v4/zones/${CF_ZONE_ID}/purge_cache" \
             -H "Authorization: Bearer ${CF_TOKEN}" -H "Content-Type: application/json" \
-            --data '{"purge_everything":true}')"
+            --data '{"purge_everything":true}')"; then
+            echo "::warning::purge request failed at transport level; assets keep Cloudflare's default edge TTL"; exit 0
+          fi
           if echo "$out" | grep -q '"success":true'; then echo "purged"; else echo "::warning::purge did not report success: ${out}"; fi
 
       - name: verify from the outside
