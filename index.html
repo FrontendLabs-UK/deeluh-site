@@ -1741,10 +1741,12 @@
   }
 
   .pricing-grid {
-    display: grid;
+    display: flex;
     grid-template-columns: repeat(5, 1fr);
     gap: 1.25rem;
-    align-items: stretch;
+    /* align-items: stretch; */
+    justify-content: center;
+    margin: auto;
   }
 
   .price-card {
@@ -1797,7 +1799,7 @@
   .price-card__scope {
     font-size: .82rem;
     color: rgba(255,255,255,0.65);
-    margin: 0 0 1.4rem;
+    margin: 1.4rem 0 1rem;
   }
 
   .price-card__amount {
@@ -1931,12 +1933,14 @@
      PRICING RESPONSIVE
      ========================================================== */
   @media (max-width: 1100px) {
-    .pricing-grid { grid-template-columns: repeat(3, 1fr); }
+    .pricing-grid { grid-template-columns: repeat(3, 1fr);
+      display: grid; }
   }
 
   @media (max-width: 720px) {
     .pricing { padding: 4.5rem 1.25rem 3.5rem; }
-    .pricing-grid { grid-template-columns: 1fr; }
+    .pricing-grid { grid-template-columns: 1fr;
+      display: grid; }
     .feature-panel { grid-template-columns: 1fr; }
     .currency-switch { flex-wrap: wrap; justify-content: center; }
   }
@@ -2756,6 +2760,7 @@
     <ul class="navbar__menu">
       <li><a href="product.html">Product</a></li>
       <li><a href="solutions.html">Solutions</a></li>
+      <li><a href="index.html#pricing">Pricing</a></li>
 
       <li class="navbar__item--dropdown">
         <button class="navbar__dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
@@ -2790,6 +2795,7 @@
       <ul class="navbar__mobile-links">
         <li><a href="product.html">Product</a></li>
         <li><a href="solutions.html">Solutions</a></li>
+        <li><a href="index.html#pricing">Pricing</a></li>
 
         <li class="navbar__mobile-dropdown" id="navLegalDropdown">
           <button class="navbar__mobile-dropdown-trigger" type="button" aria-expanded="false" aria-controls="navLegalPanel">
@@ -3400,67 +3406,55 @@
 
     <div class="pricing-grid" id="pricingGrid">
 
-      <article class="price-card" data-ngn-monthly="20000" data-ngn-annual="200000">
-        <p class="price-card__tier">Sole</p>
-        <p class="price-card__scope">One seat, flat rate</p>
+      <article class="price-card" data-ngn-monthly="25000" data-ngn-annual="240000">
+        <p class="price-card__tier">Solo</p>
+        <p class="price-card__scope">1 Professional included<br>2 Team included<br>Small-practice expansion available<br></p>
         <div class="price-card__amount price-monthly">
-          <span class="value js-amount">₦20,000</span><span class="unit">/ month</span>
+          <span class="value js-amount">₦25,000</span><span class="unit">/ month</span>
         </div>
         <div class="price-card__amount price-annual">
-          <span class="value js-amount">₦200,000</span><span class="unit">/ year</span>
+          <span class="value js-amount">₦240,000</span><span class="unit">/ year</span>
         </div>
         <span class="price-card__annual-note js-annual-note">≈ ₦16,667 / month, billed yearly</span>
         <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
       </article>
 
-      <article class="price-card price-card--popular" data-ngn-monthly="15000" data-ngn-annual="150000" data-per-seat="true">
+      <article class="price-card price-card--popular" data-ngn-monthly="75000" data-ngn-annual="720000" data-per-seat="true">
         <span class="price-card__badge">Most common</span>
-        <p class="price-card__tier">Boutique</p>
-        <p class="price-card__scope">2–10 seats</p>
+        <p class="price-card__tier">Firm</p>
+        <p class="price-card__scope">5 Professional included<br>5 Team included<br>Additional seats available<br></p>
         <div class="price-card__amount price-monthly">
-          <span class="value js-amount">₦15,000</span><span class="unit">/ seat / month</span>
+          <span class="value js-amount">₦75,000</span><span class="unit">/ seat / month</span>
         </div>
         <div class="price-card__amount price-annual">
-          <span class="value js-amount">₦150,000</span><span class="unit">/ seat / yr</span>
+          <span class="value js-amount">₦720,000</span><span class="unit">/ seat / yr</span>
         </div>
         <span class="price-card__annual-note js-annual-note">≈ ₦12,500 / seat / month, billed yearly</span>
         <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
       </article>
 
-      <article class="price-card" data-ngn-monthly="12500" data-ngn-annual="125000" data-per-seat="true">
-        <p class="price-card__tier">Mid</p>
-        <p class="price-card__scope">11–30 seats</p>
+      <article class="price-card" data-ngn-monthly="175000" data-ngn-annual="1680000" data-per-seat="true">
+        <p class="price-card__tier">Scale</p>
+        <p class="price-card__scope">15 Professional included<br>10 Team included<br>Additional seats available<br></p>
         <div class="price-card__amount price-monthly">
-          <span class="value js-amount">₦12,500</span><span class="unit">/ seat / month</span>
+          <span class="value js-amount">₦175,000</span><span class="unit">/ seat / month</span>
         </div>
         <div class="price-card__amount price-annual">
-          <span class="value js-amount">₦125,000</span><span class="unit">/ seat / yr</span>
+          <span class="value js-amount">₦1,680,000</span><span class="unit">/ seat / yr</span>
         </div>
         <span class="price-card__annual-note js-annual-note">≈ ₦10,417 / seat / month, billed yearly</span>
         <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
       </article>
 
-      <article class="price-card" data-ngn-monthly="10000" data-ngn-annual="100000" data-per-seat="true">
-        <p class="price-card__tier">Full</p>
-        <p class="price-card__scope">31–100 seats</p>
-        <div class="price-card__amount price-monthly">
-          <span class="value js-amount">₦10,000</span><span class="unit">/ seat / month</span>
-        </div>
-        <div class="price-card__amount price-annual">
-          <span class="value js-amount">₦100,000</span><span class="unit">/ seat / yr</span>
-        </div>
-        <span class="price-card__annual-note js-annual-note">≈ ₦8,333 / seat / month, billed yearly</span>
-        <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
-      </article>
-
-      <article class="price-card" data-ngn-monthly="1000000" data-ngn-annual="1000000" data-custom="true">
+      <!-- <article class="price-card" data-ngn-monthly="1000000" data-ngn-annual="1000000" data-custom="true"> -->
+        <article class="price-card" >
         <p class="price-card__tier">Enterprise</p>
-        <p class="price-card__scope">100+ or custom</p>
+        <p class="price-card__scope">Custom users/capacity<br>Advanced governance<br>Custom support / contractual terms<br></p>
         <div class="price-card__amount price-monthly">
-          <span class="value js-amount">₦1M+</span><span class="unit">/ month, floor</span>
+          <span class="value ">Let's talk</span>
         </div>
         <div class="price-card__amount price-annual">
-          <span class="value js-amount">₦1M+</span><span class="unit">/ month, floor</span>
+          <span class="value">Let's talk</span>
         </div>
         <span class="price-card__annual-note">Custom contract, negotiated at signing</span>
         <a href="#waitlist" class="price-card__cta">Contact Sales</a>
@@ -4095,7 +4089,7 @@ waitlistForm.addEventListener('submit', async (e) => {
           <ul>
             <li><a href="#what">What Deeluh does</a></li>
             <li><a href="#pricing">Pricing</a></li>
-            <li><a href="#faq">FAQ</a></li>
+            <li><a href="index.html#faq">FAQ</a></li>
             <li><a href="javascript:void(0)">Security</a></li>
           </ul>
         </div>
@@ -4113,8 +4107,8 @@ waitlistForm.addEventListener('submit', async (e) => {
         <div class="footer-col">
           <p class="footer-col__title">Legal</p>
           <ul>
-            <li><a href="https://app.deeluh.com/privacy">Privacy policy</a></li>
-            <li><a href="https://app.deeluh.com/terms">Terms of service</a></li>
+            <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
+            <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
             <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
             <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
           </ul>
