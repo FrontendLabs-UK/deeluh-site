@@ -2726,7 +2726,7 @@
      constant back-and-forth shimmer */
   @keyframes shine-sweep {
     0%   { background-position: -120% 0; }
-    18%  { background-position: 220% 0; }
+    70%  { background-position: 220% 0; }
     100% { background-position: 220% 0; }
   }
 
@@ -2891,7 +2891,7 @@
       
           <div class="hero__actions">
             <a href="#waitlist" class="hero__btn hero__btn--primary">Join Waitlist</a>
-            <a href="javascript:void(0)" class="hero__btn hero__btn--secondary">Watch the Demo</a>
+            <a href="/assets/demo.mp4" class="hero__btn hero__btn--secondary">Watch the Demo</a>
           </div>
       
           <div class="hero__features">
@@ -3245,7 +3245,7 @@
 
         <article class="firm-card">
           <h3>Sole Proprietorship</h3>
-          <p>You own the firm, associates work under you. Role permissions built in, billing per seat.</p>
+          <p>You own the firm, associates work under you. Role permissions built in, billing per firm.</p>
           <!-- <span class="firm-card__price">From ₦15,000 / seat / month</span> -->
         </article>
 
@@ -3402,7 +3402,8 @@
       </button>
       <span data-label="annual">Annual</span>
     </div>
-    <span class="billing-toggle__save">Annual billing pays for ten months — two months free at every tier.</span>
+    <span class="billing-toggle__save">Annual Plan — Save 2 Months, Pay for 10 months and enjoy 12 months of uninterrupted access.<br><br>New to Deeluh? Start with a 1-month free trial and experience the full product before subscribing.</span>
+
 
     <div class="pricing-grid" id="pricingGrid">
 
@@ -3419,30 +3420,30 @@
         <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
       </article>
 
-      <article class="price-card price-card--popular" data-ngn-monthly="75000" data-ngn-annual="720000" data-per-seat="true">
+      <article class="price-card price-card--popular" data-ngn-monthly="75000" data-ngn-annual="720000" data-per-firm="true">
         <span class="price-card__badge">Most common</span>
         <p class="price-card__tier">Firm</p>
         <p class="price-card__scope">5 Professional included<br>5 Team included<br>Additional seats available<br></p>
         <div class="price-card__amount price-monthly">
-          <span class="value js-amount">₦75,000</span><span class="unit">/ seat / month</span>
+          <span class="value js-amount">₦75,000</span><span class="unit">/ firm / month</span>
         </div>
         <div class="price-card__amount price-annual">
-          <span class="value js-amount">₦720,000</span><span class="unit">/ seat / yr</span>
+          <span class="value js-amount">₦720,000</span><span class="unit">/ firm / yr</span>
         </div>
-        <span class="price-card__annual-note js-annual-note">≈ ₦12,500 / seat / month, billed yearly</span>
+        <span class="price-card__annual-note js-annual-note">≈ ₦12,500 / firm / month, billed yearly</span>
         <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
       </article>
 
-      <article class="price-card" data-ngn-monthly="175000" data-ngn-annual="1680000" data-per-seat="true">
+      <article class="price-card" data-ngn-monthly="175000" data-ngn-annual="1680000" data-per-firm="true">
         <p class="price-card__tier">Scale</p>
         <p class="price-card__scope">15 Professional included<br>10 Team included<br>Additional seats available<br></p>
         <div class="price-card__amount price-monthly">
-          <span class="value js-amount">₦175,000</span><span class="unit">/ seat / month</span>
+          <span class="value js-amount">₦175,000</span><span class="unit">/ firm / month</span>
         </div>
         <div class="price-card__amount price-annual">
-          <span class="value js-amount">₦1,680,000</span><span class="unit">/ seat / yr</span>
+          <span class="value js-amount">₦1,680,000</span><span class="unit">/ firm / yr</span>
         </div>
-        <span class="price-card__annual-note js-annual-note">≈ ₦10,417 / seat / month, billed yearly</span>
+        <span class="price-card__annual-note js-annual-note">≈ ₦10,417 / firm / month, billed yearly</span>
         <a href="#waitlist" class="price-card__cta">Join Waitlist</a>
       </article>
 
@@ -3485,7 +3486,7 @@
 
     </div>
 
-    <p class="pricing__disclaimer">Prices are set in naira. Other currencies are estimates based on live exchange rates and may vary slightly at checkout.</p>
+    <p class="pricing__disclaimer">Prices are set in naira. Other currencies are estimates based on live exchange rates.</p>
 
   </div>
 </section>
@@ -4386,7 +4387,7 @@ waitlistForm.addEventListener('submit', async (e) => {
     function setLogoShineInterval(seconds) {
       document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
     }
-    // example: setLogoShineInterval(8);
+    example: setLogoShineInterval(15);
   </script>
   <!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
 
