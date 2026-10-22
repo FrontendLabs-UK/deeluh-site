@@ -19,14 +19,32 @@
      ========================================================== */
      .about-deeluh {
     position: relative;
-    background-color: #fff;
-    background-image:
-      radial-gradient(42% 38% at 92% 8%, var(--brand-clay-tint) 0%, rgba(247, 236, 231, 0) 65%),
-      radial-gradient(40% 36% at 6% 30%, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 65%);
-    background-repeat: no-repeat;
+    background-color: #0a2018;
+    overflow: hidden;
     font-family: var(--font-body);
     color: var(--ink);
-    /* overflow: hidden; */
+  }
+
+  /* dark cinematic photo background — Mission/Values only; the
+     Deeluh/Frontendlabs story that used to live in this same section
+     (stages 2–4) now has its own section below, .deeluh-story, kept
+     on the original light background */
+  .about-deeluh::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('/assets/images/company.jpeg');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+
+  .about-deeluh::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(165deg, rgba(6, 18, 17, 0.90) 0%, rgba(8, 26, 24, 0.82) 50%, rgba(6, 18, 17, 0.92) 100%);
+    z-index: 0;
   }
 
   /* ==========================================================
@@ -35,7 +53,7 @@
   .about-deeluh__stage1 {
     position: relative;
     z-index: 2;
-    padding: 10rem 1.5rem 2rem;
+    padding: 10rem 1.5rem 6rem;
     max-width: 1100px;
     margin: 0 auto;
   }
@@ -45,7 +63,7 @@
     font-weight: 500;
     font-size: clamp(2rem, 3.2vw, 2.6rem);
     line-height: 1.15;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     margin: 0 auto;
     text-align: center;
   }
@@ -59,7 +77,7 @@
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--brand-clay-hover);
+    color: var(--brand-clay-light);
     text-align: center;
     margin: 0 0 3rem;
 
@@ -102,15 +120,35 @@
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.3rem;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     margin: 0 0 .85rem;
   }
 
   .about-deeluh__card p {
     font-size: .95rem;
     line-height: 1.7;
-    color: var(--ink-2);
+    color: #C8D8D6;
     margin: 0;
+  }
+
+  /* ==========================================================
+     DEELUH / FRONTENDLABS STORY SECTION — split out from
+     About Deeluh above so Mission/Values can have its own dark
+     cinematic treatment while this stays the original light,
+     editorial background. Same radial-tint recipe .about-deeluh
+     used before the split.
+     ========================================================== */
+  .deeluh-story {
+    position: relative;
+    background-color: #fff;
+    background-image:
+      radial-gradient(42% 38% at 92% 8%, var(--brand-clay-tint) 0%, rgba(247, 236, 231, 0) 65%),
+      radial-gradient(40% 36% at 6% 30%, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 65%);
+    background-repeat: no-repeat;
+    font-family: var(--font-body);
+    color: var(--ink);
+    /* overflow: hidden;  -- left off: .about-deeluh__pin below uses
+       position:sticky */
   }
 
   /* ==========================================================
@@ -217,7 +255,7 @@
     transform: translateY(22px);
     transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
   }
-  .about-deeluh.is-visible .about-deeluh__writeup {
+  .deeluh-story.is-visible .about-deeluh__writeup {
     opacity: 1;
     transform: translateY(0);
   }
@@ -233,7 +271,7 @@
      TABLET
      ========================================================== */
   @media (max-width: 900px) {
-    .about-deeluh__stage1 { padding: 4.5rem 1.25rem 1.5rem; }
+    .about-deeluh__stage1 { padding: 4.5rem 1.25rem 4rem; }
     .about-deeluh__cards { grid-template-columns: 1fr; gap: 1.25rem; }
     .about-deeluh__gap { height: 4rem; }
     .about-deeluh__statement { max-width: 88%; }
@@ -601,14 +639,262 @@
   }
 
   /* ==========================================================
+     FRONTENDLABS TEAM GALLERY — continuous right-to-left strip
+     of 5 photos, on the site's default dark green grid pattern
+     (same dot-grid + gridline recipe as Contact/Pricing, using
+     brand-primary instead of clay). Pauses on hover, opens a
+     lightbox on click.
+     ========================================================== */
+  .team-gallery {
+    position: relative;
+    padding: 7rem 0 8rem;
+    background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%);
+    overflow: hidden;
+    isolation: isolate;
+    font-family: var(--font-body);
+  }
+
+  .team-gallery::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1.5px);
+    background-size: 26px 26px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .team-gallery::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 120px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .team-gallery__header {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto 3.5rem;
+    padding: 0 1.5rem;
+    text-align: center;
+
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.16,1,.3,1), transform .7s cubic-bezier(.16,1,.3,1);
+  }
+  .team-gallery.is-visible .team-gallery__header { opacity: 1; transform: translateY(0); }
+
+  .team-gallery__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--brand-clay-light);
+    margin: 0 0 1.1rem;
+  }
+  .team-gallery__eyebrow::before,
+  .team-gallery__eyebrow::after {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: var(--brand-clay);
+    display: inline-block;
+  }
+
+  .team-gallery__header h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3.2vw, 2.6rem);
+    line-height: 1.15;
+    color: var(--brand-primary-tint);
+    margin: 0 0 .85rem;
+  }
+
+  .team-gallery__header p {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: #C8D8D6;
+    margin: 0;
+  }
+
+  /* ---- continuous marquee track ---- */
+  .team-gallery__viewport {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .team-gallery__track {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    padding: 0 1.5rem;
+    animation: teamGalleryScroll 34s linear infinite;
+  }
+
+  /* hover pauses the whole strip and holds it visually stable */
+  .team-gallery__viewport:hover .team-gallery__track {
+    animation-play-state: paused;
+  }
+
+  @keyframes teamGalleryScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  .team-gallery__item {
+    flex: none;
+    width: min(300px, 70vw);
+    aspect-ratio: 4 / 5;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    cursor: pointer;
+    background: none;
+    padding: 0;
+    transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s ease;
+  }
+
+  .team-gallery__item:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+
+  .team-gallery__item:focus-visible {
+    outline: 2px solid var(--brand-clay-light);
+    outline-offset: 3px;
+  }
+
+  .team-gallery__item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ---- lightbox ---- */
+  .team-gallery__lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: rgba(6, 12, 11, 0.88);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+  }
+
+  .team-gallery__lightbox.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .team-gallery__lightbox-frame {
+    position: relative;
+    max-width: min(900px, 92vw);
+    max-height: 86vh;
+    transform: scale(0.96);
+    transition: transform .3s cubic-bezier(.2,.8,.2,1);
+  }
+  .team-gallery__lightbox.is-open .team-gallery__lightbox-frame {
+    transform: scale(1);
+  }
+
+  .team-gallery__lightbox img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-height: 86vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.7);
+  }
+
+  .team-gallery__lightbox-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: rgba(6, 12, 11, 0.55);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .25s ease, border-color .25s ease;
+  }
+  .team-gallery__lightbox-close:hover {
+    background: rgba(6, 12, 11, 0.8);
+    border-color: rgba(255, 255, 255, 0.6);
+  }
+  .team-gallery__lightbox-close svg { width: 16px; height: 16px; }
+
+  @media (max-width: 640px) {
+    .team-gallery { padding: 5rem 0 6rem; }
+    .team-gallery__item { width: min(240px, 66vw); }
+    .team-gallery__track { gap: 1rem; padding: 0 1.25rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .team-gallery__header { transition: none; opacity: 1; transform: none; }
+    .team-gallery__track { animation: none; }
+    .team-gallery__item, .team-gallery__lightbox, .team-gallery__lightbox-frame {
+      transition: none;
+    }
+  }
+
+  /* ==========================================================
      FAQ SECTION
      ========================================================== */
      .faq {
+    position: relative;
     padding: 7rem 1.5rem 8rem;
-    background: #fff;
+    background-color: #0a2018;
+    overflow: hidden;
+    isolation: isolate;
+  }
+
+  /* dark cinematic photo now covers the entire FAQ section — header
+     and accordion both sit on top of it */
+  .faq::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1758520145132-b0ecdb967295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+
+  .faq::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(165deg, rgba(6, 18, 17, 0.93) 0%, rgba(8, 26, 24, 0.87) 50%, rgba(6, 18, 17, 0.94) 100%);
+    z-index: 0;
   }
 
   .faq__inner {
+    position: relative;
+    z-index: 1;
     max-width: 800px;
     margin: 0 auto;
   }
@@ -625,7 +911,7 @@
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--brand-clay-hover);
+    color: var(--brand-clay-light);
     margin-bottom: 1.1rem;
   }
 
@@ -642,25 +928,27 @@
     font-weight: 500;
     font-size: clamp(2rem, 3.2vw, 2.6rem);
     line-height: 1.15;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     margin: 0 0 .75rem;
   }
 
   .faq__header p {
     font-size: 1.02rem;
-    color: var(--ink-3);
+    color: #C8D8D6;
     margin: 0;
   }
 
   /* ==========================================================
-     ACCORDION
+     ACCORDION — now sitting directly on the dark photo, so every
+     color here is flipped from dark-on-light to light-on-dark
      ========================================================== */
   .faq-list {
-    border-top: 1px solid rgba(15, 21, 25, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
   }
 
+
   .faq-item {
-    border-bottom: 1px solid rgba(15, 21, 25, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.16);
   }
 
   .faq-item__trigger {
@@ -680,12 +968,12 @@
   .faq-item__question {
     font-size: 1.05rem;
     font-weight: 600;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     transition: color .25s ease;
   }
 
   .faq-item__trigger:hover .faq-item__question {
-    color: var(--brand-primary);
+    color: var(--brand-clay-light);
   }
 
   /* plus / close icon, built from two CSS lines */
@@ -695,7 +983,7 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    border: 1.5px solid var(--brand-primary);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
     transition: background .3s ease, border-color .3s ease;
   }
 
@@ -705,7 +993,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    background: var(--brand-primary);
+    background: var(--brand-primary-tint);
     transition: transform .35s cubic-bezier(.2,.8,.2,1), background .3s ease;
   }
 
@@ -721,9 +1009,11 @@
     transform: translate(-50%, -50%);
   }
 
-  /* open state: fill the circle, turn plus into an x */
+  /* open state: fill the circle (with the clay accent, used sparingly
+     here for exactly this one active state), turn plus into an x */
   .faq-item.is-open .faq-item__icon {
-    background: var(--brand-primary);
+    background: var(--brand-clay);
+    border-color: var(--brand-clay);
   }
 
   .faq-item.is-open .faq-item__icon::before,
@@ -757,7 +1047,7 @@
   .faq-item__answer {
     font-size: .96rem;
     line-height: 1.65;
-    color: var(--ink-2);
+    color: #C8D8D6;
     padding: 0 0 1.75rem;
     max-width: 62ch;
   }
@@ -1165,7 +1455,7 @@
     </ul>
 
     <div class="navbar__actions">
-      <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
       <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
     </div>
 
@@ -1201,7 +1491,7 @@
         <li><a href="company.html">Company</a></li>
       </ul>
       <div class="navbar__mobile-actions">
-        <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
         <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
       </div>
     </div>
@@ -1282,6 +1572,15 @@
     </div>
   </div>
 
+</section>
+
+<!-- "DEELUH / FRONTENDLABS STORY" SECTION — split out from About
+     Deeluh above; same pinned scroll-reveal statement + closing
+     writeup as before, now its own section on the original light
+     editorial background rather than sharing About Deeluh's new
+     dark treatment -->
+<section class="deeluh-story" id="deeluhStorySection">
+
   <!-- STAGE 2 -->
   <div class="about-deeluh__gap"></div>
 
@@ -1304,18 +1603,26 @@
 
 <script>
 (function () {
-  const section = document.getElementById('aboutDeeluhSection');
+  const missionSection = document.getElementById('aboutDeeluhSection');
+  const storySection = document.getElementById('deeluhStorySection');
 
-  /* ---- simple fade-up entrance for stage 1 / stage 4 ---- */
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        section.classList.add('is-visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-  revealObserver.observe(section);
+  /* ---- simple fade-up entrance — now two independent sections
+     (Mission/Values card reveal, and the story's writeup reveal),
+     each gets its own observer toggling its own is-visible class ---- */
+  function observeReveal(el) {
+    if (!el) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          el.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    obs.observe(el);
+  }
+  observeReveal(missionSection);
+  observeReveal(storySection);
 
   /* ---- pinned scroll-reveal statement ---- */
   const runway = document.getElementById('statementRunway');
@@ -1443,7 +1750,7 @@
       <!-- RIGHT — Nigeria-first -->
       <div class="flabs__col flabs__col--right">
         <p class="flabs__text">We're launching first in Nigeria, with pricing set in naira and a platform built around how Nigerian firms actually operate today. Our ambition is to design for legal teams everywhere, but we're deliberately starting in the market we understand best, so that what we build first is genuinely right, rather than merely broad.</p>
-        <a href="mailto:hello@deeluh.com" class="flabs__btn flabs__btn--filled">Book a Demo</a>
+        <a href="https://calendly.com/deeluhhq" class="flabs__btn flabs__btn--filled">Book a Demo</a>
       </div>
 
     </div>
@@ -1466,6 +1773,123 @@
 </script>
 
 <!-- END OF "ABOUT FRONTENDLABS" SECTION -->
+
+<!-- "FRONTENDLABS TEAM GALLERY" SECTION -->
+
+<section class="team-gallery" id="teamGallerySection">
+
+  <div class="team-gallery__header">
+    <span class="team-gallery__eyebrow">The Team</span>
+    <h2>The people building Deeluh.</h2>
+    <p>A small, senior team shipping product for founders who can't afford to get it wrong.</p>
+  </div>
+
+  <div class="team-gallery__viewport">
+    <div class="team-gallery__track">
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam1.jpg" alt="Member of the Frontendlabs team">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam2.jpg" alt="Member of the Frontendlabs team">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam3.jpg" alt="Member of the Frontendlabs team">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam4.jpg" alt="Frontendlabs team collaborating">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam5.jpg" alt="Member of the Frontendlabs team">
+      </button>
+
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam1.jpg" alt="Member of the Frontendlabs team">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam2.jpg" alt="Member of the Frontendlabs team">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam3.jpg" alt="Member of the Frontendlabs team">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam4.jpg" alt="Frontendlabs team collaborating">
+      </button>
+      <button type="button" class="team-gallery__item">
+        <img src="/assets/images/deeluhteam5.jpg" alt="Member of the Frontendlabs team">
+      </button>
+
+    </div>
+  </div>
+
+</section>
+
+<div class="team-gallery__lightbox" id="teamGalleryLightbox">
+  <div class="team-gallery__lightbox-frame">
+    <button type="button" class="team-gallery__lightbox-close" id="teamGalleryLightboxClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <img src="" alt="" id="teamGalleryLightboxImg">
+  </div>
+</div>
+
+<script>
+(function () {
+  const section = document.getElementById('teamGallerySection');
+  const items = document.querySelectorAll('.team-gallery__item');
+  const lightbox = document.getElementById('teamGalleryLightbox');
+  const lightboxImg = document.getElementById('teamGalleryLightboxImg');
+  const closeBtn = document.getElementById('teamGalleryLightboxClose');
+
+  /* ---- fade-up entrance for the header ---- */
+  if (section) {
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          section.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealObserver.observe(section);
+  }
+
+  /* ---- lightbox: click a photo to enlarge, click outside (or the
+     close button, or Escape) to dismiss ---- */
+  if (!lightbox || !lightboxImg) return;
+
+  function openLightbox(src, alt) {
+    lightboxImg.src = src;
+    lightboxImg.alt = alt || '';
+    lightbox.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    lightbox.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  items.forEach(item => {
+    if (item.hasAttribute('aria-hidden')) return; // skip the duplicated marquee set
+    item.addEventListener('click', () => {
+      const img = item.querySelector('img');
+      if (img) openLightbox(img.src, img.alt);
+    });
+  });
+
+  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+
+  // clicking the dimmed backdrop (anywhere outside the image frame) closes it
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+})();
+</script>
+
+<!-- END OF "FRONTENDLABS TEAM GALLERY" SECTION -->
 
 <!-- FAQ SECTION -->
 
@@ -1819,7 +2243,7 @@
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
+      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
 
       <div class="footer-bottom__social">
         <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
