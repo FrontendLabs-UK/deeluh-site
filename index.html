@@ -238,7 +238,7 @@
   .hero p {
     font-size: 1.1rem;
     line-height: 1.65;
-    color: rgba(255, 255, 255, 0.72);
+    color: rgb(255, 255, 255);
     max-width: 58ch;
     margin: 0 auto 2.5rem;
   }
@@ -325,6 +325,53 @@
   }
 
   /* ==========================================================
+     HERO DASHBOARD IMAGE — sits below the hero copy, in normal
+     flow, then a negative bottom margin pulls it down past the
+     section's own bottom edge. .hero already has overflow:hidden
+     (set above, for the mesh blobs), so the overhang gets clipped
+     right at the hero boundary — the "emerging from underneath"
+     effect — without any extra wrapper or JS.
+     ========================================================== */
+  .hero__dashboard {
+    position: relative;
+    z-index: 1; /* above the dot-grid/mesh (z:0), below .hero__inner content (z:2) */
+    width: 70%;
+    max-width: 1180px;
+    /* margin: 3.5rem auto -16vw; */
+    margin: -300px auto -16vw;
+    border-radius: 18px 18px 0 0;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .hero__dashboard img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .hero__dashboard img ::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 61, 58, 0.55);
+  pointer-events: none;
+}
+
+  /* darkens the dashboard's own white UI chrome so it recedes behind
+     the hero's white headline/body text, and fades its top edge into
+     the hero background instead of showing a hard rectangle edge */
+  .hero__dashboard::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* background:
+      linear-gradient(180deg, rgba(6, 20, 19, 0.55) 0%, rgba(6, 20, 19, 0.16) 20%, rgba(6, 20, 19, 0.22) 65%, rgba(6, 20, 19, 0.4) 100%); */
+      background: rgba(15, 61, 58, 0.75);
+    pointer-events: none;
+  }
+
+  /* ==========================================================
      RESPONSIVE
      ========================================================== */
   @media (max-width: 640px) {
@@ -332,6 +379,7 @@
     .hero__actions { flex-direction: column; align-items: stretch; }
     .hero__btn { justify-content: center; }
     .hero__features span { padding: 0 .6rem; }
+    .hero__dashboard { width: 88%; margin: 2.5rem auto -22vw; border-radius: 14px 14px 0 0; }
   }
 
 
@@ -1173,14 +1221,37 @@
   .firm-size {
     position: relative;
     padding: 7rem 1.5rem 4rem;
-    background:
-      radial-gradient(60% 50% at 12% 0%, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 60%),
-      radial-gradient(50% 40% at 92% 100%, var(--brand-clay-tint) 0%, rgba(247, 236, 231, 0) 60%),
-      #fff;
-    /* overflow: hidden; */
+    background-color: #0a2320;
+    /* overflow: hidden;  -- intentionally left off: .firm-mid uses
+       position:sticky below, and overflow other than visible on an
+       ancestor can break sticky positioning */
+  }
+
+  /* dark cinematic background photo — same layering approach as the
+     other photographic section below (.compare), kept as its own
+     ::before/::after pair so the existing sticky/grid layout underneath
+     is untouched */
+  .firm-size::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1758518731462-d091b0b4ed0d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920');
+    background-size: cover;
+    background-position: center 30%;
+    z-index: 0;
+  }
+
+  .firm-size::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(165deg, rgba(6, 18, 17, 0.93) 0%, rgba(8, 26, 24, 0.86) 45%, rgba(6, 18, 17, 0.94) 100%);
+    z-index: 0;
   }
 
   .firm-size__inner {
+    position: relative;
+    z-index: 1;
     max-width: 1240px;
     margin: 0 auto;
   }
@@ -1223,7 +1294,7 @@
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--brand-clay-hover);
+    color: #e7b7a4; /* lighter clay — same treatment used on the site's other dark sections (hero, pricing) */
     margin-bottom: 1.25rem;
   }
 
@@ -1246,7 +1317,7 @@
     font-size: clamp(2rem, 3.2vw, 2.75rem);
     line-height: 1.15;
     letter-spacing: -0.01em;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     margin: 0 0 1.25rem;
     text-align: center;
   }
@@ -1254,7 +1325,7 @@
   .firm-mid p {
     font-size: 1.05rem;
     line-height: 1.65;
-    color: var(--ink-2);
+    color: #C8D8D6;
     max-width: 40ch;
     margin: 0;
     text-align: center;
@@ -1267,16 +1338,17 @@
     position: relative;
     padding: 1.85rem 1.75rem;
     border-radius: 20px;
-    background: linear-gradient(160deg, #ffffff 0%, var(--brand-primary-tint) 130%);
-    border: 1px solid rgba(15, 61, 58, 0.10);
-    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.04);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 130%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(6px);
     transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
   }
 
   .firm-card:hover {
     transform: translateY(-6px);
-    border-color: var(--brand-primary);
-    box-shadow: 0 24px 48px -18px rgba(15, 61, 58, 0.28);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 24px 48px -18px rgba(0, 0, 0, 0.5);
   }
 
   /* scale cluster — dots grow with firm size, a real structural echo of the copy */
@@ -1303,14 +1375,14 @@
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.25rem;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     margin: 0 0 .6rem;
   }
 
   .firm-card p {
     font-size: .925rem;
     line-height: 1.55;
-    color: var(--ink-2);
+    color: #C8D8D6;
     margin: 0 0 1.25rem;
   }
 
@@ -1331,7 +1403,7 @@
     text-align: center;
     margin-top: 4rem;
     font-size: .85rem;
-    color: var(--ink-3);
+    color: rgba(200, 216, 214, 0.6);
   }
 
 
@@ -1958,15 +2030,36 @@
      .compare {
     position: relative;
     padding: 7rem 1.5rem 9rem;
-    background-color: #fff;
-    background-image:
-      radial-gradient(42% 40% at 92% 6%, var(--brand-clay-tint) 0%, rgba(247, 236, 231, 0) 65%),
-      radial-gradient(45% 38% at 4% 92%, var(--brand-primary-tint) 0%, rgba(230, 236, 236, 0) 65%);
-    background-repeat: no-repeat;
-    /* overflow: hidden; */
+    background-color: #0a2320;
+    /* overflow: hidden;  -- intentionally left off: .compare-left and
+       .compare-header use position:sticky below, and overflow other
+       than visible on an ancestor can break sticky positioning */
+  }
+
+  /* dark cinematic background photo — a different image from
+     .firm-size above so the two dark sections don't feel repetitive,
+     same layering approach so they still read as one visual system */
+  .compare::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1768426264661-7671fd431151?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920');
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+  }
+
+  .compare::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(165deg, rgba(6, 18, 17, 0.92) 0%, rgba(8, 26, 24, 0.85) 45%, rgba(6, 18, 17, 0.93) 100%);
+    z-index: 0;
   }
 
   .compare__inner {
+    position: relative;
+    z-index: 1;
     max-width: 1240px;
     margin: 0 auto;
   }
@@ -1998,7 +2091,7 @@
     font-weight: 600;
     letter-spacing: .08em;
     text-transform: uppercase;
-    color: var(--brand-clay-hover);
+    color: #e7b7a4; /* lighter clay — same treatment as .firm-mid__eyebrow above */
     margin-bottom: 1.25rem;
   }
 
@@ -2016,14 +2109,14 @@
     font-size: clamp(2rem, 3.2vw, 2.75rem);
     line-height: 1.15;
     letter-spacing: -0.01em;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     margin: 0 0 1.25rem;
   }
 
   .compare-left p {
     font-size: 1.05rem;
     line-height: 1.65;
-    color: var(--ink-2);
+    color: #C8D8D6;
     max-width: 38ch;
     margin: 0;
   }
@@ -2060,9 +2153,11 @@
     padding: 6rem 4rem 1.75rem;
     border-radius: 0;
     /* fully opaque — no see-through blur, so rows are truly hidden
-       once they pass underneath, not just ghosted behind glass */
-    background: #fdfdfc;
-    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.03);
+       once they pass underneath, not just ghosted behind glass.
+       Dark now, to match the section's cinematic treatment, but the
+       "cave mouth" masking behaviour is unchanged. */
+    background: rgba(9, 27, 25, 0.97);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     transition: box-shadow .3s ease;
   }
 
@@ -2076,14 +2171,14 @@
     right: 0;
     top: 100%;
     height: 28px;
-    background: linear-gradient(180deg, #fdfdfc 0%, rgba(253, 253, 252, 0) 100%);
+    background: linear-gradient(180deg, rgba(9, 27, 25, 0.97) 0%, rgba(9, 27, 25, 0) 100%);
     pointer-events: none;
   }
 
   /* stronger shadow once it's actually pinned and rows are
      passing beneath it — toggled by the sentinel-based JS below */
   .compare-header.is-stuck {
-    box-shadow: 0 12px 24px -14px rgba(15, 61, 58, 0.22);
+    box-shadow: 0 12px 24px -14px rgba(0, 0, 0, 0.45);
   }
 
   .compare-header__old,
@@ -2098,7 +2193,7 @@
     font-weight: 600;
     letter-spacing: .03em;
     text-transform: uppercase;
-    color: var(--ink-3);
+    color: rgba(200, 216, 214, 0.6);
   }
 
   .compare-header__new span {
@@ -2106,7 +2201,7 @@
     font-weight: 600;
     letter-spacing: .03em;
     text-transform: uppercase;
-    color: var(--brand-primary);
+    color: var(--brand-primary-tint);
   }
 
   .compare-header__divider {
@@ -2134,9 +2229,10 @@
     gap: 1.5rem;
     padding: 1.5rem 1.75rem;
     border-radius: 20px;
-    background: linear-gradient(160deg, #ffffff 0%, var(--brand-primary-tint) 130%);
-    border: 1px solid rgba(15, 61, 58, 0.10);
-    box-shadow: 0 1px 2px rgba(15, 21, 25, 0.04);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 130%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(6px);
     transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease;
 
     /* reveal state — starts hidden, JS flips .is-visible */
@@ -2153,8 +2249,8 @@
 
   .compare-row:hover {
     transform: translateY(-4px);
-    border-color: var(--brand-primary);
-    box-shadow: 0 24px 48px -18px rgba(15, 61, 58, 0.24);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 24px 48px -18px rgba(0, 0, 0, 0.45);
   }
 
   /* -- traditional side -- */
@@ -2169,18 +2265,18 @@
     width: 26px;
     height: 26px;
     border-radius: 50%;
-    border: 1.5px solid rgba(92, 105, 113, 0.35);
+    border: 1.5px solid rgba(255, 255, 255, 0.28);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--ink-3);
+    color: rgba(200, 216, 214, 0.7);
   }
 
   .compare-row__icon svg { width: 12px; height: 12px; }
 
   .compare-row__old span {
     font-size: .98rem;
-    color: var(--ink-3);
+    color: rgba(200, 216, 214, 0.7);
     line-height: 1.45;
   }
 
@@ -2211,14 +2307,14 @@
 
   .compare-row__icon--check {
     background: var(--brand-primary);
-    border-color: var(--brand-primary);
+    border-color: rgba(255, 255, 255, 0.3);
     color: #fff;
   }
 
   .compare-row__new span {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--ink);
+    color: var(--brand-primary-tint);
     line-height: 1.45;
   }
 
@@ -2239,10 +2335,10 @@
       margin-bottom: 1.25rem;
       padding: 1.1rem;
       border-radius: 16px;
-      border: 1px solid rgba(15, 61, 58, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.14);
     }
     .compare-header::after { display: none; }
-    .compare-header.is-stuck { box-shadow: 0 1px 2px rgba(15, 21, 25, 0.03); }
+    .compare-header.is-stuck { box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
 
     .compare-rows { padding: 0; gap: 1rem; }
 
@@ -2780,7 +2876,7 @@
     </ul>
 
     <div class="navbar__actions">
-      <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
       <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
     </div>
 
@@ -2816,7 +2912,7 @@
         <li><a href="company.html">Company</a></li>
       </ul>
       <div class="navbar__mobile-actions">
-        <a href="mailto:hello@deeluh.com" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
+        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
         <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
       </div>
     </div>
@@ -2890,8 +2986,8 @@
           <p>Everything your firm needs to win clients, manage matters, collaborate as one team. Deeluh turns how your firm runs into how your firm grows.</p>
       
           <div class="hero__actions">
-            <a href="#waitlist" class="hero__btn hero__btn--primary">Join Waitlist</a>
-            <a href="javascript:void(0)" class="hero__btn hero__btn--secondary">Watch the Demo</a>
+            <a href="https://app.deeluh.com/" class="hero__btn hero__btn--primary">Sign up</a>
+            <a href="/assets/demo.mp4" class="hero__btn hero__btn--secondary">Watch the Demo</a>
           </div>
       
           <div class="hero__features">
@@ -2900,6 +2996,10 @@
             <span><strong>RPC 2023</strong>&nbsp;audit trails</span>
             <span><strong>Paystack</strong>&nbsp;billing</span> -->
           </div>
+        </div>
+
+        <div class="hero__dashboard">
+          <img src="/assets/images/dashboard-hero.jpg" alt="Deeluh operations dashboard showing billing, collections, matter distribution and firm activity" loading="lazy">
         </div>
       </section>
 
@@ -3307,7 +3407,7 @@
         </div>
   
         <div class="dashboard-showcase__media" id="dashboardZoomMedia">
-          <img src="assets/images/dashboard-mockup.png" alt="Deeluh operations dashboard showing billing, collections, and matter distribution">
+          <img src="assets/images/dashboard-hero.jpg" alt="Deeluh operations dashboard showing billing, collections, and matter distribution">
         </div>
   
       </div>
@@ -3402,7 +3502,7 @@
       </button>
       <span data-label="annual">Annual</span>
     </div>
-    <span class="billing-toggle__save">Annual plan — save 20% at every tier, with 12 months of uninterrupted access.<br><br>New to Deeluh? Start with a 1-month free trial and experience the full product before subscribing.</span>
+    <span class="billing-toggle__save">Annual Plan — Save 2 Months, Pay for 10 months and enjoy 12 months of uninterrupted access.<br><br>New to Deeluh? Start with a 1-month free trial and experience the full product before subscribing.</span>
 
 
     <div class="pricing-grid" id="pricingGrid">
@@ -4118,7 +4218,7 @@ waitlistForm.addEventListener('submit', async (e) => {
       </div>
   
       <div class="footer-bottom">
-        <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
+        <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
   
         <div class="footer-bottom__social">
           <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
