@@ -3,14 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Product — Deeluh</title>
-<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<title>Product · Deeluh</title>
+<meta name="description" content="How Deeluh works: firm set-up, matters, the client portal, billing, Deeluh AI, team management and compliance records, on one platform for the whole firm.">
+<link rel="canonical" href="https://deeluh.com/product.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeluh">
+<meta property="og:title" content="Product · Deeluh">
+<meta property="og:description" content="How Deeluh works: firm set-up, matters, the client portal, billing, Deeluh AI, team management and compliance records, on one platform for the whole firm.">
+<meta property="og:url" content="https://deeluh.com/product.html">
+<meta property="og:image" content="https://deeluh.com/assets/images/og-deeluh.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/source-serif-4-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <style>
 
@@ -44,14 +53,14 @@
     text-align: center;
   }
 
-  .ecosystem__header h2,
+  .ecosystem__header h1,
   .ecosystem__header p {
     opacity: 0;
     transform: translateY(24px);
     transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
   }
 
-  .ecosystem.is-visible .ecosystem__header h2 {
+  .ecosystem.is-visible .ecosystem__header h1 {
     opacity: 1; transform: translateY(0);
   }
   .ecosystem.is-visible .ecosystem__header p {
@@ -59,7 +68,7 @@
     transition-delay: .15s;
   }
 
-  .ecosystem__header h2 {
+  .ecosystem__header h1 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(2rem, 3.2vw, 2.75rem);
@@ -321,7 +330,7 @@
     .ecosystem__node-float {
       animation: none;
     }
-    .ecosystem__header h2,
+    .ecosystem__header h1,
     .ecosystem__header p,
     .ecosystem__center-inner,
     .ecosystem__node-float,
@@ -930,6 +939,27 @@
     .logo-section { min-height: 38vh; padding: 3rem 1.25rem; }
   }
 
+
+  /* ==========================================================
+     31 OCT 2026 SITE CORRECTIONS (30 Oct website review)
+     ========================================================== */
+  /* the hub shows Deeluh's own modules, by the names the app uses (C-04, D-10, B-09) */
+  .ecosystem__header { padding-top: 2.5rem; }
+  .ecosystem__diagram { --node-size: 96px; }
+  .ecosystem__node-card--text { padding: 8px; text-align: center; }
+  .ecosystem__node-name { font-size: .74rem; font-weight: 600; line-height: 1.2; color: var(--brand-primary); }
+  .wordmark--hub { font-size: 1.45rem; color: var(--brand-primary); }
+  .ecosystem__import { max-width: 560px; margin: 3.5rem auto 0; text-align: center; font-size: .95rem; line-height: 1.6; color: var(--ink-2); }
+  @media (max-width: 900px) and (min-width: 641px) { .ecosystem__diagram { --node-size: 82px; } .ecosystem__node-name { font-size: .68rem; } }
+  @media (max-width: 640px) {
+    .ecosystem__node { aspect-ratio: auto; }
+    .ecosystem__node-card--text { padding: 1rem .75rem; min-height: 64px; }
+    .ecosystem__node-name { font-size: .88rem; }
+  }
+  /* the product pictures were taken down (D-13), so the module list stands alone */
+  .modules__grid { grid-template-columns: minmax(0, 760px); justify-content: center; }
+  @media (max-width: 1100px) and (min-width: 901px) { .modules__grid { grid-template-columns: minmax(0, 760px); } }
+  .logo-section { background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%); }
 </style>
 </head>
 <body>
@@ -939,10 +969,7 @@
 <nav class="navbar" id="siteNavbar">
   <div class="navbar__inner">
 
-    <a href="index.html" class="navbar__logo">
-      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
-      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
-    </a>
+    <a href="index.html" class="navbar__logo" aria-label="Deeluh home page"><span class="wordmark">Deeluh<span class="wordmark__dot">.</span></span></a>
 
     <ul class="navbar__menu">
       <li><a href="product.html">Product</a></li>
@@ -957,7 +984,7 @@
           </svg>
         </button>
         <div class="navbar__dropdown-panel">
-          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
           <a href="legal.html" class="navbar__dropdown-link">Legal</a>
         </div>
       </li>
@@ -967,8 +994,9 @@
     </ul>
 
     <div class="navbar__actions">
-      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      <a href="https://app.deeluh.com/auth/login" class="navbar__signin">Sign in</a>
+      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+      <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
     </div>
 
     <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
@@ -993,7 +1021,7 @@
           </button>
           <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
             <div class="navbar__mobile-dropdown-inner">
-              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
               <a href="legal.html" class="navbar__dropdown-link">Legal</a>
             </div>
           </div>
@@ -1003,8 +1031,9 @@
         <li><a href="company.html">Company</a></li>
       </ul>
       <div class="navbar__mobile-actions">
-        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+        <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
+        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+        <a href="https://app.deeluh.com/auth/login" class="navbar__btn navbar__btn--ghost">Sign in</a>
       </div>
     </div>
   </div>
@@ -1068,9 +1097,8 @@
   <div class="ecosystem__inner">
 
     <div class="ecosystem__header">
-      <br><br><br>
-      <h2><span class="ecosystem__accent">Everything</span> your firm needs in one platform.</h2>
-      <p>Most firms run on a patchwork of separate tools — spreadsheets for matters, messaging apps for clients, notebooks for trust accounts, memory for compliance. Deeluh replaces the patchwork with one connected system built specifically for legal practice.</p>
+      <h1><span class="ecosystem__accent">One platform</span> for the whole firm.</h1>
+      <p>Most firms run on a patchwork of separate tools: spreadsheets for matters, messaging apps for clients and memory for compliance. Deeluh replaces the patchwork with a platform built for legal practice.</p>
     </div>
 
     <div class="ecosystem__diagram" id="ecosystemDiagram">
@@ -1080,7 +1108,7 @@
       <div class="ecosystem__center">
         <div class="ecosystem__center-inner">
           <div class="ecosystem__center-card">
-            <img src="assets/logos/deeluh-logo.svg" alt="Deeluh">
+            <span class="wordmark wordmark--hub">Deeluh<span class="wordmark__dot">.</span></span>
           </div>
         </div>
       </div>
@@ -1089,12 +1117,12 @@
 
         <div class="ecosystem__node" data-node style="--angle: -90deg; --node-delay: .55s; --float-delay: 0s;">
           <div class="ecosystem__node-float">
-            <div class="ecosystem__node-card">
-              <img src="assets/logos/whatsapp-logo.svg" alt="WhatsApp">
+            <div class="ecosystem__node-card ecosystem__node-card--text">
+              <span class="ecosystem__node-name">Matters</span>
               <span class="ecosystem__tooltip">
-                <span class="ecosystem__tooltip-sub">Client Messaging</span>
-                <span class="ecosystem__tooltip-title">WhatsApp</span>
-                <span class="ecosystem__tooltip-desc">Secure communication with clients inside Deeluh.</span>
+                <span class="ecosystem__tooltip-sub">Deeluh module</span>
+                <span class="ecosystem__tooltip-title">Matters</span>
+                <span class="ecosystem__tooltip-desc">Track every matter from intake to close, on a board by stage.</span>
               </span>
             </div>
           </div>
@@ -1102,12 +1130,12 @@
 
         <div class="ecosystem__node" data-node style="--angle: -30deg; --node-delay: .63s; --float-delay: .6s;">
           <div class="ecosystem__node-float">
-            <div class="ecosystem__node-card">
-              <img src="assets/logos/slack-logo.svg" alt="Slack">
+            <div class="ecosystem__node-card ecosystem__node-card--text">
+              <span class="ecosystem__node-name">Vault</span>
               <span class="ecosystem__tooltip">
-                <span class="ecosystem__tooltip-sub">Internal Communication</span>
-                <span class="ecosystem__tooltip-title">Slack</span>
-                <span class="ecosystem__tooltip-desc">Collaborate with your legal team without switching platforms.</span>
+                <span class="ecosystem__tooltip-sub">Deeluh module</span>
+                <span class="ecosystem__tooltip-title">Vault</span>
+                <span class="ecosystem__tooltip-desc">Keep your firm's documents in one place, and ask questions of them.</span>
               </span>
             </div>
           </div>
@@ -1115,12 +1143,12 @@
 
         <div class="ecosystem__node" data-node style="--angle: 30deg; --node-delay: .71s; --float-delay: 1.2s;">
           <div class="ecosystem__node-float">
-            <div class="ecosystem__node-card">
-              <img src="assets/logos/notion-logo.svg" alt="Notion">
+            <div class="ecosystem__node-card ecosystem__node-card--text">
+              <span class="ecosystem__node-name">Conflicts</span>
               <span class="ecosystem__tooltip">
-                <span class="ecosystem__tooltip-sub">Knowledge Management</span>
-                <span class="ecosystem__tooltip-title">Notion</span>
-                <span class="ecosystem__tooltip-desc">Store notes, legal knowledge, and firm documentation in one place.</span>
+                <span class="ecosystem__tooltip-sub">Deeluh module</span>
+                <span class="ecosystem__tooltip-title">Conflicts</span>
+                <span class="ecosystem__tooltip-desc">Check a new client or matter against your firm's records before you take it on.</span>
               </span>
             </div>
           </div>
@@ -1128,25 +1156,12 @@
 
         <div class="ecosystem__node" data-node style="--angle: 90deg; --node-delay: .79s; --float-delay: 1.8s;">
           <div class="ecosystem__node-float">
-            <div class="ecosystem__node-card">
-              <img src="assets/logos/clickup-logo.svg" alt="ClickUp">
+            <div class="ecosystem__node-card ecosystem__node-card--text">
+              <span class="ecosystem__node-name">Deeluh Sign</span>
               <span class="ecosystem__tooltip">
-                <span class="ecosystem__tooltip-sub">Matter &amp; Task Management</span>
-                <span class="ecosystem__tooltip-title">ClickUp</span>
-                <span class="ecosystem__tooltip-desc">Manage legal matters, tasks, deadlines, and workflows.</span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div class="ecosystem__node" data-node style="--angle: 210deg; --node-delay: .95s; --float-delay: 3s;">
-          <div class="ecosystem__node-float">
-            <div class="ecosystem__node-card">
-              <img src="assets/logos/trello-logo.svg" alt="Trello">
-              <span class="ecosystem__tooltip">
-                <span class="ecosystem__tooltip-sub">Workflow Boards</span>
-                <span class="ecosystem__tooltip-title">Trello</span>
-                <span class="ecosystem__tooltip-desc">Track legal workflows without separate project management tools.</span>
+                <span class="ecosystem__tooltip-sub">Deeluh module</span>
+                <span class="ecosystem__tooltip-title">Deeluh Sign</span>
+                <span class="ecosystem__tooltip-desc">Send documents for signature and see who has signed.</span>
               </span>
             </div>
           </div>
@@ -1154,12 +1169,25 @@
 
         <div class="ecosystem__node" data-node style="--angle: 150deg; --node-delay: .87s; --float-delay: 2.4s;">
           <div class="ecosystem__node-float">
-            <div class="ecosystem__node-card">
-              <img src="assets/logos/asana-logo.svg" alt="Asana">
+            <div class="ecosystem__node-card ecosystem__node-card--text">
+              <span class="ecosystem__node-name">Fees</span>
               <span class="ecosystem__tooltip">
-                <span class="ecosystem__tooltip-sub">Project Planning</span>
-                <span class="ecosystem__tooltip-title">Asana</span>
-                <span class="ecosystem__tooltip-desc">Coordinate legal projects from a single workspace.</span>
+                <span class="ecosystem__tooltip-sub">Deeluh module</span>
+                <span class="ecosystem__tooltip-title">Fees</span>
+                <span class="ecosystem__tooltip-desc">Record time, raise invoices line by line and send reminders when they fall due.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ecosystem__node" data-node style="--angle: 210deg; --node-delay: .95s; --float-delay: 3s;">
+          <div class="ecosystem__node-float">
+            <div class="ecosystem__node-card ecosystem__node-card--text">
+              <span class="ecosystem__node-name">Client workspaces</span>
+              <span class="ecosystem__tooltip">
+                <span class="ecosystem__tooltip-sub">Deeluh module</span>
+                <span class="ecosystem__tooltip-title">Client workspaces</span>
+                <span class="ecosystem__tooltip-desc">A secure private link for each matter, where your clients see what you share.</span>
               </span>
             </div>
           </div>
@@ -1168,6 +1196,8 @@
       </div>
 
     </div>
+
+    <p class="ecosystem__import">Moving from ClickUp or Asana? Import your matters, tasks and their history, or bring them in from a spreadsheet export.</p>
 
   </div>
 </section>
@@ -1243,8 +1273,8 @@
   <span class="modules__aurora modules__aurora--two"></span>
   <span class="modules__noise"></span>
   <div class="modules__header">
-    <h2>Seven modules. One firm. Everything connected.</h2>
-    <p>Deeluh brings every essential part of legal practice into one connected platform. Instead of switching between disconnected software, every workflow lives together—from firm setup and matter management to billing, AI assistance, compliance and secure communication.</p>
+    <h2>Seven modules. One firm.</h2>
+    <p>Deeluh brings the core work of a law firm together: firm set-up, matters, billing, AI assistance, compliance records and client communication.</p>
   </div>
 
   <!-- ================= DESKTOP ================= -->
@@ -1256,44 +1286,44 @@
       <div class="modules__row is-active" data-index="0" tabindex="0">
         <div class="modules__row-top">
           <span class="modules__num">01</span>
-          <h3 class="modules__title">Firm Setup</h3>
+          <h3 class="modules__title">Firm set-up</h3>
         </div>
         <p class="modules__short">Your firm, structured correctly, from day one.</p>
         <div class="modules__full"><div class="modules__full-inner">
-          <p>Set up your firm structure and invite your team with the right permissions in under two minutes. Whether you're a sole practitioner or a multi-partner firm, Deeluh asks the right questions upfront so everything downstream—billing, approvals and access—is configured correctly from the start.</p>
+          <p>Set up your firm structure and invite your team with the right permissions. Whether you're a sole practitioner or a multi-partner firm, Deeluh asks the right questions up front, so billing and access are configured correctly from the start.</p>
         </div></div>
       </div>
 
       <div class="modules__row" data-index="1" tabindex="0">
         <div class="modules__row-top">
           <span class="modules__num">02</span>
-          <h3 class="modules__title">Matter Management</h3>
+          <h3 class="modules__title">Matter management</h3>
         </div>
-        <p class="modules__short">Every matter, organized the way your firm actually works.</p>
+        <p class="modules__short">Every matter, organised the way your firm works.</p>
         <div class="modules__full"><div class="modules__full-inner">
-          <p>Track every matter from intake to close in a Kanban view built specifically for legal work—not repurposed project management software. Parties, deadlines, documents, time entries and activity history all live together with every action recorded in a complete audit trail.</p>
+          <p>Track every matter from intake to close on a board built for legal work. Parties, deadlines, documents, time entries and activity history sit together, and changes are recorded in the firm's audit trail.</p>
         </div></div>
       </div>
 
       <div class="modules__row" data-index="2" tabindex="0">
         <div class="modules__row-top">
           <span class="modules__num">03</span>
-          <h3 class="modules__title">Client Portal</h3>
+          <h3 class="modules__title">Client portal</h3>
         </div>
         <p class="modules__short">Give clients answers before they have to ask.</p>
         <div class="modules__full"><div class="modules__full-inner">
-          <p>A secure branded portal where clients can monitor progress, upload documents, view upcoming milestones and see funds held on their behalf without calling your office for updates.</p>
+          <p>A secure private link for each matter, where clients see what you share, sign and upload what you ask for, view their invoices and message your team without calling your office for updates.</p>
         </div></div>
       </div>
 
       <div class="modules__row" data-index="3" tabindex="0">
         <div class="modules__row-top">
           <span class="modules__num">04</span>
-          <h3 class="modules__title">Billing &amp; Payments</h3>
+          <h3 class="modules__title">Billing and payments</h3>
         </div>
-        <p class="modules__short">Get paid without the chase.</p>
+        <p class="modules__short">From time recorded to invoice paid.</p>
         <div class="modules__full"><div class="modules__full-inner">
-          <p>Track billable time automatically, generate invoices instantly and accept payments seamlessly. Built specifically for Nigerian legal practice with Naira-denominated billing.</p>
+          <p>Record billable time against each matter, raise invoices line by line, send reminders when they fall due and take card payments through your firm's own Paystack or Stripe account. Built for Nigerian legal practice, with billing in naira.</p>
         </div></div>
       </div>
 
@@ -1304,60 +1334,36 @@
         </div>
         <p class="modules__short">An assistant, not a replacement.</p>
         <div class="modules__full"><div class="modules__full-inner">
-          <p>Deeluh AI assists with legal drafting, document review, legal research and analysis while ensuring lawyers remain fully in control. Every result is transparent, reviewable and verifiable.</p>
+          <p>Deeluh AI helps with drafting, contract review and questions about your firm's own documents. Lawyers review every result and decide what is used.</p>
         </div></div>
       </div>
 
       <div class="modules__row" data-index="5" tabindex="0">
         <div class="modules__row-top">
           <span class="modules__num">06</span>
-          <h3 class="modules__title">Team Management &amp; Communication</h3>
+          <h3 class="modules__title">Team management and communication</h3>
         </div>
         <p class="modules__short">Keep the conversation where the work happens.</p>
         <div class="modules__full"><div class="modules__full-inner">
-          <p>Manage permissions, workloads and collaboration across your entire firm. Matter-specific communication keeps conversations attached to the work while WhatsApp Business integration keeps client communication connected.</p>
+          <p>Manage permissions, workloads and collaboration across your firm. Discussion stays inside each matter, and clients message your team through the client portal. WhatsApp Business is in pilot.</p>
         </div></div>
       </div>
 
       <div class="modules__row" data-index="6" tabindex="0">
         <div class="modules__row-top">
           <span class="modules__num">07</span>
-          <h3 class="modules__title">Trust &amp; Compliance Records</h3>
+          <h3 class="modules__title">Compliance records</h3>
         </div>
-        <p class="modules__short">Built for professional-conduct review, not just bookkeeping.</p>
+        <p class="modules__short">A record that shows if it has been altered.</p>
         <div class="modules__full"><div class="modules__full-inner">
-          <p>Every financial activity is protected by a tamper-evident hash-chain audit trail together with strict separation of client funds, trust funds and operating funds.</p>
+          <p>Firm actions, including changes to fees and invoices, are recorded in a tamper-evident, hash-chained audit trail designed to support professional-conduct review.</p>
           <div class="modules__badges">
             <span class="modules__badge">
               <span class="modules__badge-title">Hash-chain audit trail</span>
-              <span class="modules__badge-sub">Tamper-evident transaction history</span>
-            </span>
-            <span class="modules__badge">
-              <span class="modules__badge-title">Three-pool separation</span>
-              <span class="modules__badge-sub">Client, trust and operating funds remain completely separated</span>
+              <span class="modules__badge-sub">Tamper-evident record of firm actions</span>
             </span>
           </div>
         </div></div>
-      </div>
-    </div>
-
-    <div class="modules__preview">
-      <div class="modules__preview-frame">
-        <div class="modules__browser-bar">
-          <span class="modules__browser-dot"></span>
-          <span class="modules__browser-dot"></span>
-          <span class="modules__browser-dot"></span>
-          <span class="modules__browser-url"></span>
-        </div>
-        <div class="modules__shot-wrap" id="modulesShotWrap">
-          <img class="modules__shot is-active" data-index="0" src="assets/images/Dashboard.png" alt="Firm Setup">
-          <img class="modules__shot" data-index="1" src="assets/images/Matters.png" alt="Matter Management">
-          <img class="modules__shot" data-index="2" src="assets/images/Clientsandconflicts.png" alt="Client Portal">
-          <img class="modules__shot" data-index="3" src="assets/images/Timeandbilling.png" alt="Billing and Payments">
-          <img class="modules__shot" data-index="4" src="assets/images/Deeluhai.png" alt="Deeluh AI">
-          <img class="modules__shot" data-index="5" src="assets/images/Team.png" alt="Team Management">
-          <img class="modules__shot" data-index="6" src="assets/images/Yourmatter.png" alt="Trust and Compliance">
-        </div>
       </div>
     </div>
 
@@ -1370,92 +1376,81 @@
       <div class="modules__m-item is-open" data-index="0">
         <button class="modules__m-trigger">
           <span class="modules__m-num">01</span>
-          <h3 class="modules__m-title">Firm Setup</h3>
+          <span class="modules__m-title">Firm set-up</span>
         </button>
         <p class="modules__m-short">Your firm, structured correctly, from day one.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/screenshots/firm-setup.png" alt="Firm Setup" loading="lazy"></div>
-          <p>Set up your firm structure and invite your team with the right permissions in under two minutes. Whether you're a sole practitioner or a multi-partner firm, Deeluh asks the right questions upfront so everything downstream—billing, approvals and access—is configured correctly from the start.</p>
+          <p>Set up your firm structure and invite your team with the right permissions. Whether you're a sole practitioner or a multi-partner firm, Deeluh asks the right questions up front, so billing and access are configured correctly from the start.</p>
         </div></div>
       </div>
 
       <div class="modules__m-item" data-index="1">
         <button class="modules__m-trigger">
           <span class="modules__m-num">02</span>
-          <h3 class="modules__m-title">Matter Management</h3>
+          <span class="modules__m-title">Matter management</span>
         </button>
-        <p class="modules__m-short">Every matter, organized the way your firm actually works.</p>
+        <p class="modules__m-short">Every matter, organised the way your firm works.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/screenshots/matter-management.png" alt="Matter Management" loading="lazy"></div>
-          <p>Track every matter from intake to close in a Kanban view built specifically for legal work—not repurposed project management software. Parties, deadlines, documents, time entries and activity history all live together with every action recorded in a complete audit trail.</p>
+          <p>Track every matter from intake to close on a board built for legal work. Parties, deadlines, documents, time entries and activity history sit together, and changes are recorded in the firm's audit trail.</p>
         </div></div>
       </div>
 
       <div class="modules__m-item" data-index="2">
         <button class="modules__m-trigger">
           <span class="modules__m-num">03</span>
-          <h3 class="modules__m-title">Client Portal</h3>
+          <span class="modules__m-title">Client portal</span>
         </button>
         <p class="modules__m-short">Give clients answers before they have to ask.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/screenshots/client-portal.png" alt="Client Portal" loading="lazy"></div>
-          <p>A secure branded portal where clients can monitor progress, upload documents, view upcoming milestones and see funds held on their behalf without calling your office for updates.</p>
+          <p>A secure private link for each matter, where clients see what you share, sign and upload what you ask for, view their invoices and message your team without calling your office for updates.</p>
         </div></div>
       </div>
 
       <div class="modules__m-item" data-index="3">
         <button class="modules__m-trigger">
           <span class="modules__m-num">04</span>
-          <h3 class="modules__m-title">Billing &amp; Payments</h3>
+          <span class="modules__m-title">Billing and payments</span>
         </button>
-        <p class="modules__m-short">Get paid without the chase.</p>
+        <p class="modules__m-short">From time recorded to invoice paid.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/screenshots/billing.png" alt="Billing and Payments" loading="lazy"></div>
-          <p>Track billable time automatically, generate invoices instantly and accept payments seamlessly. Built specifically for Nigerian legal practice with Naira-denominated billing.</p>
+          <p>Record billable time against each matter, raise invoices line by line, send reminders when they fall due and take card payments through your firm's own Paystack or Stripe account. Built for Nigerian legal practice, with billing in naira.</p>
         </div></div>
       </div>
 
       <div class="modules__m-item" data-index="4">
         <button class="modules__m-trigger">
           <span class="modules__m-num">05</span>
-          <h3 class="modules__m-title">Deeluh AI</h3>
+          <span class="modules__m-title">Deeluh AI</span>
         </button>
         <p class="modules__m-short">An assistant, not a replacement.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/screenshots/deeluh-ai.png" alt="Deeluh AI" loading="lazy"></div>
-          <p>Deeluh AI assists with legal drafting, document review, legal research and analysis while ensuring lawyers remain fully in control. Every result is transparent, reviewable and verifiable.</p>
+          <p>Deeluh AI helps with drafting, contract review and questions about your firm's own documents. Lawyers review every result and decide what is used.</p>
         </div></div>
       </div>
 
       <div class="modules__m-item" data-index="5">
         <button class="modules__m-trigger">
           <span class="modules__m-num">06</span>
-          <h3 class="modules__m-title">Team Management &amp; Communication</h3>
+          <span class="modules__m-title">Team management and communication</span>
         </button>
         <p class="modules__m-short">Keep the conversation where the work happens.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/screenshots/team-management.png" alt="Team Management" loading="lazy"></div>
-          <p>Manage permissions, workloads and collaboration across your entire firm. Matter-specific communication keeps conversations attached to the work while WhatsApp Business integration keeps client communication connected.</p>
+          <p>Manage permissions, workloads and collaboration across your firm. Discussion stays inside each matter, and clients message your team through the client portal. WhatsApp Business is in pilot.</p>
         </div></div>
       </div>
 
       <div class="modules__m-item" data-index="6">
         <button class="modules__m-trigger">
           <span class="modules__m-num">07</span>
-          <h3 class="modules__m-title">Trust &amp; Compliance Records</h3>
+          <span class="modules__m-title">Compliance records</span>
         </button>
-        <p class="modules__m-short">Built for professional-conduct review, not just bookkeeping.</p>
+        <p class="modules__m-short">A record that shows if it has been altered.</p>
         <div class="modules__m-panel"><div class="modules__m-panel-inner">
-          <div class="modules__m-shot-frame"><img src="assets/screenshots/trust-compliance.png" alt="Trust and Compliance" loading="lazy"></div>
-          <p>Every financial activity is protected by a tamper-evident hash-chain audit trail together with strict separation of client funds, trust funds and operating funds.</p>
+          <p>Firm actions, including changes to fees and invoices, are recorded in a tamper-evident, hash-chained audit trail designed to support professional-conduct review.</p>
           <div class="modules__badges">
             <span class="modules__badge">
               <span class="modules__badge-title">Hash-chain audit trail</span>
-              <span class="modules__badge-sub">Tamper-evident transaction history</span>
-            </span>
-            <span class="modules__badge">
-              <span class="modules__badge-title">Three-pool separation</span>
-              <span class="modules__badge-sub">Client, trust and operating funds remain completely separated</span>
+              <span class="modules__badge-sub">Tamper-evident record of firm actions</span>
             </span>
           </div>
         </div></div>
@@ -1580,7 +1575,7 @@
 
 <section class="logo-section">
   <div class="logo-wrap">
-    <span class="logo-text" id="deeluhLogo">Deeluh</span>
+    <span class="logo-text" id="deeluhLogo">Deeluh<span class="wordmark__dot">.</span></span>
   </div>
 </section>
 
@@ -1594,18 +1589,17 @@
     <div class="footer-grid">
 
       <div class="footer-brand">
-        <!-- <p class="footer-brand__name">Deeluh</p> -->
-        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
-        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+        <p class="footer-brand__name"><a href="index.html">Deeluh<span class="wordmark__dot">.</span></a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by Frontendlabs in Lagos.</p>
       </div>
 
       <div class="footer-col">
         <p class="footer-col__title">Product</p>
         <ul>
-          <li><a href="#what">What Deeluh does</a></li>
-          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
           <li><a href="index.html#faq">FAQ</a></li>
-          <li><a href="javascript:void(0)">Security</a></li>
+          <li><a href="legal.html#security">Security</a></li>
         </ul>
       </div>
 
@@ -1614,7 +1608,7 @@
         <ul>
           <li><a href="company.html">About</a></li>
           <li><a href="company.html#contactSection">Contact sales</a></li>
-          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><!--email_off--><a href="mailto:hello@deeluh.com">hello@deeluh.com</a><!--/email_off--></li>
           <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
         </ul>
       </div>
@@ -1622,17 +1616,18 @@
       <div class="footer-col">
         <p class="footer-col__title">Legal</p>
         <ul>
-          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
-          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
-          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
-          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+          <li><a href="https://app.deeluh.com/legal/privacy">Privacy Policy</a></li>
+          <li><a href="https://app.deeluh.com/legal/terms">Terms of Service</a></li>
+          <li><a href="https://app.deeluh.com/legal/ndpa-compliance">NDPA 2023 Compliance Statement</a></li>
+          <li><a href="https://app.deeluh.com/legal/data-processing">Data Processing Agreement</a></li>
+          <li><a href="legal.html">All legal documents</a></li>
         </ul>
       </div>
 
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
+      <p class="footer-bottom__legal">© 2026 Frontendlabs Limited (RC 9357704). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
 
       <div class="footer-bottom__social">
         <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
@@ -1678,7 +1673,7 @@
   function setLogoShineInterval(seconds) {
     document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
   }
-  example: setLogoShineInterval(15);
+  setLogoShineInterval(15);
 </script>
 <!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
 

@@ -3,14 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solutions — Deeluh</title>
-<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<title>Solutions · Deeluh</title>
+<meta name="description" content="Deeluh for sole practitioners, sole proprietorships, partnerships and multi-partner firms, with role permissions built in and one price for the whole firm.">
+<link rel="canonical" href="https://deeluh.com/solutions.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeluh">
+<meta property="og:title" content="Solutions · Deeluh">
+<meta property="og:description" content="Deeluh for sole practitioners, sole proprietorships, partnerships and multi-partner firms, with role permissions built in and one price for the whole firm.">
+<meta property="og:url" content="https://deeluh.com/solutions.html">
+<meta property="og:image" content="https://deeluh.com/assets/images/og-deeluh.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/source-serif-4-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <style>
 
@@ -48,14 +57,14 @@
   }
 
   .solutions__header .eyebrow,
-  .solutions__header h2,
+  .solutions__header h1,
   .solutions__header p {
     opacity: 0;
     transform: translateY(26px);
     transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1);
   }
   .solutions.is-visible .solutions__header .eyebrow { opacity: 1; transform: translateY(0); }
-  .solutions.is-visible .solutions__header h2 { opacity: 1; transform: translateY(0); transition-delay: .12s; }
+  .solutions.is-visible .solutions__header h1 { opacity: 1; transform: translateY(0); transition-delay: .12s; }
   .solutions.is-visible .solutions__header p  { opacity: 1; transform: translateY(0); transition-delay: .24s; }
 
   .solutions__header .eyebrow {
@@ -79,7 +88,7 @@
     display: inline-block;
   }
 
-  .solutions__header h2 {
+  .solutions__header h1 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(2rem, 3.2vw, 2.75rem);
@@ -316,7 +325,7 @@
     .diagram-flow, .diagram-pulse, .diagram-ring, .solutions__card::after {
       animation: none;
     }
-    .solutions__card, .solutions__header .eyebrow, .solutions__header h2, .solutions__header p {
+    .solutions__card, .solutions__header .eyebrow, .solutions__header h1, .solutions__header p {
       transition: none;
     }
     .solutions__card:hover { transform: none; }
@@ -416,6 +425,19 @@
   }
 
 
+
+  /* ==========================================================
+     31 OCT 2026 SITE CORRECTIONS (30 Oct website review)
+     ========================================================== */
+  /* features that are not built are labelled on their pictures (D-11, D-12) */
+  .solutions__tag { position: absolute; top: 16px; right: 16px; z-index: 2; padding: .22rem .6rem; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14); border: 1px solid rgba(255, 255, 255, 0.32); color: #fff;
+    font-size: .7rem; font-weight: 600; letter-spacing: .03em; }
+  /* the labels at the foot of each picture were fading out under the mask (B-15) */
+  .solutions__illustration { -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 100%); mask-image: linear-gradient(to bottom, #000 88%, transparent 100%); }
+  .solutions__card:hover { border-color: rgba(255, 255, 255, 0.4); }
+  .solutions__header { padding-top: 2.5rem; }
+  .logo-section { background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%); }
 </style>
 </head>
 <body>
@@ -425,10 +447,7 @@
  <nav class="navbar" id="siteNavbar">
   <div class="navbar__inner">
 
-    <a href="index.html" class="navbar__logo">
-      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
-      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
-    </a>
+    <a href="index.html" class="navbar__logo" aria-label="Deeluh home page"><span class="wordmark">Deeluh<span class="wordmark__dot">.</span></span></a>
 
     <ul class="navbar__menu">
       <li><a href="product.html">Product</a></li>
@@ -443,7 +462,7 @@
           </svg>
         </button>
         <div class="navbar__dropdown-panel">
-          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
           <a href="legal.html" class="navbar__dropdown-link">Legal</a>
         </div>
       </li>
@@ -453,8 +472,9 @@
     </ul>
 
     <div class="navbar__actions">
-      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      <a href="https://app.deeluh.com/auth/login" class="navbar__signin">Sign in</a>
+      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+      <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
     </div>
 
     <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
@@ -479,7 +499,7 @@
           </button>
           <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
             <div class="navbar__mobile-dropdown-inner">
-              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
               <a href="legal.html" class="navbar__dropdown-link">Legal</a>
             </div>
           </div>
@@ -489,8 +509,9 @@
         <li><a href="company.html">Company</a></li>
       </ul>
       <div class="navbar__mobile-actions">
-        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+        <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
+        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+        <a href="https://app.deeluh.com/auth/login" class="navbar__btn navbar__btn--ghost">Sign in</a>
       </div>
     </div>
   </div>
@@ -551,10 +572,8 @@
   <div class="solutions__inner">
 
     <div class="solutions__header">
-      <!-- <span class="eyebrow">For your firm size</span> -->
-       <br><br><br>
-      <h2><span class="solutions__accent">Whatever</span> your firm's structure, Deeluh fits.</h2>
-      <p>Deeluh's data model handles the role permissions, co-approval rules, and regulatory requirements specific to how your practice is actually organised — not a generic one-size-fits-all setup.</p>
+      <h1><span class="solutions__accent">Built around</span> the way your firm is organised.</h1>
+      <p>Deeluh handles the role permissions and regulatory requirements that come with your firm's structure, rather than one set-up for every firm.</p>
     </div>
 
     <div class="solutions__grid">
@@ -564,9 +583,9 @@
       <article class="solutions__card">
         <span class="solutions__glow"></span>
         <div class="solutions__content">
-          <span class="solutions__category">Sole Practitioner</span>
+          <span class="solutions__category">Sole practitioner</span>
           <h3 class="solutions__title">You are the firm.</h3>
-          <p class="solutions__desc">One login, one desk, everything Deeluh ships — priced for one. The card below is your whole workspace: intake in, billing out, no approval layers standing between the two.</p>
+          <p class="solutions__desc">Priced for a practice of one. Solo covers your clients, matters, conflict checks and calendar, with nothing standing between you and the work.</p>
         </div>
         <div class="solutions__illustration">
           <svg viewBox="0 0 320 208" fill="none">
@@ -584,10 +603,10 @@
             <circle cx="42" cy="126" r="3" fill="rgba(255,255,255,0.65)"/>
             <circle class="diagram-pulse" cx="278" cy="126" r="3" fill="var(--brand-clay)" style="animation-delay:-1.6s"/>
             <text x="42" y="146" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.55)">Intake</text>
-            <text x="278" y="146" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.55)">Billing</text>
+            <text x="278" y="146" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.55)">Matters</text>
 
             <rect x="24" y="172" width="76" height="22" rx="11" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
-            <text x="62" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Seats · 1</text>
+            <text x="62" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Solo plan</text>
             <rect x="110" y="172" width="126" height="22" rx="11" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
             <text x="173" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Approval layers · 0</text>
           </svg>
@@ -599,9 +618,9 @@
       <article class="solutions__card">
         <span class="solutions__glow"></span>
         <div class="solutions__content">
-          <span class="solutions__category">Sole Proprietorship</span>
-          <h3 class="solutions__title">You own the firm. Associates work under you.</h3>
-          <p class="solutions__desc">Role permissions built in from the start, with billing per seat as your team grows. The hierarchy below is live in your workspace on day one — you keep oversight, associates get exactly the access you set.</p>
+          <span class="solutions__category">Sole proprietorship</span>
+          <h3 class="solutions__title">You own the firm; associates work under you.</h3>
+          <p class="solutions__desc">Role permissions are built in from the start, and you pay one price for the whole firm. Your workspace reflects this hierarchy from day one: you keep oversight, and associates get the access their role allows.</p>
         </div>
         <div class="solutions__illustration">
           <svg viewBox="0 0 320 208" fill="none">
@@ -625,7 +644,7 @@
             <text x="224" y="138" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">A</text>
 
             <rect x="103" y="172" width="114" height="22" rx="11" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
-            <text x="160" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Per-seat billing</text>
+            <text x="160" y="186" text-anchor="middle" class="panel-meta" font-size="8" fill="rgba(255,255,255,0.75)">Per-firm billing</text>
           </svg>
         </div>
       </article>
@@ -636,10 +655,11 @@
         <span class="solutions__glow"></span>
         <div class="solutions__content">
           <span class="solutions__category">Partnership</span>
-          <h3 class="solutions__title">Decisions that need every partner's sign-off, actually need every partner's sign-off.</h3>
-          <p class="solutions__desc">Co-approval is built directly into firm workflows. Upload your partnership deed and Deeluh enforces the approval paths below automatically — nothing executes until both partners have signed.</p>
+          <h3 class="solutions__title">Partners run the firm together.</h3>
+          <p class="solutions__desc">Your firm is set up as a partnership, with owner and partner roles built into its permissions from day one. Co-approval of firm decisions is planned.</p>
         </div>
         <div class="solutions__illustration">
+          <span class="solutions__tag">Planned</span>
           <svg viewBox="0 0 320 208" fill="none">
             <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
             <rect x="24" y="22" width="112" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
@@ -674,23 +694,23 @@
       <article class="solutions__card">
         <span class="solutions__glow"></span>
         <div class="solutions__content">
-          <span class="solutions__category">Multi-Partner Firm</span>
-          <h3 class="solutions__title">Distinct practice groups. One firm-wide system.</h3>
-          <p class="solutions__desc">Department separation, associateship isolation, complete audit trails and a shared knowledge vault — practice groups stay walled off from each other, but everything still lands in one hash-secured record.</p>
+          <span class="solutions__category">Multi-partner firm</span>
+          <h3 class="solutions__title">Many partners. One firm-wide system.</h3>
+          <p class="solutions__desc">Role-based permissions, a firm-wide document vault and a tamper-evident, hash-chained audit trail, with confidential matters visible only to the people working on them.</p>
         </div>
         <div class="solutions__illustration">
           <svg viewBox="0 0 320 208" fill="none">
             <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
             <rect x="24" y="22" width="106" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
-            <text x="77" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">PRACTICE GROUPS</text>
+            <text x="77" y="36" text-anchor="middle" class="panel-label" font-size="9" fill="rgba(255,255,255,0.85)">PRACTICE AREAS</text>
 
             <rect x="26" y="52" width="112" height="52" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
             <text x="82" y="70" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Corporate</text>
-            <text x="82" y="86" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.5)">Isolated</text>
+            <text x="82" y="86" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.5)">Practice area</text>
 
             <rect x="182" y="52" width="112" height="52" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
             <text x="238" y="70" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Litigation</text>
-            <text x="238" y="86" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.5)">Isolated</text>
+            <text x="238" y="86" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.5)">Practice area</text>
 
             <line class="diagram-flow" x1="90" y1="104" x2="140" y2="140" stroke="var(--brand-clay)" stroke-width="1.2" stroke-linecap="round"/>
             <line class="diagram-flow" x1="230" y1="104" x2="180" y2="140" stroke="var(--brand-clay)" stroke-width="1.2" stroke-linecap="round" style="animation-delay:-1s"/>
@@ -698,10 +718,10 @@
             <circle class="diagram-ring" cx="160" cy="152" r="28" fill="none" stroke="var(--brand-clay)" stroke-width="1.2"/>
             <circle cx="160" cy="152" r="28" fill="rgba(255,255,255,0.05)" stroke="var(--brand-clay)" stroke-width="1.5"/>
             <text x="160" y="150" text-anchor="middle" class="panel-text" font-size="9" fill="#fff">Vault</text>
-            <text x="160" y="163" text-anchor="middle" class="panel-meta" font-size="7" fill="var(--brand-clay-light, #e7b7a4)">Audit-secured</text>
+            <text x="160" y="163" text-anchor="middle" class="panel-meta" font-size="7" fill="var(--brand-clay-light, #e7b7a4)">Firm-wide</text>
 
             <circle class="diagram-pulse" cx="130" cy="195" r="2.5" fill="var(--brand-clay)"/>
-            <text x="140" y="198" class="panel-meta" font-size="7.5" fill="rgba(255,255,255,0.55)">Hash-chain trail live</text>
+            <text x="140" y="198" class="panel-meta" font-size="7.5" fill="rgba(255,255,255,0.55)">Audit trail recorded</text>
           </svg>
         </div>
       </article>
@@ -711,11 +731,13 @@
       <article class="solutions__card">
         <span class="solutions__glow"></span>
         <div class="solutions__content">
-          <span class="solutions__category">Legal Department</span>
-          <h3 class="solutions__title">Built for in-house teams, not law firms.</h3>
-          <p class="solutions__desc">Track contracts, compliance and legal requests across the business without the billing and trust-accounting workflows built for firms. Every request moves through a clear lifecycle, end to end.</p>
+          <span class="solutions__category">Legal department</span>
+          <h3 class="solutions__title">For in-house legal teams.</h3>
+          <p class="solutions__desc">Track contracts, compliance and legal requests across the business, without client billing. Every request moves through a clear lifecycle.</p>
+          <a href="company.html#contactSection" class="solutions__link">Coming later: talk to us →</a>
         </div>
         <div class="solutions__illustration">
+          <span class="solutions__tag">Coming later</span>
           <svg viewBox="0 0 320 208" fill="none">
             <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
             <rect x="24" y="22" width="126" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
@@ -750,10 +772,11 @@
         <div class="solutions__content">
           <span class="solutions__category">Enterprise</span>
           <h3 class="solutions__title">Complex structures. Custom configuration.</h3>
-          <p class="solutions__desc">Dedicated data residency, custom compliance workflows and enterprise configuration for legal organisations operating across multiple offices, entities or jurisdictions — all routed through a single governance layer.</p>
-          <a href="company.html#contactSection" class="solutions__link">Contact Sales →</a>
+          <p class="solutions__desc">Dedicated data residency, custom compliance workflows and enterprise configuration for legal organisations operating across multiple offices, entities or jurisdictions, all governed from one place. Enterprise capabilities are planned, and each is agreed in your contract at signing.</p>
+          <a href="company.html#contactSection" class="solutions__link">Contact sales →</a>
         </div>
         <div class="solutions__illustration">
+          <span class="solutions__tag">Planned</span>
           <svg viewBox="0 0 320 208" fill="none">
             <rect x="10" y="10" width="300" height="150" rx="14" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.14)"/>
             <rect x="24" y="22" width="104" height="20" rx="10" fill="rgba(255,255,255,0.10)"/>
@@ -775,10 +798,10 @@
             <circle class="diagram-ring" cx="160" cy="118" r="24" fill="none" stroke="var(--brand-clay)" stroke-width="1.2"/>
             <circle cx="160" cy="118" r="24" fill="rgba(255,255,255,0.05)" stroke="var(--brand-clay)" stroke-width="1.5"/>
             <text x="160" y="116" text-anchor="middle" class="panel-text" font-size="8" fill="#fff">Governance</text>
-            <text x="160" y="127" text-anchor="middle" class="panel-meta" font-size="6.5" fill="var(--brand-clay-light, #e7b7a4)">NDPA · GDPR</text>
+            <text x="160" y="127" text-anchor="middle" class="panel-meta" font-size="6.5" fill="var(--brand-clay-light, #e7b7a4)">By contract</text>
 
             <rect x="86" y="190" width="148" height="16" rx="8" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)"/>
-            <text x="160" y="201" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.75)">99.99% uptime SLA</text>
+            <text x="160" y="201" text-anchor="middle" class="panel-meta" font-size="7" fill="rgba(255,255,255,0.75)">SLA agreed at signing</text>
           </svg>
         </div>
       </article>
@@ -811,7 +834,7 @@
 
 <section class="logo-section">
   <div class="logo-wrap">
-    <span class="logo-text" id="deeluhLogo">Deeluh</span>
+    <span class="logo-text" id="deeluhLogo">Deeluh<span class="wordmark__dot">.</span></span>
   </div>
 </section>
 
@@ -826,9 +849,8 @@
     <div class="footer-grid">
 
       <div class="footer-brand">
-        <!-- <p class="footer-brand__name">Deeluh</p> -->
-        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
-        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+        <p class="footer-brand__name"><a href="index.html">Deeluh<span class="wordmark__dot">.</span></a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by Frontendlabs in Lagos.</p>
       </div>
 
       <div class="footer-col">
@@ -837,7 +859,7 @@
           <li><a href="index.html#what">What Deeluh does</a></li>
           <li><a href="index.html#pricing">Pricing</a></li>
           <li><a href="index.html#faq">FAQ</a></li>
-          <li><a href="javascript:void(0)">Security</a></li>
+          <li><a href="legal.html#security">Security</a></li>
         </ul>
       </div>
 
@@ -846,7 +868,7 @@
         <ul>
           <li><a href="company.html">About</a></li>
           <li><a href="company.html#contactSection">Contact sales</a></li>
-          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><!--email_off--><a href="mailto:hello@deeluh.com">hello@deeluh.com</a><!--/email_off--></li>
           <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
         </ul>
       </div>
@@ -854,17 +876,18 @@
       <div class="footer-col">
         <p class="footer-col__title">Legal</p>
         <ul>
-          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
-          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
-          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
-          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+          <li><a href="https://app.deeluh.com/legal/privacy">Privacy Policy</a></li>
+          <li><a href="https://app.deeluh.com/legal/terms">Terms of Service</a></li>
+          <li><a href="https://app.deeluh.com/legal/ndpa-compliance">NDPA 2023 Compliance Statement</a></li>
+          <li><a href="https://app.deeluh.com/legal/data-processing">Data Processing Agreement</a></li>
+          <li><a href="legal.html">All legal documents</a></li>
         </ul>
       </div>
 
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+      <p class="footer-bottom__legal">© 2026 Frontendlabs Limited (RC 9357704). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
 
       <div class="footer-bottom__social">
         <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
@@ -909,7 +932,7 @@
   function setLogoShineInterval(seconds) {
     document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
   }
-  example: setLogoShineInterval(15);
+  setLogoShineInterval(15);
 </script>
 <!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
 

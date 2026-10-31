@@ -17,7 +17,7 @@ That boundary is the point of this repo. Please do not "temporarily" move site c
 index.html  product.html  solutions.html  resources.html  company.html  legal.html
 styles.css
 assets/images/   assets/logos/
-scripts/         deploy plumbing only — never served (see Deploying)
+scripts/         deploy and CI plumbing only — never served (see Deploying)
 ```
 
 ## How it ships
@@ -68,6 +68,7 @@ converges the key it was given; it does not know which other line is the retired
 | `gitleaks` | No credential ever belongs in this repo. The site needs none to build. |
 | dead-link scan | `javascript:void(0)` and broken relative links are the failure mode of a hand-built static site. |
 | asset weight | The hero images are large; a marketing page that loads slowly on a Lagos 3G connection is not doing its job. |
+| prices, money wording and legal links (`scripts/check-pricing.py`) | The prices here must be the prices the app charges. It fails on a wrong amount, unit or "per month, billed yearly" figure; on "two months free" or "ten months" (yearly is 20% off); on per-seat or extra-seat wording; on "cancel any time"; on VAT-exclusive wording; on prices "in your currency" or in another currency; on waitlist or pre-launch wording; and on a link to a legal document that does not open the copy the app serves, under `https://app.deeluh.com/legal/`. To change a price, change it in the app first, then on the page and in the script's table in the same pull request. Run it locally with `python3 scripts/check-pricing.py`. |
 
 ## Contact
 

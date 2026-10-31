@@ -3,14 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resources — Deeluh</title>
-<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<title>Resources · Deeluh</title>
+<meta name="description" content="Articles, guides and a report on running a law firm in Nigeria, from the team that builds Deeluh.">
+<link rel="canonical" href="https://deeluh.com/resources.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeluh">
+<meta property="og:title" content="Resources · Deeluh">
+<meta property="og:description" content="Articles, guides and a report on running a law firm in Nigeria, from the team that builds Deeluh.">
+<meta property="og:url" content="https://deeluh.com/resources.html">
+<meta property="og:image" content="https://deeluh.com/assets/images/og-deeluh.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/source-serif-4-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <style>
 
@@ -88,7 +97,7 @@ a.text-link {
     content: ""; width: 18px; height: 2px; background: var(--brand-clay); display: inline-block;
   }
 
-  .resources__header h2 {
+  .resources__header h1 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(2rem, 3.2vw, 2.75rem);
@@ -228,6 +237,12 @@ a.text-link {
   }
 
   
+
+  /* ==========================================================
+     31 OCT 2026 SITE CORRECTIONS (30 Oct website review)
+     ========================================================== */
+  .resources__type:hover h3 { color: var(--brand-primary); }
+  a.text-link:hover { color: var(--brand-primary); }
 </style>
 </head>
 <body>
@@ -237,10 +252,7 @@ a.text-link {
 <nav class="navbar" id="siteNavbar">
   <div class="navbar__inner">
 
-    <a href="index.html" class="navbar__logo">
-      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
-      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
-    </a>
+    <a href="index.html" class="navbar__logo" aria-label="Deeluh home page"><span class="wordmark">Deeluh<span class="wordmark__dot">.</span></span></a>
 
     <ul class="navbar__menu">
       <li><a href="product.html">Product</a></li>
@@ -255,7 +267,7 @@ a.text-link {
           </svg>
         </button>
         <div class="navbar__dropdown-panel">
-          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
           <a href="legal.html" class="navbar__dropdown-link">Legal</a>
         </div>
       </li>
@@ -265,8 +277,9 @@ a.text-link {
     </ul>
 
     <div class="navbar__actions">
-      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      <a href="https://app.deeluh.com/auth/login" class="navbar__signin">Sign in</a>
+      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+      <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
     </div>
 
     <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
@@ -291,7 +304,7 @@ a.text-link {
           </button>
           <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
             <div class="navbar__mobile-dropdown-inner">
-              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
               <a href="legal.html" class="navbar__dropdown-link">Legal</a>
             </div>
           </div>
@@ -301,8 +314,9 @@ a.text-link {
         <li><a href="company.html">Company</a></li>
       </ul>
       <div class="navbar__mobile-actions">
-        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+        <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
+        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+        <a href="https://app.deeluh.com/auth/login" class="navbar__btn navbar__btn--ghost">Sign in</a>
       </div>
     </div>
   </div>
@@ -366,8 +380,8 @@ a.text-link {
     <!-- RESOURCES OVERVIEW -->
     <div class="fade-up">
       <div class="resources__header">
-        <h2>Resources</h2>
-        <p>Insight for the modern law firm, drawn from practice management, compliance, and legal technology, brought to you by the people building the platform behind it. Whether you're looking for a quick answer, a deeper read, or a full report on where the industry is heading, this is where we'll keep it.</p>
+        <h1>Resources</h1>
+        <p>Practical writing on running a law firm, covering practice management, compliance and legal technology, from the team that builds Deeluh. Quick answers, longer guides and our report on where the profession is heading will all be published here.</p>
       </div>
     </div>
 
@@ -375,14 +389,14 @@ a.text-link {
     <div class="resources__types fade-up">
       <a href="#blog" class="resources__type">
         <h3>Blog</h3>
-        <p>The latest thinking on running a modern legal practice</p>
+        <p>Short articles on running a legal practice</p>
       </a>
       <a href="#guides" class="resources__type">
         <h3>Guides</h3>
-        <p>In-depth reads on the topics that matter most to growing firms</p>
+        <p>Practical reference on structuring and growing a firm</p>
       </a>
       <a href="#free-report" class="resources__type">
-        <h3>Free Report</h3>
+        <h3>Free report</h3>
         <p>The State of Legal Practice in Nigeria, 2026</p>
       </a>
     </div>
@@ -390,23 +404,23 @@ a.text-link {
     <!-- BLOG -->
     <div class="resources__section fade-up" id="blog">
       <h2>Blog</h2>
-      <p>Our blog covers the day-to-day realities of running a law firm today, from managing client expectations and structuring billing, to navigating compliance obligations and deciding when and how to bring technology into your practice. We write for the lawyer who's building a firm, not just practising within it, and we try to make sure every piece is genuinely useful rather than merely promotional.</p>
-      <p>Articles are launching soon. In the meantime, <a href="index.html#waitlist" class="text-link">join our waitlist</a> and we'll let you know the moment the first ones are live.</p>
+      <p>Our blog will cover the day-to-day work of running a law firm, from managing client expectations and structuring billing to meeting compliance obligations and deciding when and how to bring technology into your practice. We write for lawyers who are building a firm, not only practising in one, and we aim to make every piece useful rather than promotional.</p>
+      <p>The first articles will be published soon. In the meantime, <a href="https://linkedin.com/company/deeluh" class="text-link" target="_blank" rel="noopener">follow Deeluh on LinkedIn</a> to see them as they appear.</p>
     </div>
 
     <!-- GUIDES -->
     <div class="resources__section fade-up" id="guides">
       <h2>Guides</h2>
-      <p>Where our blog covers timely questions, our guides go deeper, longer reads built to be genuinely useful reference material rather than something you skim once and forget. Expect practical guidance on topics like structuring a firm for growth, getting trust accounting right, and understanding what NDPA compliance actually requires of a legal practice in Nigeria today.</p>
-      <p>Our first guides are currently in development. <a href="index.html#waitlist" class="text-link">Join our waitlist</a> to be notified as soon as they're available.</p>
+      <p>Where the blog answers timely questions, our guides go deeper: longer pieces written to be kept and used as reference. Expect practical guidance on structuring a firm for growth, getting trust accounting right and understanding what the NDPA requires of a law firm in Nigeria.</p>
+      <p>Our first guides are being written. <a href="https://linkedin.com/company/deeluh" class="text-link" target="_blank" rel="noopener">Follow Deeluh on LinkedIn</a> to hear when they are published.</p>
     </div>
 
     <!-- FREE REPORT -->
     <div class="resources__report fade-up" id="free-report">
-      <h2>Free Report</h2>
+      <h2>Free report</h2>
       <p class="resources__report-title">The State of Legal Practice in Nigeria, 2026</p>
-      <p>A first-of-its-kind look at how Nigerian law firms are actually operating today, covering technology adoption, billing models, compliance readiness, and where the profession appears to be heading next. We built this report because we couldn't find the data ourselves when we went looking for it, so we're gathering and publishing it instead.</p>
-      <p class="resources__report-status">The report is coming soon and will be available as a free download. Join our waitlist to be among the first to receive it.</p>
+      <p>A look at how Nigerian law firms operate today, covering technology adoption, billing models, compliance readiness and where the profession is heading. We are preparing this report because we could not find the data ourselves when we looked for it, so we are collecting it and will publish it here.</p>
+      <p class="resources__report-status">The report is coming soon and will be available as a free download. <a href="https://linkedin.com/company/deeluh" class="text-link" target="_blank" rel="noopener">Follow Deeluh on LinkedIn</a> to hear when it is published.</p>
     </div>
 
   </div>
@@ -420,18 +434,17 @@ a.text-link {
     <div class="footer-grid">
 
       <div class="footer-brand">
-        <!-- <p class="footer-brand__name">Deeluh</p> -->
-        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
-        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+        <p class="footer-brand__name"><a href="index.html">Deeluh<span class="wordmark__dot">.</span></a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by Frontendlabs in Lagos.</p>
       </div>
 
       <div class="footer-col">
         <p class="footer-col__title">Product</p>
         <ul>
-          <li><a href="#what">What Deeluh does</a></li>
-          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
           <li><a href="index.html#faq">FAQ</a></li>
-          <li><a href="javascript:void(0)">Security</a></li>
+          <li><a href="legal.html#security">Security</a></li>
         </ul>
       </div>
 
@@ -440,7 +453,7 @@ a.text-link {
         <ul>
           <li><a href="company.html">About</a></li>
           <li><a href="company.html#contactSection">Contact sales</a></li>
-          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><!--email_off--><a href="mailto:hello@deeluh.com">hello@deeluh.com</a><!--/email_off--></li>
           <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
         </ul>
       </div>
@@ -448,17 +461,18 @@ a.text-link {
       <div class="footer-col">
         <p class="footer-col__title">Legal</p>
         <ul>
-          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
-          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
-          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
-          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+          <li><a href="https://app.deeluh.com/legal/privacy">Privacy Policy</a></li>
+          <li><a href="https://app.deeluh.com/legal/terms">Terms of Service</a></li>
+          <li><a href="https://app.deeluh.com/legal/ndpa-compliance">NDPA 2023 Compliance Statement</a></li>
+          <li><a href="https://app.deeluh.com/legal/data-processing">Data Processing Agreement</a></li>
+          <li><a href="legal.html">All legal documents</a></li>
         </ul>
       </div>
 
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+      <p class="footer-bottom__legal">© 2026 Frontendlabs Limited (RC 9357704). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
 
       <div class="footer-bottom__social">
         <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
