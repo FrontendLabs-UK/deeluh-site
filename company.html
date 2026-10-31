@@ -1432,8 +1432,9 @@
      31 OCT 2026 SITE CORRECTIONS (30 Oct website review)
      ========================================================== */
   .about-deeluh__stage1 h1 + .about-deeluh__cards { margin-top: 3.5rem; }
-  /* the frontendlabs.co.uk picture is gone (D-15), so two columns, not three */
-  .flabs__grid { grid-template-columns: 1fr 1fr; }
+  /* the frontendlabs.co.uk picture is gone (D-15), so two columns, not three, on wide screens;
+     the original rule below 1,001 px keeps phones and tablets at one column */
+  @media (min-width: 1001px) { .flabs__grid { grid-template-columns: 1fr 1fr; } }
   /* contact section on teal, not clay: clay is kept for AI, and white on clay failed contrast (B-05, B-14) */
   .contact { background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%); }
   .contact__field label { color: #fff; }

@@ -694,6 +694,10 @@
   .navbar__btn { padding: .6rem .9rem; }
 }
 
+/* Anchor links (#security, #pricing, #blog, #guides, #free-report) land below the fixed
+   navigation bar instead of underneath it. */
+html { scroll-padding-top: 112px; }
+
 /* Closed phone menu and its Security panel: hidden from the keyboard and screen readers, not only
    clipped (accessibility review, 31 October). Visibility flips after the slide, so it still animates. */
 .navbar__mobile { visibility: hidden; transition: max-height .4s cubic-bezier(.2,.8,.2,1), visibility 0s linear .4s; }

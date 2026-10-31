@@ -1183,10 +1183,10 @@
         <div class="ecosystem__node" data-node style="--angle: 210deg; --node-delay: .95s; --float-delay: 3s;">
           <div class="ecosystem__node-float">
             <div class="ecosystem__node-card ecosystem__node-card--text">
-              <span class="ecosystem__node-name">Client workspaces</span>
+              <span class="ecosystem__node-name">Client portal</span>
               <span class="ecosystem__tooltip">
                 <span class="ecosystem__tooltip-sub">Deeluh module</span>
-                <span class="ecosystem__tooltip-title">Client workspaces</span>
+                <span class="ecosystem__tooltip-title">Client portal</span>
                 <span class="ecosystem__tooltip-desc">A secure private link for each matter, where your clients see what you share.</span>
               </span>
             </div>
@@ -1242,7 +1242,7 @@
       const cy = centerRect.top + centerRect.height / 2 - diagramRect.top;
 
       nodeEls.forEach(node => {
-        const nodeRect = node.getBoundingClientRect();
+        const nodeRect = (node.querySelector('.ecosystem__node-card') || node).getBoundingClientRect();
         const nx = nodeRect.left + nodeRect.width / 2 - diagramRect.left;
         const ny = nodeRect.top + nodeRect.height / 2 - diagramRect.top;
 
@@ -1274,7 +1274,7 @@
   <span class="modules__noise"></span>
   <div class="modules__header">
     <h2>Seven modules. One firm.</h2>
-    <p>Deeluh brings the core work of a law firm together: firm set-up, matters, billing, AI assistance, compliance records and client communication.</p>
+    <p>Deeluh brings the core work of a law firm together: firm set-up, matters, the client portal, billing, AI assistance, team communication and compliance records.</p>
   </div>
 
   <!-- ================= DESKTOP ================= -->
