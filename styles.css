@@ -694,6 +694,13 @@
   .navbar__btn { padding: .6rem .9rem; }
 }
 
+/* Closed phone menu and its Security panel: hidden from the keyboard and screen readers, not only
+   clipped (accessibility review, 31 October). Visibility flips after the slide, so it still animates. */
+.navbar__mobile { visibility: hidden; transition: max-height .4s cubic-bezier(.2,.8,.2,1), visibility 0s linear .4s; }
+.navbar.is-open .navbar__mobile { visibility: visible; transition: max-height .4s cubic-bezier(.2,.8,.2,1), visibility 0s; }
+.navbar__mobile-dropdown-panel { visibility: hidden; transition: max-height .35s cubic-bezier(.2,.8,.2,1), visibility 0s linear .35s; }
+.navbar__mobile-dropdown.is-open .navbar__mobile-dropdown-panel { visibility: visible; transition: max-height .35s cubic-bezier(.2,.8,.2,1), visibility 0s; }
+
 /* Decorative shapes on the Product and Company pages made phones scroll sideways (B-15). */
 body { overflow-x: clip; }
 

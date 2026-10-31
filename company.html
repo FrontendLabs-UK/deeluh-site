@@ -125,7 +125,7 @@
   }
   .about-deeluh.is-visible .about-deeluh__card:nth-child(2) { transition-delay: 100ms; }
 
-  .about-deeluh__card h3 {
+  .about-deeluh__card h2 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.3rem;
@@ -887,7 +887,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url('/assets/images/deeluhteam5.jpg');
+    background-image: none;
     background-size: cover;
     background-position: center;
     z-index: 0;
@@ -1446,6 +1446,8 @@
   .contact__success a { color: #fff; }
   .faq-item.is-open .faq-item__icon { background: var(--brand-primary); border-color: var(--brand-primary); }
   .faq-item__answer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .team-gallery__lightbox { visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
+  .team-gallery__lightbox.is-open { visibility: visible; transition: opacity .3s ease, visibility 0s; }
 </style>
 </head>
 <body>
@@ -1588,12 +1590,12 @@
 
     <div class="about-deeluh__cards">
       <article class="about-deeluh__card">
-        <h3>Our mission</h3>
+        <h2>Our mission</h2>
         <p>Deeluh exists to give every law firm, from solo practitioners to full-service firms, an operating system built around the way legal work is done, so that lawyers can spend their time practising law rather than managing the software meant to support them.</p>
       </article>
 
       <article class="about-deeluh__card">
-        <h3>Our values</h3>
+        <h2>Our values</h2>
         <p>We believe judgment belongs with the lawyer. Technology should remove friction, not replace professional judgment, so every feature that touches a matter is built for lawyer review. We build for how firms work, guided by legal practice rather than assumptions made from outside it. Because our market has too often been an afterthought for global software, we price in naira from the start, not in dollars.</p>
       </article>
     </div>
@@ -1800,35 +1802,35 @@
   <div class="team-gallery__viewport">
     <div class="team-gallery__track">
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam1.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam1.jpg" alt="Two members of the Deeluh team at the Deeluh stand, NBA conference">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam2.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam2.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam3.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam3.jpg" alt="A member of the Deeluh team showing Deeluh to a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam4.jpg" alt="Frontendlabs team collaborating">
+        <img src="/assets/images/deeluhteam4.jpg" alt="Members of the Deeluh team with a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam5.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam5.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
 
       <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
-        <img src="/assets/images/deeluhteam1.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam1.jpg" alt="Two members of the Deeluh team at the Deeluh stand, NBA conference">
       </button>
       <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
-        <img src="/assets/images/deeluhteam2.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam2.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
-        <img src="/assets/images/deeluhteam3.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam3.jpg" alt="A member of the Deeluh team showing Deeluh to a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
-        <img src="/assets/images/deeluhteam4.jpg" alt="Frontendlabs team collaborating">
+        <img src="/assets/images/deeluhteam4.jpg" alt="Members of the Deeluh team with a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
-        <img src="/assets/images/deeluhteam5.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam5.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
 
     </div>
@@ -1836,7 +1838,7 @@
 
 </section>
 
-<div class="team-gallery__lightbox" id="teamGalleryLightbox">
+<div class="team-gallery__lightbox" id="teamGalleryLightbox" role="dialog" aria-modal="true" aria-label="Enlarged photograph">
   <div class="team-gallery__lightbox-frame">
     <button type="button" class="team-gallery__lightbox-close" id="teamGalleryLightboxClose" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -1870,22 +1872,31 @@
      close button, or Escape) to dismiss ---- */
   if (!lightbox || !lightboxImg) return;
 
-  function openLightbox(src, alt) {
+  let returnFocusTo = null;
+
+  function openLightbox(src, alt, opener) {
     lightboxImg.src = src;
     lightboxImg.alt = alt || '';
+    returnFocusTo = opener || null;
     lightbox.classList.add('is-open');
     document.body.style.overflow = 'hidden';
+    if (closeBtn) closeBtn.focus();
   }
   function closeLightbox() {
+    if (!lightbox.classList.contains('is-open')) return;
     lightbox.classList.remove('is-open');
     document.body.style.overflow = '';
+    // the duplicated marquee copies are not focusable, so return focus to the visible original
+    if (returnFocusTo && returnFocusTo.getAttribute('tabindex') !== '-1') returnFocusTo.focus();
+    returnFocusTo = null;
   }
 
+  // every copy opens the photograph for a mouse or touch user; the duplicated marquee set is only
+  // hidden from screen readers and the Tab key
   items.forEach(item => {
-    if (item.hasAttribute('aria-hidden')) return; // skip the duplicated marquee set
     item.addEventListener('click', () => {
       const img = item.querySelector('img');
-      if (img) openLightbox(img.src, img.alt);
+      if (img) openLightbox(img.src, img.alt, item);
     });
   });
 
@@ -1897,7 +1908,10 @@
   });
 
   document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('is-open')) return;
     if (e.key === 'Escape') closeLightbox();
+    // the close button is the only control in the dialog, so Tab stays on it
+    if (e.key === 'Tab' && closeBtn) { e.preventDefault(); closeBtn.focus(); }
   });
 })();
 </script>

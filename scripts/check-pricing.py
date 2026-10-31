@@ -61,19 +61,43 @@ BANNED_WORDING = [
      "the trial is a '7-day free trial'"),
     (r"\bwait\s*list\b|\bavailable\s+at\s+launch\b|\bearly\s+access\b",
      "Deeluh is live: sign-up is open and plans are on sale"),
+    (r"\bVAT\s+(?:is\s+)?(?:added|extra|on\s+top|charged\s+on\s+top)\b|\+\s*VAT\b",
+     "prices include VAT"),
+    (r"\bcancel(?:s|led|ling|lation)?\b",
+     "there is no cancel action; say what is true: no minimum term, and a plan runs to the end of "
+     "the period paid for"),
+    (r"\b(?:upgrade|downgrade)s?\b|\bswitch\s+(?:plans?|to\s+yearly)\b",
+     "a firm cannot change plan by itself; plan changes are made by the Deeluh team"),
+    (r"\bmoney[-\s]back\b|\bfull\s+refund\b|\brefunds?\s+(?:within|guarantee)",
+     "fees already paid are not refunded, except where the law requires it"),
 ]
 
-# A link to one of these documents must open the version the app serves, which is the version
-# firms accept when they sign up. /terms and /privacy on deeluh.com redirect to the app.
-LEGAL_LINK_TEXT = re.compile(
-    r"terms of service|privacy policy|data processing (?:agreement|addendum)"
-    r"|ndpa 2023|cookie policy|ai policy|acceptable use policy|security (?:addendum|overview)"
-    r"|data retention schedule|support and sla terms|conflict check policy",
-    re.I,
-)
-LEGAL_LINK_OK = re.compile(r"^(?:https://app\.deeluh\.com/legal/[a-z-]+|/terms|/privacy|legal\.html(?:#[a-z-]+)?)$")
+# Every naira amount a visitor can read must be one of these: the plan prices, the yearly prices
+# divided by 12, and Solo's twelve monthly payments in the 20% example. A made-up figure fails.
+def allowed_naira():
+    allowed = set()
+    for monthly, yearly in RATIFIED_PRICES.values():
+        allowed.update({monthly, yearly, yearly // 12, monthly * 12})
+    return allowed
+
+# A link named after one of these documents must open exactly that document in the app, which is the
+# copy firms accept when they sign up. /terms and /privacy on deeluh.com redirect to the app.
+LEGAL_DOCS = [  # (link text, the only places it may point)
+    (r"terms of service", ("https://app.deeluh.com/legal/terms", "/terms")),
+    (r"privacy policy", ("https://app.deeluh.com/legal/privacy", "/privacy")),
+    (r"data processing (?:agreement|addendum)", ("https://app.deeluh.com/legal/data-processing",)),
+    (r"ndpa 2023", ("https://app.deeluh.com/legal/ndpa-compliance",)),
+    (r"cookie policy", ("https://app.deeluh.com/legal/cookies",)),
+    (r"\bai policy", ("https://app.deeluh.com/legal/ai-policy",)),
+    (r"acceptable use policy", ("https://app.deeluh.com/legal/acceptable-use",)),
+    (r"security addendum", ("https://app.deeluh.com/legal/security-addendum",)),
+    (r"security overview", ("legal.html#security",)),
+    (r"data retention schedule", ("https://app.deeluh.com/legal/data-retention",)),
+    (r"support and sla terms", ("https://app.deeluh.com/legal/support-sla",)),
+    (r"conflict check policy", ("https://app.deeluh.com/legal/conflict-check",)),
+]
 # No page may send a reader to a shared document: the copies firms accept are served by the app.
-BANNED_HREF = re.compile(r"docs\.google\.com|javascript:void", re.I)
+BANNED_HREF = re.compile(r"docs\.google\.com", re.I)
 
 VOID_TAGS = {
     "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
@@ -162,18 +186,26 @@ def naira(amount):
 
 
 def check_prices(root, page, fail):
-    priced = {}
+    priced, cards = {}, {}
     for card in root.walk():
         if card.tag != "article" or "price-card" not in card.classes:
             continue
         tier_node = card.find("price-card__tier")
         tier = tier_node.text() if tier_node else "?"
-        if "data-ngn-monthly" not in card.attrs and "data-ngn-annual" not in card.attrs:
-            continue  # priced by arrangement (Enterprise)
-        priced[tier] = card
+        cards[tier] = card
+        if "data-ngn-monthly" in card.attrs or "data-ngn-annual" in card.attrs:
+            priced[tier] = card
 
+    if set(cards) != set(RATIFIED_PRICES) | {"Enterprise"}:
+        fail(page, f"the price cards are {sorted(cards)}, expected {sorted(set(RATIFIED_PRICES) | {'Enterprise'})}")
     if set(priced) != set(RATIFIED_PRICES):
         fail(page, f"priced plans on the page are {sorted(priced)}, expected {sorted(RATIFIED_PRICES)}")
+    enterprise = cards.get("Enterprise")
+    if enterprise is not None:
+        if "₦" in enterprise.text():
+            fail(page, "the Enterprise card shows a naira price; Enterprise is priced by arrangement")
+        if "Price on request" not in enterprise.text():
+            fail(page, "the Enterprise card must say 'Price on request'")
 
     for tier, (monthly, yearly) in RATIFIED_PRICES.items():
         card = priced.get(tier)
@@ -222,21 +254,38 @@ def check_wording(root, page, fail):
             fail(page, f"says {match.group(0)!r}: {tier} is {naira(yearly)} a year, "
                        f"against {naira(monthly * 12)} paid monthly")
 
+    # any naira figure anywhere on the page must be a real price, or derived from one
+    allowed = allowed_naira()
+    for match in re.finditer(r"₦\s?(\d[\d,]*)(\s*(?:k|m|million|billion)\b)?", text, re.I):
+        amount = int(match.group(1).replace(",", "") or 0)
+        if match.group(2) or amount not in allowed:
+            fail(page, f"says {match.group(0)!r}: not a Deeluh price; the prices are "
+                       + ", ".join(naira(a) for a in sorted(allowed)))
+
 
 def check_legal_links(root, page, fail):
     for node in root.walk():
         if node.tag != "a":
             continue
         href = (node.attrs.get("href") or "").strip()
+        label = node.text()
         if "javascript:" in href.lower():
-            fail(page, f"{node.text()[:40]!r} links to {href[:70]!r}, which does nothing when "
-                       "clicked; point it at a real page")
-        elif BANNED_HREF.search(href):
-            fail(page, f"{node.text()[:40]!r} links to {href[:70]!r}; legal documents live in the "
-                       "app, under https://app.deeluh.com/legal/")
-        elif LEGAL_LINK_TEXT.search(node.text()) and not LEGAL_LINK_OK.match(href):
-            fail(page, f"{node.text()[:40]!r} links to {href[:70]!r}; link to the copy the app "
-                       "serves, under https://app.deeluh.com/legal/")
+            fail(page, f"{label[:40]!r} links to {href[:70]!r}, which does nothing when clicked; "
+                       "point it at a real page")
+            continue
+        if BANNED_HREF.search(href):
+            fail(page, f"{label[:40]!r} links to {href[:70]!r}; legal documents live in the app, "
+                       "under https://app.deeluh.com/legal/")
+            continue
+        # the document a link is named after is the first title in its text (a Legal page card
+        # carries its title first, then a one-line description)
+        named = [(m.start(), targets) for pattern, targets in LEGAL_DOCS
+                 for m in [re.search(pattern, label, re.I)] if m]
+        if named:
+            targets = min(named)[1]
+            if href not in targets:
+                fail(page, f"{label[:40]!r} links to {href[:70]!r}; it must open "
+                           + " or ".join(targets))
 
 
 def main(argv):
