@@ -17,7 +17,7 @@ That boundary is the point of this repo. Please do not "temporarily" move site c
 index.html  product.html  solutions.html  resources.html  company.html  legal.html
 styles.css
 assets/images/   assets/logos/
-scripts/         deploy plumbing only — never served (see Deploying)
+scripts/         deploy and CI plumbing only — never served (see Deploying)
 ```
 
 ## How it ships
@@ -68,6 +68,7 @@ converges the key it was given; it does not know which other line is the retired
 | `gitleaks` | No credential ever belongs in this repo. The site needs none to build. |
 | dead-link scan | `javascript:void(0)` and broken relative links are the failure mode of a hand-built static site. |
 | asset weight | The hero images are large; a marketing page that loads slowly on a Lagos 3G connection is not doing its job. |
+| prices, money wording and legal links (`scripts/check-pricing.py`) | The prices here must be the prices the app charges, so the check is strict on purpose. Money figures may appear only on the four price cards and in the yearly-saving note, where each is checked against the price table (yearly is 20% off twelve months). VAT may be mentioned only as "include VAT", and refunds only in the one agreed sentence. Wording for things the product does not do fails in any form: cancel, upgrade or downgrade, automatic renewal, per-seat or extra seats, other currencies, a waitlist. A link named after a legal document must open exactly that document under `https://app.deeluh.com/legal/`. `--self-test` runs first and proves every rule still fails on a known-bad page. To change a price, change it in the app first, then on the page and in the script's table in the same pull request; if a banned feature becomes real, change the rule in the same pull request as the wording. Run it locally with `python3 scripts/check-pricing.py --self-test && python3 scripts/check-pricing.py`. |
 
 ## Contact
 

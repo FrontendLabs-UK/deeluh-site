@@ -89,6 +89,16 @@ jobs:
           # A warning, not a failure: a work-in-progress page is legitimate, an INVISIBLE one is not.
           [ "${n:-0}" = "0" ] || echo "::warning::${n} placeholder link(s) — every one is a control that does nothing when clicked"
 
+      # ── PRICES AND MONEY CLAIMS ─────────────────────────────────────────────────────────────
+      # The prices on this site must be the prices the app charges, and the legal documents it links
+      # to must be the ones firms accept. Both have drifted before; the script's header says how.
+      - name: prices, money wording and legal links match the app
+        run: |
+          set -euo pipefail
+          # first prove every rule still fails on a known-bad page, then check the real pages
+          python3 scripts/check-pricing.py --self-test
+          python3 scripts/check-pricing.py
+
       # ── ASSET WEIGHT ────────────────────────────────────────────────────────────────────────
       # The audience is Nigerian law firms, frequently on mobile data. A 3 MB hero is a bounce.
       - name: asset weight

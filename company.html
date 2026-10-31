@@ -3,14 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Company — Deeluh</title>
-<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<title>Company · Deeluh</title>
+<meta name="description" content="About Deeluh and Frontendlabs Limited, the team building the operating system for Nigerian law firms. Contact us or book a demo.">
+<link rel="canonical" href="https://deeluh.com/company.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeluh">
+<meta property="og:title" content="Company · Deeluh">
+<meta property="og:description" content="About Deeluh and Frontendlabs Limited, the team building the operating system for Nigerian law firms. Contact us or book a demo.">
+<meta property="og:url" content="https://deeluh.com/company.html">
+<meta property="og:image" content="https://deeluh.com/assets/images/og-deeluh.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/source-serif-4-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <style>
 
@@ -33,7 +42,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url('/assets/images/company.jpeg');
+    background-image: url('/assets/images/deeluhteam1.jpg');
     background-size: cover;
     background-position: center;
     z-index: 0;
@@ -58,7 +67,7 @@
     margin: 0 auto;
   }
 
-  .about-deeluh__stage1 h2 {
+  .about-deeluh__stage1 h1 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(2rem, 3.2vw, 2.6rem);
@@ -116,7 +125,7 @@
   }
   .about-deeluh.is-visible .about-deeluh__card:nth-child(2) { transition-delay: 100ms; }
 
-  .about-deeluh__card h3 {
+  .about-deeluh__card h2 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: 1.3rem;
@@ -275,7 +284,7 @@
     .about-deeluh__cards { grid-template-columns: 1fr; gap: 1.25rem; }
     .about-deeluh__gap { height: 4rem; }
     .about-deeluh__statement { max-width: 88%; }
-    .about-deeluh__stage1 h2 { margin: 60px 0px 0px auto; }
+    .about-deeluh__stage1 h1 { margin: 60px 0px 0px auto; }
   }
   
 
@@ -878,7 +887,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    background-image: url('https://images.unsplash.com/photo-1758520145132-b0ecdb967295?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1920');
+    background-image: none;
     background-size: cover;
     background-position: center;
     z-index: 0;
@@ -1418,6 +1427,29 @@
 
  
 
+
+  /* ==========================================================
+     31 OCT 2026 SITE CORRECTIONS (30 Oct website review)
+     ========================================================== */
+  .about-deeluh__stage1 h1 + .about-deeluh__cards { margin-top: 3.5rem; }
+  /* the frontendlabs.co.uk picture is gone (D-15), so two columns, not three, on wide screens;
+     the original rule below 1,001 px keeps phones and tablets at one column */
+  @media (min-width: 1001px) { .flabs__grid { grid-template-columns: 1fr 1fr; } }
+  /* contact section on teal, not clay: clay is kept for AI, and white on clay failed contrast (B-05, B-14) */
+  .contact { background: linear-gradient(160deg, var(--brand-primary) 0%, var(--brand-primary-hover) 100%); }
+  .contact__field label { color: #fff; }
+  .contact__consent { color: rgba(255, 255, 255, 0.85); }
+  .contact__submit { background: #fff; color: var(--brand-primary); }
+  .contact__submit:hover { background: var(--brand-primary-tint); }
+  .contact__optin { display: flex; gap: .6rem; align-items: flex-start; margin: .25rem 0 .5rem; font-size: .85rem; line-height: 1.5; color: #fff; cursor: pointer; }
+  .contact__optin input { width: 1.05rem; height: 1.05rem; margin: .15rem 0 0; flex-shrink: 0; accent-color: #fff; }
+  .contact__success p { margin: .5rem 0 0; color: rgba(255, 255, 255, 0.9); }
+  .contact__success a { color: #fff; }
+  .faq-item.is-open .faq-item__icon { background: var(--brand-primary); border-color: var(--brand-primary); }
+  .faq-item__answer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+  .team-gallery__lightbox { visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
+  .team-gallery__lightbox.is-open { visibility: visible; transition: opacity .3s ease, visibility 0s; }
+  @media (prefers-reduced-motion: reduce) { .team-gallery__lightbox, .team-gallery__lightbox.is-open { transition: none; } }
 </style>
 </head>
 <body>
@@ -1427,10 +1459,7 @@
  <nav class="navbar" id="siteNavbar">
   <div class="navbar__inner">
 
-    <a href="index.html" class="navbar__logo">
-      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
-      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
-    </a>
+    <a href="index.html" class="navbar__logo" aria-label="Deeluh home page"><span class="wordmark">Deeluh<span class="wordmark__dot">.</span></span></a>
 
     <ul class="navbar__menu">
       <li><a href="product.html">Product</a></li>
@@ -1445,7 +1474,7 @@
           </svg>
         </button>
         <div class="navbar__dropdown-panel">
-          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
           <a href="legal.html" class="navbar__dropdown-link">Legal</a>
         </div>
       </li>
@@ -1455,8 +1484,9 @@
     </ul>
 
     <div class="navbar__actions">
-      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      <a href="https://app.deeluh.com/auth/login" class="navbar__signin">Sign in</a>
+      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+      <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
     </div>
 
     <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
@@ -1481,7 +1511,7 @@
           </button>
           <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
             <div class="navbar__mobile-dropdown-inner">
-              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
               <a href="legal.html" class="navbar__dropdown-link">Legal</a>
             </div>
           </div>
@@ -1491,8 +1521,9 @@
         <li><a href="company.html">Company</a></li>
       </ul>
       <div class="navbar__mobile-actions">
-        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+        <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
+        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+        <a href="https://app.deeluh.com/auth/login" class="navbar__btn navbar__btn--ghost">Sign in</a>
       </div>
     </div>
   </div>
@@ -1557,17 +1588,17 @@
   <!-- STAGE 1 -->
   <div class="about-deeluh__stage1">
     <!-- <span class="about-deeluh__eyebrow">About Deeluh</span> -->
-      <h2>About Deeluh</h2><br><br><br>
+      <h1>About Deeluh</h1>
 
     <div class="about-deeluh__cards">
       <article class="about-deeluh__card">
-        <h3>Our Mission</h3>
-        <p>Deeluh exists to give every law firm, from solo practitioners to full-service firms, an operating system built around how legal work actually happens, so that lawyers can spend their time practising law rather than managing the software meant to support them.</p>
+        <h2>Our mission</h2>
+        <p>Deeluh exists to give every law firm, from solo practitioners to full-service firms, an operating system built around the way legal work is done, so that lawyers can spend their time practising law rather than managing the software meant to support them.</p>
       </article>
 
       <article class="about-deeluh__card">
-        <h3>Our Values</h3>
-        <p>We believe that judgment should always stay with the lawyer, and that technology's job is to remove friction rather than to replace professional judgment, which is why every matter-facing feature we build ships under strict lawyer-review boundaries. We also believe in building for how firms actually run, rather than guessing at what a firm might need from the outside, so every workflow inside Deeluh is shaped by real legal practice rather than assumptions made at a distance from it. And because we're building for firms operating in a market that has too often been an afterthought for global software, we price in local currency from the outset, rather than adopting a dollar-denominated model built around an economy we don't serve.</p>
+        <h2>Our values</h2>
+        <p>We believe judgment belongs with the lawyer. Technology should remove friction, not replace professional judgment, so every feature that touches a matter is built for lawyer review. We build for how firms work, guided by legal practice rather than assumptions made from outside it. Because our market has too often been an afterthought for global software, we price in naira from the start, not in dollars.</p>
       </article>
     </div>
   </div>
@@ -1590,13 +1621,13 @@
       <span class="about-deeluh__fmark" id="statementFmark">
         <img src="assets/logos/frontendlabs-f-mark-ash.svg" alt="" role="presentation">
       </span>
-      <p class="about-deeluh__statement" id="statementText" data-full-text="Deeluh is built by Frontendlabs, a technology company, working with guidance from a practicing commercial lawyer who has run a firm and dealt directly with the problems Deeluh sets out to solve."></p>
+      <p class="about-deeluh__statement" id="statementText" data-full-text="Deeluh is built by Frontendlabs, a technology company, guided by a practising commercial lawyer who has run a firm and dealt directly with the problems Deeluh sets out to solve."></p>
     </div>
   </div>
 
   <!-- STAGE 4 -->
   <div class="about-deeluh__writeup">
-    <p>Law firms today run on some of the most sophisticated professional judgment found in any industry, and yet that judgment is too often supported by some of the least sophisticated tools available to it: matters tracked in a spreadsheet, clients reached through a messaging app never designed for confidential communication, trust accounts reconciled by hand, and compliance held together largely by memory and good intentions. That gap doesn't only slow a firm down; it quietly costs both the client and the lawyer, because a firm can only grow as far as one person's memory can stretch, and no lawyer should have to carry an entire practice's operations in their head simply to keep that practice running.</p>
+    <p>Law firms depend on some of the most demanding judgment in any profession, yet too often support it with the simplest of tools: matters tracked in a spreadsheet, clients reached through a messaging app never designed for confidential communication, and compliance held together by memory and good intentions. That gap does more than slow a firm down. It costs clients and lawyers alike, because a firm can grow only as far as one person's memory stretches, and no lawyer should have to carry a whole practice's operations in their head.</p>
   </div>
 
 </section>
@@ -1730,27 +1761,13 @@
       <!-- LEFT — About Frontendlabs -->
       <div class="flabs__col flabs__col--left">
         <span class="flabs__eyebrow">About Frontendlabs</span>
-        <p class="flabs__text">Frontendlabs is a technology studio that builds products for both funded startups and pre-seed ventures, bringing more than fifteen years of combined team experience to that work, alongside a track record that includes reaching four million people worldwide and delivering £120 million in client value through past acquisitions. Deeluh is Frontendlabs' answer to a problem we saw up close within the legal industry, and we've approached building it with the same philosophy we bring to every product we take on: get to market, get it right, and stay for the long run.</p>
-        <a href="https://frontendlabs.co.uk/" target="_blank" rel="noopener" class="flabs__btn flabs__btn--outline">Visit Frontendlabs →</a>
-      </div>
-
-      <!-- CENTER — mockup -->
-      <div class="flabs__mockup-col">
-        <div class="flabs__mockup">
-          <div class="flabs__mockup-bar">
-            <span class="flabs__mockup-dot"></span>
-            <span class="flabs__mockup-dot"></span>
-            <span class="flabs__mockup-dot"></span>
-            <span class="flabs__mockup-url"></span>
-          </div>
-          <img src="assets/images/frontendlabs.png" alt="Frontendlabs website homepage">
-        </div>
+        <p class="flabs__text">Frontendlabs is a technology studio that builds products for both funded startups and pre-seed ventures, bringing more than fifteen years of combined team experience to that work. Deeluh is Frontendlabs' answer to a problem we saw at first hand in legal practice. We build it as we build every product: get it right, bring it to market and stay for the long run.</p>
       </div>
 
       <!-- RIGHT — Nigeria-first -->
       <div class="flabs__col flabs__col--right">
-        <p class="flabs__text">We're launching first in Nigeria, with pricing set in naira and a platform built around how Nigerian firms actually operate today. Our ambition is to design for legal teams everywhere, but we're deliberately starting in the market we understand best, so that what we build first is genuinely right, rather than merely broad.</p>
-        <a href="https://calendly.com/deeluhhq" class="flabs__btn flabs__btn--filled">Book a Demo</a>
+        <p class="flabs__text">We've launched first in Nigeria, with pricing set in naira and a platform built around how Nigerian firms operate today. Our ambition reaches beyond Nigeria, but we chose to start in the market we understand best, so that what we build is right before it is broad.</p>
+        <a href="https://calendly.com/deeluhhq" class="flabs__btn flabs__btn--filled">Book a demo</a>
       </div>
 
     </div>
@@ -1779,43 +1796,43 @@
 <section class="team-gallery" id="teamGallerySection">
 
   <div class="team-gallery__header">
-    <span class="team-gallery__eyebrow">The Team</span>
+    <span class="team-gallery__eyebrow">The team</span>
     <h2>The people building Deeluh.</h2>
-    <p>A small, senior team shipping product for founders who can't afford to get it wrong.</p>
+    <p>A small, senior team building Deeluh for law firms that cannot afford to get it wrong.</p>
   </div>
 
   <div class="team-gallery__viewport">
     <div class="team-gallery__track">
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam1.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam1.jpg" alt="Two members of the Deeluh team at the Deeluh stand, NBA conference">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam2.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam2.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam3.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam3.jpg" alt="A member of the Deeluh team showing Deeluh to a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam4.jpg" alt="Frontendlabs team collaborating">
+        <img src="/assets/images/deeluhteam4.jpg" alt="Members of the Deeluh team with a visitor at the Deeluh stand">
       </button>
       <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam5.jpg" alt="Member of the Frontendlabs team">
+        <img src="/assets/images/deeluhteam5.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
 
-      <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam1.jpg" alt="Member of the Frontendlabs team">
+      <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
+        <img src="/assets/images/deeluhteam1.jpg" alt="Two members of the Deeluh team at the Deeluh stand, NBA conference">
       </button>
-      <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam2.jpg" alt="Member of the Frontendlabs team">
+      <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
+        <img src="/assets/images/deeluhteam2.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
-      <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam3.jpg" alt="Member of the Frontendlabs team">
+      <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
+        <img src="/assets/images/deeluhteam3.jpg" alt="A member of the Deeluh team showing Deeluh to a visitor at the Deeluh stand">
       </button>
-      <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam4.jpg" alt="Frontendlabs team collaborating">
+      <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
+        <img src="/assets/images/deeluhteam4.jpg" alt="Members of the Deeluh team with a visitor at the Deeluh stand">
       </button>
-      <button type="button" class="team-gallery__item">
-        <img src="/assets/images/deeluhteam5.jpg" alt="Member of the Frontendlabs team">
+      <button type="button" class="team-gallery__item" aria-hidden="true" tabindex="-1">
+        <img src="/assets/images/deeluhteam5.jpg" alt="A member of the Deeluh team talking with a visitor at the Deeluh stand">
       </button>
 
     </div>
@@ -1823,7 +1840,7 @@
 
 </section>
 
-<div class="team-gallery__lightbox" id="teamGalleryLightbox">
+<div class="team-gallery__lightbox" id="teamGalleryLightbox" role="dialog" aria-modal="true" aria-label="Enlarged photograph">
   <div class="team-gallery__lightbox-frame">
     <button type="button" class="team-gallery__lightbox-close" id="teamGalleryLightboxClose" aria-label="Close">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -1857,22 +1874,31 @@
      close button, or Escape) to dismiss ---- */
   if (!lightbox || !lightboxImg) return;
 
-  function openLightbox(src, alt) {
+  let returnFocusTo = null;
+
+  function openLightbox(src, alt, opener) {
     lightboxImg.src = src;
     lightboxImg.alt = alt || '';
+    returnFocusTo = opener || null;
     lightbox.classList.add('is-open');
     document.body.style.overflow = 'hidden';
+    if (closeBtn) closeBtn.focus();
   }
   function closeLightbox() {
+    if (!lightbox.classList.contains('is-open')) return;
     lightbox.classList.remove('is-open');
     document.body.style.overflow = '';
+    // the duplicated marquee copies are not focusable, so return focus to the visible original
+    if (returnFocusTo && returnFocusTo.getAttribute('tabindex') !== '-1') returnFocusTo.focus();
+    returnFocusTo = null;
   }
 
+  // every copy opens the photograph for a mouse or touch user; the duplicated marquee set is only
+  // hidden from screen readers and the Tab key
   items.forEach(item => {
-    if (item.hasAttribute('aria-hidden')) return; // skip the duplicated marquee set
     item.addEventListener('click', () => {
       const img = item.querySelector('img');
-      if (img) openLightbox(img.src, img.alt);
+      if (img) openLightbox(img.src, img.alt, item);
     });
   });
 
@@ -1884,7 +1910,10 @@
   });
 
   document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('is-open')) return;
     if (e.key === 'Escape') closeLightbox();
+    // the close button is the only control in the dialog, so Tab stays on it
+    if (e.key === 'Tab' && closeBtn) { e.preventDefault(); closeBtn.focus(); }
   });
 })();
 </script>
@@ -1899,7 +1928,7 @@
     <div class="faq__header">
       <span class="faq__eyebrow">FAQ</span>
       <h2>Frequently asked questions</h2>
-      <p>Answers we get asked before firms sign up.</p>
+      <p>Questions firms ask before they sign up.</p>
     </div>
 
     <div class="faq-list">
@@ -1911,7 +1940,7 @@
         </button>
         <div class="faq-item__panel">
           <div class="faq-item__panel-inner">
-            <p class="faq-item__answer">Deeluh has been built specifically for legal practice rather than adapted from generic business software, so lawyer verification, trust accounting, and firm-structure logic, spanning everything from a Sole Practitioner to an Enterprise organisation, are built in from the very beginning rather than added on afterward.</p>
+            <p class="faq-item__answer">Deeluh is built for legal practice rather than adapted from generic business software, so lawyer verification and firm structures are built in from the start, not added later.</p>
           </div>
         </div>
       </div>
@@ -1923,7 +1952,7 @@
         </button>
         <div class="faq-item__panel">
           <div class="faq-item__panel-inner">
-            <p class="faq-item__answer">Pricing is fixed, either monthly or per seat depending on the size of your firm, set in naira, with two months included free on annual billing. Full detail is available on our Pricing page.</p>
+            <p class="faq-item__answer">Every plan is one fixed price for the whole firm, set in naira and including VAT, and each plan includes a set number of seats. You can pay monthly or yearly, and paying yearly saves 20% compared with paying monthly. See the <a href="index.html#pricing">pricing section of our home page</a> for details.</p>
           </div>
         </div>
       </div>
@@ -1935,7 +1964,7 @@
         </button>
         <div class="faq-item__panel">
           <div class="faq-item__panel-inner">
-            <p class="faq-item__answer">Deeluh AI assists with drafting, document review, and research, though every piece of output it produces is a draft aid rather than a finished product, and is reviewed by a qualified person before it is relied upon or sent on to a client. Judgment stays with the lawyer, always.</p>
+            <p class="faq-item__answer">Deeluh AI helps with drafting, contract review and questions about your firm's own documents, though everything it produces is a draft, which a qualified person reviews before it is relied on or sent to a client. Judgment stays with the lawyer, always.</p>
           </div>
         </div>
       </div>
@@ -1947,7 +1976,7 @@
         </button>
         <div class="faq-item__panel">
           <div class="faq-item__panel-inner">
-            <p class="faq-item__answer">Yes. Deeluh applies encryption both at rest and in transit, maintains tenant isolation between firms, and enforces role-based access controls throughout the platform. Fuller detail is available on our Security page and within our Privacy Policy.</p>
+            <p class="faq-item__answer">Yes. Deeluh encrypts data in transit, keeps each firm's data separate from every other firm's and enforces role-based access controls. The Security Addendum and Privacy Policy on our <a href="legal.html">Legal page</a> give more detail.</p>
           </div>
         </div>
       </div>
@@ -1959,7 +1988,7 @@
         </button>
         <div class="faq-item__panel">
           <div class="faq-item__panel-inner">
-            <p class="faq-item__answer">Yes. Deeluh has been built to support every firm structure, from Sole Practitioner and Sole Proprietorship through Partnership, Multi-Partner or Full-Service Firm, Legal Department, and Enterprise, so a firm shouldn't need to switch platforms as it grows.</p>
+            <p class="faq-item__answer">Yes. Deeluh supports sole practitioners, sole proprietorships, partnerships and associateships today. As your firm grows, talk to us about moving to a larger plan; you should not need to change platforms. Support for in-house legal departments is coming later.</p>
           </div>
         </div>
       </div>
@@ -1971,7 +2000,7 @@
         </button>
         <div class="faq-item__panel">
           <div class="faq-item__panel-inner">
-            <p class="faq-item__answer"> Workspace setup takes under two minutes. Once you tell Deeluh a little about your firm's structure and team, your workspace is ready.</p>
+            <p class="faq-item__answer">Setting up your workspace takes a few minutes: tell Deeluh about your firm's structure and team. Your firm goes live once your lawyer verification is complete, which can take longer if it needs a manual check.</p>
           </div>
         </div>
       </div>
@@ -2012,8 +2041,8 @@
   <div class="contact__inner">
 
     <div class="contact__header">
-      <h2>Contact Us</h2>
-      <p>Fill out the form below and we'll be in touch within one business day.</p>
+      <h2>Contact us</h2>
+      <p>Fill in the form below and we will reply within one business day.</p>
     </div>
 
     <form class="contact__form" id="contactForm" novalidate>
@@ -2022,21 +2051,21 @@
 
       <div class="contact__row">
         <div class="contact__field" data-field="firstName">
-          <label for="firstName">First Name</label>
-          <input class="contact__input" type="text" id="firstName" name="firstName" placeholder="First Name" required autocomplete="given-name">
+          <label for="firstName">First name</label>
+          <input class="contact__input" type="text" id="firstName" name="firstName" placeholder="First name" required autocomplete="given-name">
           <span class="contact__error-msg">Please enter your first name.</span>
         </div>
         <div class="contact__field" data-field="lastName">
-          <label for="lastName">Last Name</label>
-          <input class="contact__input" type="text" id="lastName" name="lastName" placeholder="Last Name" required autocomplete="family-name">
+          <label for="lastName">Last name</label>
+          <input class="contact__input" type="text" id="lastName" name="lastName" placeholder="Last name" required autocomplete="family-name">
           <span class="contact__error-msg">Please enter your last name.</span>
         </div>
       </div>
 
       <div class="contact__row">
         <div class="contact__field" data-field="email">
-          <label for="email">Work Email</label>
-          <input class="contact__input" type="email" id="email" name="email" placeholder="Work Email" required autocomplete="email">
+          <label for="email">Work email</label>
+          <input class="contact__input" type="email" id="email" name="email" placeholder="Work email" required autocomplete="email">
           <span class="contact__error-msg">Please enter a valid email address.</span>
         </div>
         <div class="contact__field" data-field="phone">
@@ -2046,15 +2075,15 @@
       </div>
 
       <div class="contact__field contact__field--full" data-field="firmSize">
-        <label for="firmSize">Firm Size</label>
+        <label for="firmSize">Plan you're interested in</label>
         <select class="contact__select" id="firmSize" name="firmSize" required defaultValue="">
-          <option value="" disabled selected>Firm Size</option>
+          <option value="" disabled selected>Choose a plan</option>
           <option value="Solo">Solo</option>
           <option value="Firm">Firm</option>
           <option value="Scale">Scale</option>
           <option value="Enterprise">Enterprise</option>
         </select>
-        <span class="contact__error-msg">Please select your firm size.</span>
+        <span class="contact__error-msg">Please choose a plan.</span>
       </div>
 
       <div class="contact__field contact__field--full" data-field="enquiry">
@@ -2063,13 +2092,16 @@
         <span class="contact__error-msg">Please tell us a little about your enquiry.</span>
       </div>
 
-      <p class="contact__consent">By submitting this form, you agree to receive emails from Deeluh and can unsubscribe at any time. View our <a href="/privacy">Privacy Policy</a>.</p>
+      <label class="contact__optin"><input type="checkbox" id="marketingOptIn" name="marketingOptIn"> Also send me occasional news about Deeluh by email. You can unsubscribe at any time.</label>
 
-      <button type="submit" class="contact__submit" id="contactSubmitBtn">Submit</button>
+      <p class="contact__consent">We use your details to reply to your enquiry. Read our <a href="https://app.deeluh.com/legal/privacy">Privacy Policy</a>.</p>
+
+      <button type="submit" class="contact__submit" id="contactSubmitBtn">Send enquiry</button>
     </form>
 
     <div class="contact__success" id="contactSuccess">
-      <h3>Thanks — we'll be in touch shortly.</h3>
+      <h3>Thank you. We will reply within one business day.</h3>
+      <p>If you have not heard from us by then, email <!--email_off--><a href="mailto:hello@deeluh.com">hello@deeluh.com</a><!--/email_off-->.</p>
     </div>
 
   </div>
@@ -2147,7 +2179,7 @@
     if (!validate()) return;
 
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
+    submitBtn.textContent = 'Sending…';
 
     const payload = {
       firstName: form.firstName.value.trim(),
@@ -2156,6 +2188,7 @@
       phone: form.phone.value.trim(),
       firmSize: form.firmSize.value,
       enquiry: form.enquiry.value.trim(),
+      marketingOptIn: form.marketingOptIn.checked ? 'yes' : 'no',
       submittedAt: new Date().toISOString()
     };
 
@@ -2171,7 +2204,7 @@
     } catch (err) {
       section.classList.add('is-submit-error');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit';
+      submitBtn.textContent = 'Send enquiry';
     }
   });
 
@@ -2191,7 +2224,7 @@
 
 <section class="logo-section">
   <div class="logo-wrap">
-    <span class="logo-text" id="deeluhLogo">Deeluh</span>
+    <span class="logo-text" id="deeluhLogo">Deeluh<span class="wordmark__dot">.</span></span>
   </div>
 </section>
 
@@ -2205,18 +2238,17 @@
     <div class="footer-grid">
 
       <div class="footer-brand">
-        <!-- <p class="footer-brand__name">Deeluh</p> -->
-        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
-        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+        <p class="footer-brand__name"><a href="index.html">Deeluh<span class="wordmark__dot">.</span></a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by Frontendlabs in Lagos.</p>
       </div>
 
       <div class="footer-col">
         <p class="footer-col__title">Product</p>
         <ul>
-          <li><a href="#what">What Deeluh does</a></li>
-          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
           <li><a href="index.html#faq">FAQ</a></li>
-          <li><a href="javascript:void(0)">Security</a></li>
+          <li><a href="legal.html#security">Security</a></li>
         </ul>
       </div>
 
@@ -2225,7 +2257,7 @@
         <ul>
           <li><a href="company.html">About</a></li>
           <li><a href="company.html#contactSection">Contact sales</a></li>
-          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><!--email_off--><a href="mailto:hello@deeluh.com">hello@deeluh.com</a><!--/email_off--></li>
           <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
         </ul>
       </div>
@@ -2233,17 +2265,18 @@
       <div class="footer-col">
         <p class="footer-col__title">Legal</p>
         <ul>
-          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
-          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
-          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
-          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+          <li><a href="https://app.deeluh.com/legal/privacy">Privacy Policy</a></li>
+          <li><a href="https://app.deeluh.com/legal/terms">Terms of Service</a></li>
+          <li><a href="https://app.deeluh.com/legal/ndpa-compliance">NDPA 2023 Compliance Statement</a></li>
+          <li><a href="https://app.deeluh.com/legal/data-processing">Data Processing Agreement</a></li>
+          <li><a href="legal.html">All legal documents</a></li>
         </ul>
       </div>
 
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+      <p class="footer-bottom__legal">© 2026 Frontendlabs Limited (RC 9357704). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
 
       <div class="footer-bottom__social">
         <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
@@ -2290,7 +2323,7 @@
   function setLogoShineInterval(seconds) {
     document.documentElement.style.setProperty('--shine-cycle', seconds + 's');
   }
-  example: setLogoShineInterval(15);
+  setLogoShineInterval(15);
 </script>
 <!-- END OF "BIG LOGO SECTION BEFORE FOOTER" -->
 

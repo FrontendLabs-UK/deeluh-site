@@ -3,14 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Legal — Deeluh</title>
-<link rel="icon" type="image/png" href="/assets/images/deeluh-app-icon-teal.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Hedvig+Letters+Serif:opsz@12..24&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap" rel="stylesheet">
+<title>Legal · Deeluh</title>
+<meta name="description" content="The documents that govern Deeluh, from the Terms of Service and Privacy Policy to the Data Processing Agreement, as the app serves them.">
+<link rel="canonical" href="https://deeluh.com/legal.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Deeluh">
+<meta property="og:title" content="Legal · Deeluh">
+<meta property="og:description" content="The documents that govern Deeluh, from the Terms of Service and Privacy Policy to the Data Processing Agreement, as the app serves them.">
+<meta property="og:url" content="https://deeluh.com/legal.html">
+<meta property="og:image" content="https://deeluh.com/assets/images/og-deeluh.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/source-serif-4-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 <style>
 
@@ -88,7 +97,7 @@ a.text-link {
     content: ""; width: 18px; height: 2px; background: var(--brand-clay); display: inline-block;
   }
 
-  .legal__header h2 {
+  .legal__header h1 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(2rem, 3.2vw, 2.75rem);
@@ -228,6 +237,16 @@ a.text-link {
   }
 
   
+
+  /* ==========================================================
+     31 OCT 2026 SITE CORRECTIONS (30 Oct website review)
+     ========================================================== */
+  .legal__group { font-family: var(--font-display); font-weight: 500; font-size: 1.35rem; color: var(--ink); margin: 4rem 0 0; }
+  .legal__group + .legal__types { margin-top: 1.5rem; }
+  .legal__type-cta { display: block; margin-top: 1.1rem; font-size: .9rem; font-weight: 600; color: var(--brand-primary); }
+  .legal__type:hover h3 { color: var(--brand-primary); }
+  .legal__type:target h3, .legal__type:focus-visible h3 { color: var(--brand-primary); text-decoration: underline; }
+  a.text-link:hover { color: var(--brand-primary); }
 </style>
 </head>
 <body>
@@ -237,10 +256,7 @@ a.text-link {
 <nav class="navbar" id="siteNavbar">
   <div class="navbar__inner">
 
-    <a href="index.html" class="navbar__logo">
-      <img src="assets/images/deeluh-logo-white.png" alt="Deeluh" class="navbar__logo--white">
-      <img src="assets/images/deeluh-logo.png" alt="Deeluh" class="navbar__logo--color">
-    </a>
+    <a href="index.html" class="navbar__logo" aria-label="Deeluh home page"><span class="wordmark">Deeluh<span class="wordmark__dot">.</span></span></a>
 
     <ul class="navbar__menu">
       <li><a href="product.html">Product</a></li>
@@ -255,7 +271,7 @@ a.text-link {
           </svg>
         </button>
         <div class="navbar__dropdown-panel">
-          <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+          <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
           <a href="legal.html" class="navbar__dropdown-link">Legal</a>
         </div>
       </li>
@@ -265,8 +281,9 @@ a.text-link {
     </ul>
 
     <div class="navbar__actions">
-      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-      <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+      <a href="https://app.deeluh.com/auth/login" class="navbar__signin">Sign in</a>
+      <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+      <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
     </div>
 
     <button class="navbar__burger" id="navBurger" aria-label="Toggle menu" aria-expanded="false">
@@ -291,7 +308,7 @@ a.text-link {
           </button>
           <div class="navbar__mobile-dropdown-panel" id="navLegalPanel">
             <div class="navbar__mobile-dropdown-inner">
-              <a href="javascript:void(0)" class="navbar__dropdown-link">Security Overview</a>
+              <a href="legal.html#security" class="navbar__dropdown-link">Security Overview</a>
               <a href="legal.html" class="navbar__dropdown-link">Legal</a>
             </div>
           </div>
@@ -301,8 +318,9 @@ a.text-link {
         <li><a href="company.html">Company</a></li>
       </ul>
       <div class="navbar__mobile-actions">
-        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a Demo</a>
-        <a href="https://app.deeluh.com/" class="navbar__btn navbar__btn--primary">Get Started</a>
+        <a href="https://app.deeluh.com/auth/signup" class="navbar__btn navbar__btn--primary">Set up your firm</a>
+        <a href="https://calendly.com/deeluhhq" class="navbar__btn navbar__btn--ghost">Book a demo</a>
+        <a href="https://app.deeluh.com/auth/login" class="navbar__btn navbar__btn--ghost">Sign in</a>
       </div>
     </div>
   </div>
@@ -367,61 +385,79 @@ a.text-link {
     <div class="fade-up">
       <!-- <span class="legal__eyebrow">legal</span> -->
       <div class="legal__header">
-        <h2>Legal</h2>
-        <p>At Deeluh, we're building the operating system that law firms can trust with their clients' matters and money. This page lists the documents that govern how Deeluh works, protects data, and keeps everyone's obligations clear. These documents may be updated as we grow — we'll note the date of the latest version on each page.</p>
+        <h1>Legal</h1>
+        <p>At Deeluh, we're building the operating system that law firms can trust with their clients' matters. This page lists the documents that govern how Deeluh works, how it protects data and what each party's obligations are. They are the copies the app serves, so they are the versions that apply to your firm. We update these documents from time to time, and each one shows the date of its latest version.</p>
       </div>
     </div>
 
-    <!-- LEGAL TYPES -->
+    <!-- LEGAL DOCUMENTS: the texts the app serves -->
+    <h2 class="legal__group fade-up">Policies</h2>
     <div class="legal__types fade-up">
-      <a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing" class="legal__type">
+      <a href="https://app.deeluh.com/legal/terms" class="legal__type">
         <h3>Terms of Service</h3>
         <p>The core agreement between you and Deeluh when you use the platform.</p>
-        <br>Read Now →
+        <span class="legal__type-cta">Read the document →</span>
       </a>
-      <a href="https://docs.google.com/document/d/1eMNSwEyc2S0G9djsOxX1IL9ZKKbpRu5x5L5qbC7D3ec/edit?usp=sharing" class="legal__type">
-        <h3>Acceptable Use Policy</h3>
-        <p> What's allowed — and not allowed — when using Deeluh.</p>
-        <br>Read Now →
-      </a>
-      <a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing" class="legal__type">
+      <a href="https://app.deeluh.com/legal/privacy" class="legal__type">
         <h3>Privacy Policy</h3>
-        <p> How we collect, use, and protect your personal data.</p>
-        <br>Read Now →
+        <p>How we collect, use and protect your personal data.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/cookies" class="legal__type">
+        <h3>Cookie Policy</h3>
+        <p>The cookies Deeluh uses, why they are set and how to manage your choices.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/ai-policy" class="legal__type">
+        <h3>AI Policy</h3>
+        <p>How Deeluh AI works, what it cannot do and how lawyers review its work.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/acceptable-use" class="legal__type">
+        <h3>Acceptable Use Policy</h3>
+        <p>What you may and may not do when using Deeluh.</p>
+        <span class="legal__type-cta">Read the document →</span>
       </a>
     </div>
 
+    <h2 class="legal__group fade-up">Reference</h2>
     <div class="legal__types fade-up">
-        <a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing" class="legal__type">
-          <h3>Data Processing Addendum</h3>
-          <p>For firms that need a formal data processing agreement in place.</p>
-          <br>Read Now →
-        </a>
-        <a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing" class="legal__type">
-          <h3>NDPA 2023 Statement</h3>
-          <p> How Deeluh complies with Nigeria's Data Protection Act.</p>
-          <br>Read Now →
-        </a>
-        <a href="https://docs.google.com/document/d/1DJUrwG6vA-887Np2bvLTfNpWD6erMBmxVsYMA_X0azo/edit?usp=sharing" class="legal__type">
-          <h3>Cookie Policy</h3>
-          <p> What cookies we use on this site and why.</p>
-          <br>Read Now →
-        </a>
-      </div>
-
-      <div class="legal__types fade-up">
-        <a href="https://docs.google.com/document/d/1DkcN2kDzg_JVOXK8fPafdolTB1u-vfCJE-Ze9bLOGYo/edit?usp=sharing" class="legal__type">
-          <h3>Security Overview</h3>
-          <p> How Deeluh protects your firm's and your clients' data — encryption, access controls, and audit trails.</p>
-          <br>Read Now →
-        </a>
-      </div>
-
+      <a href="https://app.deeluh.com/legal/data-processing" class="legal__type">
+        <h3>Data Processing Agreement</h3>
+        <p>The terms on which Deeluh processes personal data for your firm.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/ndpa-compliance" class="legal__type">
+        <h3>NDPA 2023 Compliance Statement</h3>
+        <p>How Deeluh's product and operations relate to the Nigeria Data Protection Act 2023.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/security-addendum" class="legal__type" id="security">
+        <h3>Security Addendum</h3>
+        <p>How Deeluh protects your firm's and your clients' data, including encryption, access controls and audit trails.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/data-retention" class="legal__type">
+        <h3>Data Retention Schedule</h3>
+        <p>How long each kind of data is kept, and why.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/support-sla" class="legal__type">
+        <h3>Support and SLA Terms</h3>
+        <p>Support hours, response-time targets and service-level commitments.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+      <a href="https://app.deeluh.com/legal/conflict-check" class="legal__type">
+        <h3>Conflict Check Policy</h3>
+        <p>How the conflict check searches your firm's records and shows possible conflicts.</p>
+        <span class="legal__type-cta">Read the document →</span>
+      </a>
+    </div>
 
     <!-- FREE REPORT -->
     <div class="legal__report fade-up" id="free-report">
       <h2>Questions about any of these?</h2>
-      <p class="legal__report-title">Contact us at <a href="mailto:hello@deeluh.com" class="text-link">hello@deeluh.com</a>
+      <p class="legal__report-title">Contact us at <!--email_off--><a href="mailto:hello@deeluh.com" class="text-link">hello@deeluh.com</a><!--/email_off-->.</p>
     </div>
 
   </div>
@@ -435,18 +471,17 @@ a.text-link {
     <div class="footer-grid">
 
       <div class="footer-brand">
-        <!-- <p class="footer-brand__name">Deeluh</p> -->
-        <p class="footer-brand__name"><a href="index.html">Deeluh</a></p>
-        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by FRONTENDLABS in Lagos.</p>
+        <p class="footer-brand__name"><a href="index.html">Deeluh<span class="wordmark__dot">.</span></a></p>
+        <p class="footer-brand__tagline">The operating system for Nigerian law firms. Built by Frontendlabs in Lagos.</p>
       </div>
 
       <div class="footer-col">
         <p class="footer-col__title">Product</p>
         <ul>
-          <li><a href="#what">What Deeluh does</a></li>
-          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="index.html#what">What Deeluh does</a></li>
+          <li><a href="index.html#pricing">Pricing</a></li>
           <li><a href="index.html#faq">FAQ</a></li>
-          <li><a href="javascript:void(0)">Security</a></li>
+          <li><a href="legal.html#security">Security</a></li>
         </ul>
       </div>
 
@@ -455,7 +490,7 @@ a.text-link {
         <ul>
           <li><a href="company.html">About</a></li>
           <li><a href="company.html#contactSection">Contact sales</a></li>
-          <li><a href="mailto:hello@deeluh.com">hello@deeluh.com</a></li>
+          <li><!--email_off--><a href="mailto:hello@deeluh.com">hello@deeluh.com</a><!--/email_off--></li>
           <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
         </ul>
       </div>
@@ -463,17 +498,18 @@ a.text-link {
       <div class="footer-col">
         <p class="footer-col__title">Legal</p>
         <ul>
-          <li><a href="https://docs.google.com/document/d/1c-md859V6obcESRwpXy0kAwXPGtmj-fd6AdDDvtnq5Q/edit?usp=sharing">Privacy policy</a></li>
-          <li><a href="https://docs.google.com/document/d/1gVnUsOua3eEcUrE6pWVas3ohWTuopRg7c0Neukb6ZKk/edit?usp=sharing">Terms of service</a></li>
-          <li><a href="https://docs.google.com/document/d/11p2g2rMjBtaresTevkxNR4pSzg9xlmbRGU0pHHDDfUU/edit?usp=sharing">NDPA 2023 statement</a></li>
-          <li><a href="https://docs.google.com/document/d/1ZMK4GnUCulM9PX5qDvRsFVDOjK42fZCY5RENJ_HLqt8/edit?usp=sharing">Data processing addendum</a></li>
+          <li><a href="https://app.deeluh.com/legal/privacy">Privacy Policy</a></li>
+          <li><a href="https://app.deeluh.com/legal/terms">Terms of Service</a></li>
+          <li><a href="https://app.deeluh.com/legal/ndpa-compliance">NDPA 2023 Compliance Statement</a></li>
+          <li><a href="https://app.deeluh.com/legal/data-processing">Data Processing Agreement</a></li>
+          <li><a href="legal.html">All legal documents</a></li>
         </ul>
       </div>
 
     </div>
 
     <div class="footer-bottom">
-      <p class="footer-bottom__legal">© 2026 FRONTENDLABS. All rights reserved. FRONTENDLABS is a company registered at E10, Adeniran Ogunsanya Mall, Surulere, Lagos, Nigeria.</p>
+      <p class="footer-bottom__legal">© 2026 Frontendlabs Limited (RC 9357704). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Deeluh&rsquo;s WhatsApp Business integration is provided through Cardinal Counsel Legal Services, Lagos, Nigeria.</p>
 
       <div class="footer-bottom__social">
         <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
