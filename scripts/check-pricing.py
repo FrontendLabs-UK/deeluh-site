@@ -51,8 +51,14 @@ RATIFIED_PRICES = {
 YEARLY_DISCOUNT_PERCENT = 20
 TIERS = list(RATIFIED_PRICES) + ["Enterprise"]
 
-# The only sentence in which a refund may be mentioned (Terms 7.3: not refundable save as the law requires).
-REFUND_SENTENCE = "payments already made are not refunded, except where the law requires it"
+# The only sentence in which a refund may be mentioned (Terms 7.3: not refundable save as the law
+# requires), whole and word for word, and the only phrases in which VAT may be mentioned.
+REFUND_SENTENCE = ("There is no minimum term: each plan runs to the end of the period you have paid for, and "
+                   "payments already made are not refunded, except where the law requires it.")
+VAT_PHRASES = ("set in naira and include VAT.", "set in naira and including VAT,")
+# Attributes a visitor meets as text: search and link-preview descriptions, accessible names,
+# image descriptions, tooltips and placeholders. They are checked like the page text.
+USER_ATTRS = ("content", "aria-label", "alt", "title", "placeholder", "data-full-text")
 
 # Wording that states something the product does not do, in any inflection. Each entry says why.
 BANNED_WORDING = [
@@ -62,10 +68,12 @@ BANNED_WORDING = [
     (r"\b(?:additional|extra)\s+seats?\b|\bseats?\s+available\b|\bbuy\s+(?:more\s+)?seats?\b",
      "no extra seat can be bought; a firm that needs more seats talks to the Deeluh team"),
     (r"\bcancel\w*", "there is no cancel action; say what is true: there is no minimum term"),
-    (r"\b(?:up|down)grad\w*|\b(?:switch|change)\w*\s+(?:your\s+|the\s+)?plans?\b",
+    (r"\b(?:up|down)grad\w*|\b(?:switch|chang)\w*\s+(?:(?:from|to|between)\s+)?(?:your\s+|the\s+|a\s+)?"
+     r"(?:plans?|solo|firm|scale|enterprise|monthly|yearly|annual\w*)\b",
      "a firm cannot change plan by itself; plan changes are made by the Deeluh team"),
-    (r"\bauto[-\s]?renew\w*|\brenew\w*\s+automatically\b|\bautomatic(?:ally)?\s+renew\w*",
-     "automatic renewal is not running yet; do not advertise it until it is"),
+    (r"\brenew\w*|\bauto[-\s]?renew\w*",
+     "renewal wording is not used yet: automatic renewal is not running, and a manual plan does "
+     "not renew by itself"),
     (r"\bmoney[-\s]back\b", "fees already paid are not refunded, except where the law requires it"),
     (r"\bin\s+your\s+(?:own\s+)?currency\b", "Deeluh charges only in naira"),
     (r"(?:\bC\$|[$£€])\s?\d|\b(?:USD|GBP|EUR|CAD)\s?\d", "Deeluh charges only in naira"),
@@ -76,7 +84,7 @@ BANNED_WORDING = [
 
 # A money figure: the naira sign or NGN, an optional minus, digits with separators and decimals,
 # and an optional abbreviation ("₦150M", "NGN 2.5 million").
-MONEY = re.compile(r"(?:₦|\bNGN\b)\s?-?\d[\d,]*(?:\.\d+)?(?:\s*(?:k|m|bn|million|billion)\b)?", re.I)
+MONEY = re.compile(r"(?:₦|\bNGN\b)\s?-?\d(?:[\d,]*\d)?(?:\.\d+)?(?:\s*(?:k|m|bn|million|billion)\b)?", re.I)
 
 # A link named after one of these documents must open exactly that document in the app, which is the
 # copy firms accept when they sign up. /terms and /privacy on deeluh.com redirect to the app.
@@ -252,42 +260,59 @@ def check_prices(root, page, fail):
             fail(page, f"the yearly-saving note must give one example, '<plan>, for example, is ₦<yearly> a "
                        f"year instead of ₦<12 x monthly>', and no other figure; it reads {text!r}")
         else:
+            # compare the whole figures as written, so "₦300,000.99" or "₦300,000m" cannot pass
             monthly, yearly = RATIFIED_PRICES[match.group(1)]
-            stated = (int(match.group(2).replace(",", "")), int(match.group(3).replace(",", "")))
-            if stated != (yearly, monthly * 12):
-                fail(page, f"says {match.group(0)!r}: {match.group(1)} is {naira(yearly)} a year, "
-                           f"against {naira(monthly * 12)} paid monthly")
+            if [f.strip() for f in figures] != [naira(yearly), naira(monthly * 12)]:
+                fail(page, f"the yearly-saving note states {figures}; {match.group(1)} is {naira(yearly)} a "
+                           f"year, against {naira(monthly * 12)} paid monthly")
 
 
-def check_wording(root, page, fail):
-    text = root.text()
+def check_text(text, page, fail, where=""):
     for pattern, why in BANNED_WORDING:
         for match in re.finditer(pattern, text, re.I):
-            fail(page, f"says {match.group(0)!r}: {why}")
+            fail(page, f"{where}says {match.group(0)!r}: {why}")
 
-    for match in re.finditer(r"\bsav(?:e|es|ed|ing)\s+(\d+)\s*%", text, re.I):
-        if int(match.group(1)) != YEARLY_DISCOUNT_PERCENT:
-            fail(page, f"says {match.group(0)!r}: paying yearly saves {YEARLY_DISCOUNT_PERCENT}%")
+    # the only percentage the site states is the yearly saving
+    for match in re.finditer(r"\d+(?:[.,]\d+)?\s*(?:%|per\s*cent\b|percent\b)", text, re.I):
+        if re.sub(r"\s+", "", match.group(0)) != f"{YEARLY_DISCOUNT_PERCENT}%":
+            fail(page, f"{where}says {match.group(0)!r}: the only percentage on the site is the "
+                       f"{YEARLY_DISCOUNT_PERCENT}% yearly saving")
 
-    # VAT: only "include(s)/including VAT"; any other mention fails
+    # VAT: only in the agreed phrases; anything else ("do not include VAT", "may include VAT") fails
+    def in_agreed_phrase(start):
+        # the agreed phrase, placed so that its "VAT" sits where this mention is, must be the text there
+        return any(start >= p.index("VAT") and text[start - p.index("VAT"):start - p.index("VAT") + len(p)] == p
+                   for p in VAT_PHRASES)
+
     for match in re.finditer(r"\bVAT\b|\bvalue[-\s]added\s+tax\b", text, re.I):
-        before = text[max(0, match.start() - 12):match.start()]
-        if not re.search(r"\binclud(?:e|es|ing)\s+$", before, re.I):
-            fail(page, f"mentions VAT as {text[max(0, match.start() - 30):match.end() + 20]!r}; "
-                       "say only that prices include VAT")
+        if not in_agreed_phrase(match.start()):
+            fail(page, f"{where}mentions VAT as {text[max(0, match.start() - 30):match.end() + 20]!r}; "
+                       "say only that prices are set in naira and include VAT")
 
-    # refunds: only in the one sentence that matches the Terms
+    # refunds: only in the one agreed sentence, whole and word for word
     allowed = text.count(REFUND_SENTENCE)
     found = len(re.findall(r"\brefund\w*", text, re.I))
     if found > allowed:
-        fail(page, f"mentions refunds {found} time(s) but only {allowed} in the agreed sentence "
-                   f"'{REFUND_SENTENCE}'")
+        fail(page, f"{where}mentions refunds {found} time(s) but only {allowed} in the agreed sentence "
+                   f"{REFUND_SENTENCE!r}")
 
-    # money figures belong on the price cards and in the yearly-saving note, where they are checked
-    outside = root.text(skip=lambda n: is_price_card(n) or is_saving_note(n))
-    for match in MONEY.finditer(outside):
-        fail(page, f"says {match.group(0)!r} outside the price cards: money figures may appear only on "
-                   "the price cards and in the yearly-saving note, where this check verifies them")
+
+def check_wording(root, page, fail):
+    check_text(root.text(), page, fail)
+
+    # money figures belong on the home page's price cards and yearly-saving note, where they are
+    # checked; on any other page, or anywhere else, a figure fails
+    exempt = (lambda n: is_price_card(n) or is_saving_note(n)) if page == "index.html" else (lambda n: False)
+    for match in MONEY.finditer(root.text(skip=exempt)):
+        fail(page, f"says {match.group(0)!r} outside the home page's price cards: money figures may appear "
+                   "only there and in the yearly-saving note, where this check verifies them")
+
+    # what a visitor meets in attributes (descriptions, accessible names, alt text, tooltips)
+    attrs = " | ".join(v for n in root.walk() for k, v in n.attrs.items() if k in USER_ATTRS and v)
+    check_text(attrs, page, fail, where="an attribute ")
+    for match in MONEY.finditer(attrs):
+        fail(page, f"an attribute says {match.group(0)!r}: no money figure belongs in a description, "
+                   "accessible name, alt text or tooltip")
 
 
 def check_legal_links(root, page, fail):
@@ -343,8 +368,7 @@ def self_test():
     enterprise = '<article class="price-card"><p class="price-card__tier">Enterprise</p><span class="value">Price on request</span></article>'
     saving = (f'<span class="billing-toggle__save">Pay yearly and save {YEARLY_DISCOUNT_PERCENT}% compared with paying monthly. '
               f'Solo, for example, is {naira(solo_y)} a year instead of {naira(solo_m * 12)}, for 12 months of access.</span>')
-    body = (f"<p>Pay monthly or yearly. There is no minimum term: each plan runs to the end of the period you have paid for, "
-            f"and {REFUND_SENTENCE}.</p><p>Prices are set in naira and include VAT.</p>"
+    body = (f"<p>Pay monthly or yearly. {REFUND_SENTENCE}</p><p>Prices are set in naira and include VAT.</p>"
             '<a href="https://app.deeluh.com/legal/terms">Terms of Service</a>')
 
     def page(cards=None, extra="", note=None):
@@ -387,17 +411,39 @@ def self_test():
         "a wrong legal link": page(extra='<a href="https://app.deeluh.com/legal/privacy">Terms of Service</a>'),
         "a shared document": page(extra='<a href="https://docs.google.com/document/d/x">Privacy policy</a>'),
         "a dead link": page(extra='<a href="javascript:void(0)">Security</a>'),
+        "a decimal in the saving example": page(note=saving.replace(naira(solo_m * 12), naira(solo_m * 12) + ".99")),
+        "an abbreviation in the saving example": page(note=saving.replace(naira(solo_m * 12), naira(solo_m * 12) + "m")),
+        "VAT not included": page(extra="Prices do not include VAT."),
+        "VAT perhaps included": page(extra="Prices may include VAT."),
+        "a qualified refund sentence": page().replace(REFUND_SENTENCE, REFUND_SENTENCE[:-1] + ", unless Deeluh decides otherwise."),
+        "a different saving as a noun": page(extra="Yearly billing gives a 30% saving."),
+        "an 'up to' saving": page(extra="Save up to 30% yearly."),
+        "a plan switch by name": page(extra="You can switch from Solo to Firm."),
+        "a plan change by name": page(extra="You can change from Solo to Firm."),
+        "a renewal claim": page(extra="Your subscription renews every month."),
+        "a figure in a description": page().replace("<html>", '<html><meta name="description" content="Plans from ₦1.">'),
+        "a figure in an accessible name": page(extra='<a href="#pricing" aria-label="Solo for ₦1">Pricing</a>'),
+        "a figure in alt text": page(extra='<img src="x.png" alt="Solo costs ₦1">'),
+        "a figure in a tooltip": page(extra='<span title="Firm costs ₦1">Firm</span>'),
+    }
+    # on any page but the home page, nothing is exempt: a price card or saving note elsewhere is unchecked
+    elsewhere = {
+        "a price card on another page": '<html><body><article class="price-card">Solo costs ₦1 a month.</article></body></html>',
+        "a saving note on another page": '<html><body><span class="billing-toggle__save">Firm costs ₦1 a month.</span></body></html>',
     }
     problems = []
     good = []
     check_page("index.html", page(), lambda p, m: good.append(m))
     if good:
         problems.append(f"the known-good page fails: {good}")
-    for label, source in bad.items():
+    cases = [("index.html", label, source) for label, source in bad.items()]
+    cases += [("company.html", label, source) for label, source in elsewhere.items()]
+    for name, label, source in cases:
         found = []
-        check_page("index.html", source, lambda p, m: found.append(m))
+        check_page(name, source, lambda p, m: found.append(m))
         if not found:
             problems.append(f"no failure for {label}")
+    bad = cases
     for problem in problems + price_table_problems():
         print(f"::error file=scripts/check-pricing.py::self-test: {problem}")
     if problems:

@@ -705,8 +705,10 @@
   .navbar__mobile-dropdown-panel, .navbar__mobile-dropdown.is-open .navbar__mobile-dropdown-panel { transition: none; }
 }
 
-/* Decorative shapes on the Product and Company pages made phones scroll sideways (B-15). */
-body { overflow-x: clip; }
+/* Decorative shapes on the Product and Company pages made phones scroll sideways (B-15). They are
+   clipped in their own sections: clip on body is not passed to the viewport, and hidden on the root
+   or body would stop the sticky scroll effects working. */
+.modules, .about-deeluh, .deeluh-story, .flabs, .team-gallery { overflow-x: clip; }
 
 /* Footer: links and the small print reach 4.5 to 1 on the footer's near-black teal (B-14). */
 .footer-col__title { color: rgba(255, 255, 255, 0.62); }
