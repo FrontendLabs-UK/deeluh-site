@@ -700,6 +700,10 @@
 .navbar.is-open .navbar__mobile { visibility: visible; transition: max-height .4s cubic-bezier(.2,.8,.2,1), visibility 0s; }
 .navbar__mobile-dropdown-panel { visibility: hidden; transition: max-height .35s cubic-bezier(.2,.8,.2,1), visibility 0s linear .35s; }
 .navbar__mobile-dropdown.is-open .navbar__mobile-dropdown-panel { visibility: visible; transition: max-height .35s cubic-bezier(.2,.8,.2,1), visibility 0s; }
+@media (prefers-reduced-motion: reduce) {
+  .navbar__mobile, .navbar.is-open .navbar__mobile,
+  .navbar__mobile-dropdown-panel, .navbar__mobile-dropdown.is-open .navbar__mobile-dropdown-panel { transition: none; }
+}
 
 /* Decorative shapes on the Product and Company pages made phones scroll sideways (B-15). */
 body { overflow-x: clip; }

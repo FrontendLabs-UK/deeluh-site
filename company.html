@@ -1448,6 +1448,7 @@
   .faq-item__answer a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
   .team-gallery__lightbox { visibility: hidden; transition: opacity .3s ease, visibility 0s linear .3s; }
   .team-gallery__lightbox.is-open { visibility: visible; transition: opacity .3s ease, visibility 0s; }
+  @media (prefers-reduced-motion: reduce) { .team-gallery__lightbox, .team-gallery__lightbox.is-open { transition: none; } }
 </style>
 </head>
 <body>

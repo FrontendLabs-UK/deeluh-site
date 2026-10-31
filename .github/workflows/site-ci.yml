@@ -93,7 +93,11 @@ jobs:
       # The prices on this site must be the prices the app charges, and the legal documents it links
       # to must be the ones firms accept. Both have drifted before; the script's header says how.
       - name: prices, money wording and legal links match the app
-        run: python3 scripts/check-pricing.py
+        run: |
+          set -euo pipefail
+          # first prove every rule still fails on a known-bad page, then check the real pages
+          python3 scripts/check-pricing.py --self-test
+          python3 scripts/check-pricing.py
 
       # ── ASSET WEIGHT ────────────────────────────────────────────────────────────────────────
       # The audience is Nigerian law firms, frequently on mobile data. A 3 MB hero is a bounce.
