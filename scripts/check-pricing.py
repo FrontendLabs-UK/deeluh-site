@@ -23,10 +23,14 @@ HOW IT DECIDES (strict on purpose)
   - A link named after a legal document must open exactly that document in the app.
   - Each of the Solo, Firm and Scale cards has exactly one button, a link to the app's sign-up page
     with its own plan and monthly billing (?plan=<plan>&billing=monthly) and data-plan="<plan>", so
-    the plan a visitor picks reaches the app. The Monthly/Yearly switch must also set `billing` on
-    those links; this check cannot run scripts, so it looks for the statements that do it in the
-    page's inline scripts, outside comments (if the switch is rewritten, change SWITCH_STATEMENTS
-    below in the same pull request).
+    the plan a visitor picks reaches the app. The three buttons share their words, so each is also
+    described by its card's tier name (aria-describedby="tier-<plan>", an id only that name holds),
+    which a screen reader reads out with the link. The Monthly/Yearly switch must also set `billing`
+    on those links; this check cannot run scripts, so it looks for the statements that do it in an
+    inline script a browser would run (see runs_in_browser), outside comments (if the switch is
+    rewritten, change SWITCH_STATEMENTS below in the same pull request). Statements that are there
+    but never carried out, such as ones inside a string or outside the click handler, still pass;
+    only a test in a browser can catch those.
   If one of these becomes true in the product, change this file in the same pull request as the
   page, deliberately. `--self-test` proves each rule still fails on a known-bad page.
 
@@ -39,7 +43,8 @@ WHERE THE PRICES COME FROM
 WHAT IT READS
   Every *.html file at the repo root, parsed as HTML (not matched with regular expressions).
   Comments, <script> and <style> are skipped, so only what a visitor can see or follow is checked;
-  the one exception is the switch rule above, which reads the inline scripts of index.html.
+  the one exception is the switch rule above, which reads the inline scripts of index.html that a
+  browser would run.
   Where an element repeats an attribute, the first one counts, as it does in a browser.
 
 Run locally from the repo root:  python3 scripts/check-pricing.py --self-test && python3 scripts/check-pricing.py
@@ -69,6 +74,19 @@ SWITCH_STATEMENTS = (
     "searchParams.set('billing', isAnnual ? 'yearly' : 'monthly')",
     "link.href = url.toString()",
 )
+# A <script> is JavaScript when it has no type, an empty one, or one of these (the HTML standard's
+# JavaScript MIME types, and "module"), read without case and outer spacing. Any other type, such as
+# "text/plain" or "application/json", makes its text data that a browser never runs.
+JAVASCRIPT_TYPES = {
+    "module", "application/ecmascript", "application/javascript", "application/x-ecmascript",
+    "application/x-javascript", "text/ecmascript", "text/javascript", "text/javascript1.0",
+    "text/javascript1.1", "text/javascript1.2", "text/javascript1.3", "text/javascript1.4",
+    "text/javascript1.5", "text/jscript", "text/livescript", "text/x-ecmascript", "text/x-javascript",
+}
+# Elements whose contents a browser never runs: a <template> holds inert markup, and a browser reads
+# the others' contents as plain text (<noscript>'s whenever scripts are on). Some Python versions
+# parse some of these as text and others do not, so they are named here rather than left to the parser.
+INERT_PARENTS = {"template", "noscript", "textarea", "title", "xmp", "iframe", "noembed", "noframes", "plaintext"}
 
 # The only sentence in which a refund may be mentioned (Terms 7.3: not refundable save as the law
 # requires), whole and word for word, and the only phrases in which VAT may be mentioned.
@@ -258,14 +276,22 @@ def check_prices(root, page, fail):
             fail(page, f"{tier}: the yearly note reads {note.text() if note else None!r}, "
                        f"expected {want_note!r} (the yearly price divided by 12)")
         # Its button carries the plan into the app, which allowlists exactly these values
-        # (apps/web/lib/public-site/plan-choice.ts). Monthly is written in the page because monthly
-        # prices show by default; the Monthly/Yearly switch rewrites only `billing`.
+        # (apps/web/lib/public-site/plan-choice.ts, added by the app's pull request 1994). Monthly is
+        # written in the page because monthly prices show by default; the switch rewrites only `billing`.
         want_href = f"{SIGNUP_URL}?plan={tier.lower()}&billing=monthly"
         ctas = [n for n in card.walk() if "price-card__cta" in n.classes]
         if (len(ctas) != 1 or ctas[0].tag != "a" or ctas[0].attrs.get("href") != want_href
                 or ctas[0].attrs.get("data-plan") != tier.lower()):
             fail(page, f"{tier}: its button must be one link to {want_href!r} with data-plan={tier.lower()!r}; "
                        f"found {[(n.tag, n.attrs.get('href'), n.attrs.get('data-plan')) for n in ctas]}")
+        # The three buttons share the words "Set up your firm" but open three plans, so each is
+        # described by its card's tier name, which a screen reader reads out with the link (the words
+        # stay its name). Only the tier name may hold the id: a browser uses the first element with it.
+        tier_id = f"tier-{tier.lower()}"
+        holders = [n for n in root.walk() if n.attrs.get("id") == tier_id]
+        if [n.attrs.get("aria-describedby") for n in ctas] != [tier_id] or holders != [card.find("price-card__tier")]:
+            fail(page, f"{tier}: its button must have aria-describedby={tier_id!r}, and its tier name "
+                       f"id={tier_id!r}, an id nothing else on the page has")
         # nothing else on the card may state a figure: the three above are the only ones checked
         figures = MONEY.findall(card.text())
         if len(figures) != 3:
@@ -309,15 +335,36 @@ def code_shape(js):
     return re.sub(r" ?([^\w$ ]) ?", r"\1", js).replace('"', "'")
 
 
+def runs_in_browser(script):
+    # Whether a browser runs this <script> element's own text, by the HTML standard's rules for the
+    # ways an edit could stop it: a src (even an empty one) replaces the text, a type that is not
+    # JavaScript makes it data, a browser that runs modules skips a classic script marked nomodule,
+    # and nothing inside an INERT_PARENTS element runs. The obsolete language, for and event
+    # attributes are not read.
+    attrs = script.attrs
+    kind = attrs["type"].strip(" \t\n\r\f").lower() if attrs.get("type") else "text/javascript"
+    if "src" in attrs or kind not in JAVASCRIPT_TYPES or ("nomodule" in attrs and kind != "module"):
+        return False
+    node = script.parent
+    while node is not None:
+        if node.tag in INERT_PARENTS:
+            return False
+        node = node.parent
+    return True
+
+
 def check_switch(root, page, fail):
     # The page shows yearly prices on request, so its switch must move the plan buttons' `billing`
-    # with them. This cannot run the script; it requires the statements that do it.
+    # with them. This cannot run the script; it requires the statements that do it, in a script that
+    # a browser would run.
     scripts = [code_shape("".join(c for c in n.children if isinstance(c, str)))
-               for n in root.walk() if n.tag == "script" and not n.attrs.get("src")]
+               for n in root.walk() if n.tag == "script" and runs_in_browser(n)]
     wanted = [code_shape(statement) for statement in SWITCH_STATEMENTS]
     if not any(all(statement in script for statement in wanted) for script in scripts):
-        fail(page, "the Monthly/Yearly switch must also set `billing` on the plan buttons: no inline script "
-                   f"contains all of {list(SWITCH_STATEMENTS)} outside comments")
+        fail(page, "the Monthly/Yearly switch must also set `billing` on the plan buttons: no inline script that "
+                   f"a browser would run contains all of {list(SWITCH_STATEMENTS)} outside comments (a script "
+                   "never runs if it has a src, a type other than JavaScript or nomodule, or sits inside "
+                   f"any of {sorted(INERT_PARENTS)})")
 
 
 def check_text(text, page, fail, where=""):
@@ -409,14 +456,14 @@ def price_table_problems():
 
 
 def self_test():
-    """Every rule must still fail on a known-bad page, and a known-good page must pass."""
+    """Every rule must still fail on a known-bad page, and the known-good pages must pass."""
     def cta(tier):
         return (f'<a href="{SIGNUP_URL}?plan={tier.lower()}&amp;billing=monthly" class="price-card__cta" '
-                f'data-plan="{tier.lower()}">Set up your firm</a>')
+                f'data-plan="{tier.lower()}" aria-describedby="tier-{tier.lower()}">Set up your firm</a>')
 
     def card(tier, monthly, yearly, extra=""):
         return (f'<article class="price-card" data-ngn-monthly="{monthly}" data-ngn-annual="{yearly}">'
-                f'<p class="price-card__tier">{tier}</p>{extra}'
+                f'<p class="price-card__tier" id="tier-{tier.lower()}">{tier}</p>{extra}'
                 f'<div class="price-card__amount price-monthly"><span class="value">{naira(monthly)}</span><span class="unit">/ firm / month</span></div>'
                 f'<div class="price-card__amount price-annual"><span class="value">{naira(yearly)}</span><span class="unit">/ firm / year</span></div>'
                 f'<span class="price-card__annual-note">≈ {naira(yearly // 12)} / firm / month, billed yearly</span>'
@@ -506,30 +553,53 @@ def self_test():
         "a switch whose link update follows an unclosed comment": page().replace(rewrite, f"/* {rewrite}"),
         "a switch that runs two words together": page().replace("new URL(link.href)", "newURL(link.href)"),
         "a switch with a name split in two": page().replace("url.toString()", "url.to String()"),
+        "a card button not described by its tier name": page(cards=good_cards.replace(' aria-describedby="tier-solo"', "", 1) + enterprise),
+        "a card button described by another tier name": page(cards=good_cards.replace(
+            'aria-describedby="tier-solo"', 'aria-describedby="tier-firm"', 1) + enterprise),
+        "a tier name without its id": page(cards=good_cards.replace(' id="tier-solo"', "", 1) + enterprise),
+        "a tier name's id also held by something else": page(extra='<span id="tier-solo">Solo</span>'),
+        # the statements are all there, in a script that a browser never runs
+        "a switch script that is not JavaScript": page().replace("<script>", '<script type="text/plain">', 1),
+        "a switch script whose type is only spaces": page().replace("<script>", '<script type="  ">', 1),
+        "a switch script with an empty src": page().replace("<script>", '<script src="">', 1),
+        "a switch script with a bare src": page().replace("<script>", "<script src>", 1),
+        "a switch script marked nomodule": page().replace("<script>", "<script nomodule>", 1),
+        "a switch script deep inside a template": page().replace(switch, f"<template><div>{switch}</div></template>"),
+        # written out, not read from INERT_PARENTS, so that a name dropped from the set fails here
+        **{f"a switch script inside <{tag}>": page().replace(switch, f"<{tag}>{switch}</{tag}>")
+           for tag in ("template", "noscript", "textarea", "title", "xmp", "iframe", "noembed", "noframes", "plaintext")},
     }
+    # the known-good page, and versions of it whose switch script a browser still runs (Chrome 156
+    # ran each of these, and refused each "a switch script" case above)
+    goods = {"the known-good page": page()}
+    goods.update({f"a switch script with {attrs}": page().replace("<script>", f"<script {attrs}>", 1)
+                  for attrs in ('type="module"', 'type=" TEXT/JavaScript "', 'type=""', "type", 'type="module" nomodule')})
     # on any page but the home page, nothing is exempt: a price card or saving note elsewhere is unchecked
     elsewhere = {
         "a price card on another page": '<html><body><article class="price-card">Solo costs ₦1 a month.</article></body></html>',
         "a saving note on another page": '<html><body><span class="billing-toggle__save">Firm costs ₦1 a month.</span></body></html>',
     }
+    def failures(name, source):
+        found = []
+        check_page(name, source, lambda p, m: found.append(m))
+        return found
+
     problems = []
-    good = []
-    check_page("index.html", page(), lambda p, m: good.append(m))
-    if good:
-        problems.append(f"the known-good page fails: {good}")
+    for label, source in goods.items():
+        found = failures("index.html", source)
+        if found:
+            problems.append(f"{label} fails: {found}")
     cases = [("index.html", label, source) for label, source in bad.items()]
     cases += [("company.html", label, source) for label, source in elsewhere.items()]
     for name, label, source in cases:
-        found = []
-        check_page(name, source, lambda p, m: found.append(m))
-        if not found:
+        if not failures(name, source):
             problems.append(f"no failure for {label}")
     bad = cases
     for problem in problems + price_table_problems():
         print(f"::error file=scripts/check-pricing.py::self-test: {problem}")
     if problems:
         return 1
-    print(f"self-test: the known-good page passes and all {len(bad)} known-bad pages fail")
+    print(f"self-test: all {len(goods)} known-good pages pass and all {len(bad)} known-bad pages fail")
     return 0
 
 
