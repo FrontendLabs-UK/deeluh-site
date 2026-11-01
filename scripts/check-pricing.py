@@ -21,6 +21,12 @@ HOW IT DECIDES (strict on purpose)
   - Wording for things the product does not do fails in any form: cancel, upgrade or downgrade,
     automatic renewal, extra or per-seat seats, other currencies, a waitlist.
   - A link named after a legal document must open exactly that document in the app.
+  - Each of the Solo, Firm and Scale cards has exactly one button, a link to the app's sign-up page
+    with its own plan and monthly billing (?plan=<plan>&billing=monthly) and data-plan="<plan>", so
+    the plan a visitor picks reaches the app. The Monthly/Yearly switch must also set `billing` on
+    those links; this check cannot run scripts, so it looks for the statements that do it in the
+    page's inline scripts, outside comments (if the switch is rewritten, change SWITCH_STATEMENTS
+    below in the same pull request).
   If one of these becomes true in the product, change this file in the same pull request as the
   page, deliberately. `--self-test` proves each rule still fails on a known-bad page.
 
@@ -32,7 +38,9 @@ WHERE THE PRICES COME FROM
 
 WHAT IT READS
   Every *.html file at the repo root, parsed as HTML (not matched with regular expressions).
-  Comments, <script> and <style> are skipped, so only what a visitor can see or follow is checked.
+  Comments, <script> and <style> are skipped, so only what a visitor can see or follow is checked;
+  the one exception is the switch rule above, which reads the inline scripts of index.html.
+  Where an element repeats an attribute, the first one counts, as it does in a browser.
 
 Run locally from the repo root:  python3 scripts/check-pricing.py --self-test && python3 scripts/check-pricing.py
 """
@@ -50,6 +58,17 @@ RATIFIED_PRICES = {
 }
 YEARLY_DISCOUNT_PERCENT = 20
 TIERS = list(RATIFIED_PRICES) + ["Enterprise"]
+SIGNUP_URL = "https://app.deeluh.com/auth/signup"
+# What the Monthly/Yearly switch must do to the plan buttons, as written in index.html's inline
+# script: take each button's own link, set `billing`, and write it back. Compared outside comments,
+# ignoring spacing around punctuation and quote style (see code_shape). Without it, a visitor who
+# picks a yearly price reaches the app with billing=monthly.
+SWITCH_STATEMENTS = (
+    ".price-card__cta[data-plan]",
+    "new URL(link.href)",
+    "searchParams.set('billing', isAnnual ? 'yearly' : 'monthly')",
+    "link.href = url.toString()",
+)
 
 # The only sentence in which a refund may be mentioned (Terms 7.3: not refundable save as the law
 # requires), whole and word for word, and the only phrases in which VAT may be mentioned.
@@ -121,7 +140,11 @@ BLOCK_TAGS = {
 class Node:
     def __init__(self, tag, attrs, parent):
         self.tag = tag
-        self.attrs = dict(attrs)
+        # a browser keeps the FIRST of two same-named attributes (dict() would keep the last), so
+        # `<a href="elsewhere" href="the right link">` is read as the browser reads it
+        self.attrs = {}
+        for name, value in attrs:
+            self.attrs.setdefault(name, value)
         self.parent = parent
         self.children = []  # Node or str
 
@@ -234,6 +257,15 @@ def check_prices(root, page, fail):
         if note is None or note.text() != want_note:
             fail(page, f"{tier}: the yearly note reads {note.text() if note else None!r}, "
                        f"expected {want_note!r} (the yearly price divided by 12)")
+        # Its button carries the plan into the app, which allowlists exactly these values
+        # (apps/web/lib/public-site/plan-choice.ts). Monthly is written in the page because monthly
+        # prices show by default; the Monthly/Yearly switch rewrites only `billing`.
+        want_href = f"{SIGNUP_URL}?plan={tier.lower()}&billing=monthly"
+        ctas = [n for n in card.walk() if "price-card__cta" in n.classes]
+        if (len(ctas) != 1 or ctas[0].tag != "a" or ctas[0].attrs.get("href") != want_href
+                or ctas[0].attrs.get("data-plan") != tier.lower()):
+            fail(page, f"{tier}: its button must be one link to {want_href!r} with data-plan={tier.lower()!r}; "
+                       f"found {[(n.tag, n.attrs.get('href'), n.attrs.get('data-plan')) for n in ctas]}")
         # nothing else on the card may state a figure: the three above are the only ones checked
         figures = MONEY.findall(card.text())
         if len(figures) != 3:
@@ -265,6 +297,27 @@ def check_prices(root, page, fail):
             if [f.strip() for f in figures] != [naira(yearly), naira(monthly * 12)]:
                 fail(page, f"the yearly-saving note states {figures}; {match.group(1)} is {naira(yearly)} a "
                            f"year, against {naira(monthly * 12)} paid monthly")
+
+
+def code_shape(js):
+    # Comments become a space first, while line ends still mark where a // comment stops (an unclosed
+    # /* runs to the end, as in a browser). Then spacing is dropped only next to punctuation, so
+    # `new URL` stays two words and `url.to String()` is not read as `url.toString()`. Nothing here
+    # can join two words, so it can make a statement go missing (a loud failure), never appear.
+    js = re.sub(r"/\*.*?(?:\*/|\Z)|//[^\n]*", " ", js, flags=re.S)
+    js = re.sub(r"\s+", " ", js)
+    return re.sub(r" ?([^\w$ ]) ?", r"\1", js).replace('"', "'")
+
+
+def check_switch(root, page, fail):
+    # The page shows yearly prices on request, so its switch must move the plan buttons' `billing`
+    # with them. This cannot run the script; it requires the statements that do it.
+    scripts = [code_shape("".join(c for c in n.children if isinstance(c, str)))
+               for n in root.walk() if n.tag == "script" and not n.attrs.get("src")]
+    wanted = [code_shape(statement) for statement in SWITCH_STATEMENTS]
+    if not any(all(statement in script for statement in wanted) for script in scripts):
+        fail(page, "the Monthly/Yearly switch must also set `billing` on the plan buttons: no inline script "
+                   f"contains all of {list(SWITCH_STATEMENTS)} outside comments")
 
 
 def check_text(text, page, fail, where=""):
@@ -341,6 +394,7 @@ def check_page(name, source, fail):
     tree = parse_text(source)
     if name == "index.html":
         check_prices(tree, name, fail)
+        check_switch(tree, name, fail)
     check_wording(tree, name, fail)
     check_legal_links(tree, name, fail)
 
@@ -356,20 +410,29 @@ def price_table_problems():
 
 def self_test():
     """Every rule must still fail on a known-bad page, and a known-good page must pass."""
+    def cta(tier):
+        return (f'<a href="{SIGNUP_URL}?plan={tier.lower()}&amp;billing=monthly" class="price-card__cta" '
+                f'data-plan="{tier.lower()}">Set up your firm</a>')
+
     def card(tier, monthly, yearly, extra=""):
         return (f'<article class="price-card" data-ngn-monthly="{monthly}" data-ngn-annual="{yearly}">'
                 f'<p class="price-card__tier">{tier}</p>{extra}'
                 f'<div class="price-card__amount price-monthly"><span class="value">{naira(monthly)}</span><span class="unit">/ firm / month</span></div>'
                 f'<div class="price-card__amount price-annual"><span class="value">{naira(yearly)}</span><span class="unit">/ firm / year</span></div>'
-                f'<span class="price-card__annual-note">≈ {naira(yearly // 12)} / firm / month, billed yearly</span></article>')
+                f'<span class="price-card__annual-note">≈ {naira(yearly // 12)} / firm / month, billed yearly</span>'
+                f'{cta(tier)}</article>')
 
     solo_m, solo_y = RATIFIED_PRICES["Solo"]
     good_cards = "".join(card(t, m, y) for t, (m, y) in RATIFIED_PRICES.items())
     enterprise = '<article class="price-card"><p class="price-card__tier">Enterprise</p><span class="value">Price on request</span></article>'
     saving = (f'<span class="billing-toggle__save">Pay yearly and save {YEARLY_DISCOUNT_PERCENT}% compared with paying monthly. '
               f'Solo, for example, is {naira(solo_y)} a year instead of {naira(solo_m * 12)}, for 12 months of access.</span>')
+    rewrite = ("planLinks.forEach(link => { const url = new URL(link.href);"
+               " url.searchParams.set('billing', isAnnual ? 'yearly' : 'monthly'); link.href = url.toString(); });")
+    switch = ("<script>const planLinks = document.querySelectorAll('.price-card__cta[data-plan]');\n"
+              f"toggle.addEventListener('click', () => {{\n{rewrite}\n}});</script>")
     body = (f"<p>Pay monthly or yearly. {REFUND_SENTENCE}</p><p>Prices are set in naira and include VAT.</p>"
-            '<a href="https://app.deeluh.com/legal/terms">Terms of Service</a>')
+            f'<a href="https://app.deeluh.com/legal/terms">Terms of Service</a>{switch}')
 
     def page(cards=None, extra="", note=None):
         return f"<html><body>{note if note is not None else saving}{cards if cards is not None else good_cards + enterprise}{body}<p>{extra}</p></body></html>"
@@ -425,6 +488,24 @@ def self_test():
         "a figure in an accessible name": page(extra='<a href="#pricing" aria-label="Solo for ₦1">Pricing</a>'),
         "a figure in alt text": page(extra='<img src="x.png" alt="Solo costs ₦1">'),
         "a figure in a tooltip": page(extra='<span title="Firm costs ₦1">Firm</span>'),
+        "a card button with no plan": page(cards=good_cards.replace("?plan=solo&amp;billing=monthly", "", 1) + enterprise),
+        "a card button naming another plan": page(cards=good_cards.replace("?plan=solo&amp;", "?plan=firm&amp;", 1) + enterprise),
+        "a card button written as yearly": page(cards=good_cards.replace("plan=solo&amp;billing=monthly", "plan=solo&amp;billing=yearly", 1) + enterprise),
+        "a card button off the app": page(cards=good_cards.replace(SIGNUP_URL + "?plan=solo", "https://evil.example/auth/signup?plan=solo", 1) + enterprise),
+        "a card button with no data-plan": page(cards=good_cards.replace(' data-plan="solo"', "", 1) + enterprise),
+        "a card button that is not a link": page(cards=good_cards.replace(
+            cta("Solo"), cta("Solo").replace("<a ", "<span ", 1).replace("</a>", "</span>"), 1) + enterprise),
+        "a card button whose first href is off the app": page(cards=good_cards.replace(
+            f'<a href="{SIGNUP_URL}?plan=solo', f'<a href="https://evil.example/" href="{SIGNUP_URL}?plan=solo', 1) + enterprise),
+        "a switch that leaves the plan buttons alone": page().replace(switch, "<script>toggle.addEventListener('click', () => {});</script>"),
+        "a switch that swaps monthly and yearly": page().replace("'yearly' : 'monthly'", "'monthly' : 'yearly'"),
+        "a switch that never writes the link back": page().replace(" link.href = url.toString();", ""),
+        "a switch that reads another address": page().replace("new URL(link.href)", "new URL(location.href)"),
+        "a switch whose link update is in a block comment": page().replace(rewrite, f"/* {rewrite} */"),
+        "a switch whose link update is in a line comment": page().replace(rewrite, f"// {rewrite}"),
+        "a switch whose link update follows an unclosed comment": page().replace(rewrite, f"/* {rewrite}"),
+        "a switch that runs two words together": page().replace("new URL(link.href)", "newURL(link.href)"),
+        "a switch with a name split in two": page().replace("url.toString()", "url.to String()"),
     }
     # on any page but the home page, nothing is exempt: a price card or saving note elsewhere is unchecked
     elsewhere = {

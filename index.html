@@ -2636,7 +2636,7 @@
           <span class="value">₦240,000</span><span class="unit">/ firm / year</span>
         </div>
         <span class="price-card__annual-note">≈ ₦20,000 / firm / month, billed yearly</span>
-        <a href="https://app.deeluh.com/auth/signup" class="price-card__cta">Set up your firm</a>
+        <a href="https://app.deeluh.com/auth/signup?plan=solo&amp;billing=monthly" class="price-card__cta" data-plan="solo">Set up your firm</a>
       </article>
 
       <article class="price-card" data-ngn-monthly="75000" data-ngn-annual="720000">
@@ -2649,7 +2649,7 @@
           <span class="value">₦720,000</span><span class="unit">/ firm / year</span>
         </div>
         <span class="price-card__annual-note">≈ ₦60,000 / firm / month, billed yearly</span>
-        <a href="https://app.deeluh.com/auth/signup" class="price-card__cta">Set up your firm</a>
+        <a href="https://app.deeluh.com/auth/signup?plan=firm&amp;billing=monthly" class="price-card__cta" data-plan="firm">Set up your firm</a>
       </article>
 
       <article class="price-card" data-ngn-monthly="175000" data-ngn-annual="1680000">
@@ -2662,7 +2662,7 @@
           <span class="value">₦1,680,000</span><span class="unit">/ firm / year</span>
         </div>
         <span class="price-card__annual-note">≈ ₦140,000 / firm / month, billed yearly</span>
-        <a href="https://app.deeluh.com/auth/signup" class="price-card__cta">Set up your firm</a>
+        <a href="https://app.deeluh.com/auth/signup?plan=scale&amp;billing=monthly" class="price-card__cta" data-plan="scale">Set up your firm</a>
       </article>
 
       <article class="price-card">
@@ -2713,6 +2713,9 @@
     const pricingSection = document.querySelector('.pricing');
     const billingToggle = document.getElementById('billingToggle');
     const billingLabels = document.querySelectorAll('.billing-toggle span[data-label]');
+    // Each plan's "Set up your firm" link names its plan and the billing on show. The monthly
+    // link is written in the page, so it works without scripts; the switch changes only `billing`.
+    const planLinks = document.querySelectorAll('.price-card__cta[data-plan]');
     if (!pricingSection || !billingToggle) return;
 
     billingToggle.addEventListener('click', () => {
@@ -2721,6 +2724,11 @@
       billingLabels.forEach(label => {
         const matches = (label.dataset.label === 'annual') === isAnnual;
         label.classList.toggle('is-active', matches);
+      });
+      planLinks.forEach(link => {
+        const url = new URL(link.href);
+        url.searchParams.set('billing', isAnnual ? 'yearly' : 'monthly');
+        link.href = url.toString();
       });
     });
   })();
