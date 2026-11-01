@@ -21,6 +21,16 @@ HOW IT DECIDES (strict on purpose)
   - Wording for things the product does not do fails in any form: cancel, upgrade or downgrade,
     automatic renewal, extra or per-seat seats, other currencies, a waitlist.
   - A link named after a legal document must open exactly that document in the app.
+  - Each of the Solo, Firm and Scale cards has exactly one button, a link to the app's sign-up page
+    with its own plan and monthly billing (?plan=<plan>&billing=monthly) and data-plan="<plan>", so
+    the plan a visitor picks reaches the app. The three buttons share their words, so each is also
+    described by its card's tier name (aria-describedby="tier-<plan>", an id only that name holds),
+    which a screen reader reads out with the link. The Monthly/Yearly switch must also set `billing`
+    on those links; this check cannot run scripts, so it looks for the statements that do it in an
+    inline script a browser would run (see runs_in_browser), outside comments (if the switch is
+    rewritten, change SWITCH_STATEMENTS below in the same pull request). Statements that are there
+    but never carried out, such as ones inside a string or outside the click handler, still pass;
+    only a test in a browser can catch those.
   If one of these becomes true in the product, change this file in the same pull request as the
   page, deliberately. `--self-test` proves each rule still fails on a known-bad page.
 
@@ -32,7 +42,10 @@ WHERE THE PRICES COME FROM
 
 WHAT IT READS
   Every *.html file at the repo root, parsed as HTML (not matched with regular expressions).
-  Comments, <script> and <style> are skipped, so only what a visitor can see or follow is checked.
+  Comments, <script> and <style> are skipped, so only what a visitor can see or follow is checked;
+  the one exception is the switch rule above, which reads the inline scripts of index.html that a
+  browser would run.
+  Where an element repeats an attribute, the first one counts, as it does in a browser.
 
 Run locally from the repo root:  python3 scripts/check-pricing.py --self-test && python3 scripts/check-pricing.py
 """
@@ -50,6 +63,32 @@ RATIFIED_PRICES = {
 }
 YEARLY_DISCOUNT_PERCENT = 20
 TIERS = list(RATIFIED_PRICES) + ["Enterprise"]
+SIGNUP_URL = "https://app.deeluh.com/auth/signup"
+# What the Monthly/Yearly switch must do to the plan buttons, as written in index.html's inline
+# script: take each button's own link, set `billing`, and write it back. Compared outside comments,
+# ignoring spacing around punctuation and quote style (see code_shape). Without it, a visitor who
+# picks a yearly price reaches the app with billing=monthly.
+SWITCH_STATEMENTS = (
+    ".price-card__cta[data-plan]",
+    "new URL(link.href)",
+    "searchParams.set('billing', isAnnual ? 'yearly' : 'monthly')",
+    "link.href = url.toString()",
+)
+ASCII_SPACE = " \t\n\r\f"
+# A <script> runs as JavaScript when its type, read without case or outer spacing, is one of these
+# (the HTML standard's JavaScript MIME types, and "module"). No type, or an empty one, is JavaScript;
+# with no type, the obsolete language attribute names one as "text/" + language. Any other type, such
+# as "text/plain" or "application/json", makes the script's text data that a browser never runs.
+JAVASCRIPT_TYPES = {
+    "module", "application/ecmascript", "application/javascript", "application/x-ecmascript",
+    "application/x-javascript", "text/ecmascript", "text/javascript", "text/javascript1.0",
+    "text/javascript1.1", "text/javascript1.2", "text/javascript1.3", "text/javascript1.4",
+    "text/javascript1.5", "text/jscript", "text/livescript", "text/x-ecmascript", "text/x-javascript",
+}
+# Elements whose contents a browser never runs: a <template> holds inert markup, and a browser reads
+# the others' contents as plain text (<noscript>'s whenever scripts are on). Some Python versions
+# parse some of these as text and others do not, so they are named here rather than left to the parser.
+INERT_PARENTS = {"template", "noscript", "textarea", "title", "xmp", "iframe", "noembed", "noframes", "plaintext"}
 
 # The only sentence in which a refund may be mentioned (Terms 7.3: not refundable save as the law
 # requires), whole and word for word, and the only phrases in which VAT may be mentioned.
@@ -121,7 +160,11 @@ BLOCK_TAGS = {
 class Node:
     def __init__(self, tag, attrs, parent):
         self.tag = tag
-        self.attrs = dict(attrs)
+        # a browser keeps the FIRST of two same-named attributes (dict() would keep the last), so
+        # `<a href="elsewhere" href="the right link">` is read as the browser reads it
+        self.attrs = {}
+        for name, value in attrs:
+            self.attrs.setdefault(name, value)
         self.parent = parent
         self.children = []  # Node or str
 
@@ -234,6 +277,25 @@ def check_prices(root, page, fail):
         if note is None or note.text() != want_note:
             fail(page, f"{tier}: the yearly note reads {note.text() if note else None!r}, "
                        f"expected {want_note!r} (the yearly price divided by 12)")
+        # Its button carries the plan into the app, which allowlists exactly these values
+        # (apps/web/lib/public-site/plan-choice.ts, added by the app's pull request 1994). Monthly is
+        # written in the page because monthly prices show by default; the switch rewrites only `billing`.
+        want_href = f"{SIGNUP_URL}?plan={tier.lower()}&billing=monthly"
+        ctas = [n for n in card.walk() if "price-card__cta" in n.classes]
+        if (len(ctas) != 1 or ctas[0].tag != "a" or ctas[0].attrs.get("href") != want_href
+                or ctas[0].attrs.get("data-plan") != tier.lower()):
+            fail(page, f"{tier}: its button must be one link to {want_href!r} with data-plan={tier.lower()!r}; "
+                       f"found {[(n.tag, n.attrs.get('href'), n.attrs.get('data-plan')) for n in ctas]}")
+        # The three buttons share the words "Set up your firm" but open three plans, so each is
+        # described by its card's tier name, which a screen reader reads out with the link (the words
+        # stay its name). Only the tier name may hold the id: a browser uses the first element with it.
+        tier_id = f"tier-{tier.lower()}"
+        holders = [n for n in root.walk() if n.attrs.get("id") == tier_id]
+        # a browser reads aria-describedby as ids separated by ASCII whitespace
+        described_by = [re.split(r"[ \t\n\r\f]+", (n.attrs.get("aria-describedby") or "").strip(ASCII_SPACE)) for n in ctas]
+        if described_by != [[tier_id]] or holders != [card.find("price-card__tier")]:
+            fail(page, f"{tier}: its button must have aria-describedby={tier_id!r}, and its tier name "
+                       f"id={tier_id!r}, an id nothing else on the page has")
         # nothing else on the card may state a figure: the three above are the only ones checked
         figures = MONEY.findall(card.text())
         if len(figures) != 3:
@@ -265,6 +327,67 @@ def check_prices(root, page, fail):
             if [f.strip() for f in figures] != [naira(yearly), naira(monthly * 12)]:
                 fail(page, f"the yearly-saving note states {figures}; {match.group(1)} is {naira(yearly)} a "
                            f"year, against {naira(monthly * 12)} paid monthly")
+
+
+# A string or template literal, or a comment, read left to right as a JavaScript tokenizer reads them,
+# so a // inside a string is not a comment and a quote inside a comment is not a string. Comments are
+# /* */ (an unclosed one runs to the end), //, and the HTML-like <!-- anywhere and --> after only
+# spaces at the start of a line, which a classic script reads as // (a module does not, so there this
+# can only make a statement go missing). Regular-expression literals are not recognised, so a quote
+# or // inside one can still mislead this.
+JS_STRING_OR_COMMENT = re.compile(
+    r"""('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`)"""
+    r"|/\*.*?(?:\*/|\Z)|//[^\n]*|<!--[^\n]*|(?:\A|(?<=\n))[ \t]*-->[^\n]*", re.S)
+
+
+def code_shape(js):
+    # Strings are kept whole and each comment becomes a space (see JS_STRING_OR_COMMENT). Then spacing
+    # is dropped only next to punctuation, so `new URL` stays two words and `url.to String()` is not
+    # read as `url.toString()`. Nothing here joins two words, so the shaping itself can make a
+    # statement go missing (a loud failure) but never makes one appear.
+    js = JS_STRING_OR_COMMENT.sub(lambda m: m.group(1) or " ", js)
+    js = re.sub(r"\s+", " ", js)
+    return re.sub(r" ?([^\w$ ]) ?", r"\1", js).replace('"', "'")
+
+
+def runs_in_browser(script):
+    # Whether a browser runs this <script> element's own text, by the HTML standard's steps for
+    # preparing a script: a src (even an empty one) replaces the text; the type must be JavaScript
+    # (see JAVASCRIPT_TYPES); a browser that runs modules skips a classic script marked nomodule; a
+    # classic script with both for and event runs only for "window" and "onload"; and nothing inside
+    # an INERT_PARENTS element runs.
+    attrs = {name: value or "" for name, value in script.attrs.items()}
+    if "type" in attrs:
+        kind = attrs["type"].strip(ASCII_SPACE).lower() if attrs["type"] else "text/javascript"
+    else:
+        kind = f"text/{attrs['language']}".lower() if attrs.get("language") else "text/javascript"
+    classic = kind != "module"
+    if "src" in attrs or kind not in JAVASCRIPT_TYPES or (classic and "nomodule" in attrs):
+        return False
+    if classic and "for" in attrs and "event" in attrs and (
+            attrs["for"].strip(ASCII_SPACE).lower() != "window"
+            or attrs["event"].strip(ASCII_SPACE).lower() not in ("onload", "onload()")):
+        return False
+    node = script.parent
+    while node is not None:
+        if node.tag in INERT_PARENTS:
+            return False
+        node = node.parent
+    return True
+
+
+def check_switch(root, page, fail):
+    # The page shows yearly prices on request, so its switch must move the plan buttons' `billing`
+    # with them. This cannot run the script; it requires the statements that do it, in a script that
+    # a browser would run.
+    scripts = [code_shape("".join(c for c in n.children if isinstance(c, str)))
+               for n in root.walk() if n.tag == "script" and runs_in_browser(n)]
+    wanted = [code_shape(statement) for statement in SWITCH_STATEMENTS]
+    if not any(all(statement in script for statement in wanted) for script in scripts):
+        fail(page, "the Monthly/Yearly switch must also set `billing` on the plan buttons: no inline script that "
+                   f"a browser would run contains all of {list(SWITCH_STATEMENTS)} outside comments (a script's "
+                   "own text does not run when it has a src, a type or language other than JavaScript, nomodule, "
+                   f"or for and event other than window and onload, or sits inside any of {sorted(INERT_PARENTS)})")
 
 
 def check_text(text, page, fail, where=""):
@@ -341,6 +464,7 @@ def check_page(name, source, fail):
     tree = parse_text(source)
     if name == "index.html":
         check_prices(tree, name, fail)
+        check_switch(tree, name, fail)
     check_wording(tree, name, fail)
     check_legal_links(tree, name, fail)
 
@@ -355,21 +479,30 @@ def price_table_problems():
 
 
 def self_test():
-    """Every rule must still fail on a known-bad page, and a known-good page must pass."""
+    """Every rule must still fail on a known-bad page, and the known-good pages must pass."""
+    def cta(tier):
+        return (f'<a href="{SIGNUP_URL}?plan={tier.lower()}&amp;billing=monthly" class="price-card__cta" '
+                f'data-plan="{tier.lower()}" aria-describedby="tier-{tier.lower()}">Set up your firm</a>')
+
     def card(tier, monthly, yearly, extra=""):
         return (f'<article class="price-card" data-ngn-monthly="{monthly}" data-ngn-annual="{yearly}">'
-                f'<p class="price-card__tier">{tier}</p>{extra}'
+                f'<p class="price-card__tier" id="tier-{tier.lower()}">{tier}</p>{extra}'
                 f'<div class="price-card__amount price-monthly"><span class="value">{naira(monthly)}</span><span class="unit">/ firm / month</span></div>'
                 f'<div class="price-card__amount price-annual"><span class="value">{naira(yearly)}</span><span class="unit">/ firm / year</span></div>'
-                f'<span class="price-card__annual-note">≈ {naira(yearly // 12)} / firm / month, billed yearly</span></article>')
+                f'<span class="price-card__annual-note">≈ {naira(yearly // 12)} / firm / month, billed yearly</span>'
+                f'{cta(tier)}</article>')
 
     solo_m, solo_y = RATIFIED_PRICES["Solo"]
     good_cards = "".join(card(t, m, y) for t, (m, y) in RATIFIED_PRICES.items())
     enterprise = '<article class="price-card"><p class="price-card__tier">Enterprise</p><span class="value">Price on request</span></article>'
     saving = (f'<span class="billing-toggle__save">Pay yearly and save {YEARLY_DISCOUNT_PERCENT}% compared with paying monthly. '
               f'Solo, for example, is {naira(solo_y)} a year instead of {naira(solo_m * 12)}, for 12 months of access.</span>')
+    rewrite = ("planLinks.forEach(link => { const url = new URL(link.href);"
+               " url.searchParams.set('billing', isAnnual ? 'yearly' : 'monthly'); link.href = url.toString(); });")
+    switch = ("<script>const planLinks = document.querySelectorAll('.price-card__cta[data-plan]');\n"
+              f"toggle.addEventListener('click', () => {{\n{rewrite}\n}});</script>")
     body = (f"<p>Pay monthly or yearly. {REFUND_SENTENCE}</p><p>Prices are set in naira and include VAT.</p>"
-            '<a href="https://app.deeluh.com/legal/terms">Terms of Service</a>')
+            f'<a href="https://app.deeluh.com/legal/terms">Terms of Service</a>{switch}')
 
     def page(cards=None, extra="", note=None):
         return f"<html><body>{note if note is not None else saving}{cards if cards is not None else good_cards + enterprise}{body}<p>{extra}</p></body></html>"
@@ -425,30 +558,98 @@ def self_test():
         "a figure in an accessible name": page(extra='<a href="#pricing" aria-label="Solo for ₦1">Pricing</a>'),
         "a figure in alt text": page(extra='<img src="x.png" alt="Solo costs ₦1">'),
         "a figure in a tooltip": page(extra='<span title="Firm costs ₦1">Firm</span>'),
+        "a card button with no plan": page(cards=good_cards.replace("?plan=solo&amp;billing=monthly", "", 1) + enterprise),
+        "a card button naming another plan": page(cards=good_cards.replace("?plan=solo&amp;", "?plan=firm&amp;", 1) + enterprise),
+        "a card button written as yearly": page(cards=good_cards.replace("plan=solo&amp;billing=monthly", "plan=solo&amp;billing=yearly", 1) + enterprise),
+        "a card button off the app": page(cards=good_cards.replace(SIGNUP_URL + "?plan=solo", "https://evil.example/auth/signup?plan=solo", 1) + enterprise),
+        "a card button with no data-plan": page(cards=good_cards.replace(' data-plan="solo"', "", 1) + enterprise),
+        "a card button that is not a link": page(cards=good_cards.replace(
+            cta("Solo"), cta("Solo").replace("<a ", "<span ", 1).replace("</a>", "</span>"), 1) + enterprise),
+        "a card button whose first href is off the app": page(cards=good_cards.replace(
+            f'<a href="{SIGNUP_URL}?plan=solo', f'<a href="https://evil.example/" href="{SIGNUP_URL}?plan=solo', 1) + enterprise),
+        "a switch that leaves the plan buttons alone": page().replace(switch, "<script>toggle.addEventListener('click', () => {});</script>"),
+        "a switch that swaps monthly and yearly": page().replace("'yearly' : 'monthly'", "'monthly' : 'yearly'"),
+        "a switch that never writes the link back": page().replace(" link.href = url.toString();", ""),
+        "a switch that reads another address": page().replace("new URL(link.href)", "new URL(location.href)"),
+        "a switch whose link update is in a block comment": page().replace(rewrite, f"/* {rewrite} */"),
+        "a switch whose link update is in a line comment": page().replace(rewrite, f"// {rewrite}"),
+        "a switch whose link update follows an unclosed comment": page().replace(rewrite, f"/* {rewrite}"),
+        "a switch that runs two words together": page().replace("new URL(link.href)", "newURL(link.href)"),
+        "a switch with a name split in two": page().replace("url.toString()", "url.to String()"),
+        "a card button not described by its tier name": page(cards=good_cards.replace(' aria-describedby="tier-solo"', "", 1) + enterprise),
+        "a card button described by another tier name": page(cards=good_cards.replace(
+            'aria-describedby="tier-solo"', 'aria-describedby="tier-firm"', 1) + enterprise),
+        "a tier name without its id": page(cards=good_cards.replace(' id="tier-solo"', "", 1) + enterprise),
+        "a tier name's id also held by something else": page(extra='<span id="tier-solo">Solo</span>'),
+        # the statements are all there, in a script that a browser never runs
+        "a switch script that is not JavaScript": page().replace("<script>", '<script type="text/plain">', 1),
+        "a switch script whose type is only spaces": page().replace("<script>", '<script type="  ">', 1),
+        "a switch script with an empty src": page().replace("<script>", '<script src="">', 1),
+        "a switch script with a bare src": page().replace("<script>", "<script src>", 1),
+        "a switch script marked nomodule": page().replace("<script>", "<script nomodule>", 1),
+        "a switch script whose language is not JavaScript": page().replace("<script>", '<script language="vbscript">', 1),
+        "a switch script for another event": page().replace("<script>", '<script for="window" event="onclick">', 1),
+        "a switch script for another object": page().replace("<script>", '<script for="document" event="onload">', 1),
+        "a switch script deep inside a template": page().replace(switch, f"<template><div>{switch}</div></template>"),
+        # written out, not read from INERT_PARENTS, so that a name dropped from the set fails here
+        **{f"a switch script inside <{tag}>": page().replace(switch, f"<{tag}>{switch}</{tag}>")
+           for tag in ("template", "noscript", "textarea", "title", "xmp", "iframe", "noembed", "noframes", "plaintext")},
+        # a classic script reads <!-- anywhere, and --> at the start of a line, as //
+        "a switch whose list of links follows <!--": page().replace("<script>const planLinks", "<script><!-- const planLinks"),
+        "a switch whose link update follows --> at the start of a line": page().replace(rewrite, f"--> {rewrite}"),
+        # a quote with no partner on its line (here in a regular expression) starts no string
+        "a switch whose link update is commented out after a lone quote": page().replace(
+            rewrite, f"const quote = /'/;\n// {rewrite}"),
     }
+    # The known-good page, and versions of it that must pass too: Chrome 156 ran the switch script with
+    # each of these opening-tag attributes, and refused it in each "a switch script" case above. The
+    # JavaScript types are written out, not read from JAVASCRIPT_TYPES, so that one dropped fails here.
+    still_runs = [f'type="{kind}"' for kind in (
+        "module", "application/ecmascript", "application/javascript", "application/x-ecmascript",
+        "application/x-javascript", "text/ecmascript", "text/javascript", "text/javascript1.0", "text/javascript1.1",
+        "text/javascript1.2", "text/javascript1.3", "text/javascript1.4", "text/javascript1.5", "text/jscript",
+        "text/livescript", "text/x-ecmascript", "text/x-javascript")] + [
+        'type=" TEXT/JavaScript "', 'type=""', "type", 'type="module" nomodule', 'language="JavaScript"', 'language=""',
+        'type="text/javascript" language="vbscript"', 'for="window" event="onload"', 'for=" Window " event=" OnLoad() "',
+        'event="onclick"', 'for="document"', 'type="module" for="document" event="onload"']
+    goods = {"the known-good page": page()}
+    goods.update({f"a switch script with {attrs}": page().replace("<script>", f"<script {attrs}>", 1) for attrs in still_runs})
+    goods.update({
+        "a switch with a // inside a string": page().replace(
+            "const url = new URL(link.href);", "const home = 'https://deeluh.com'; const url = new URL(link.href);"),
+        "a switch with a /* inside a string": page().replace(
+            "const url = new URL(link.href);", "const glob = '/*'; const url = new URL(link.href);"),
+        "a switch with --> in the middle of a line": page().replace(
+            "const url = new URL(link.href);", "let n = 1; while (n --> 0) {} const url = new URL(link.href);"),
+        "a card button described by its tier name between spaces": page(cards=good_cards.replace(
+            'aria-describedby="tier-solo"', 'aria-describedby=" tier-solo "', 1) + enterprise),
+    })
     # on any page but the home page, nothing is exempt: a price card or saving note elsewhere is unchecked
     elsewhere = {
         "a price card on another page": '<html><body><article class="price-card">Solo costs ₦1 a month.</article></body></html>',
         "a saving note on another page": '<html><body><span class="billing-toggle__save">Firm costs ₦1 a month.</span></body></html>',
     }
+    def failures(name, source):
+        found = []
+        check_page(name, source, lambda p, m: found.append(m))
+        return found
+
     problems = []
-    good = []
-    check_page("index.html", page(), lambda p, m: good.append(m))
-    if good:
-        problems.append(f"the known-good page fails: {good}")
+    for label, source in goods.items():
+        found = failures("index.html", source)
+        if found:
+            problems.append(f"{label} fails: {found}")
     cases = [("index.html", label, source) for label, source in bad.items()]
     cases += [("company.html", label, source) for label, source in elsewhere.items()]
     for name, label, source in cases:
-        found = []
-        check_page(name, source, lambda p, m: found.append(m))
-        if not found:
+        if not failures(name, source):
             problems.append(f"no failure for {label}")
     bad = cases
     for problem in problems + price_table_problems():
         print(f"::error file=scripts/check-pricing.py::self-test: {problem}")
     if problems:
         return 1
-    print(f"self-test: the known-good page passes and all {len(bad)} known-bad pages fail")
+    print(f"self-test: all {len(goods)} known-good pages pass and all {len(bad)} known-bad pages fail")
     return 0
 
 

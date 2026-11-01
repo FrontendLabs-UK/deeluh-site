@@ -2627,7 +2627,7 @@
     <div class="pricing-grid" id="pricingGrid">
 
       <article class="price-card" data-ngn-monthly="25000" data-ngn-annual="240000">
-        <p class="price-card__tier">Solo</p>
+        <p class="price-card__tier" id="tier-solo">Solo</p>
         <p class="price-card__scope">1 Professional seat included<br>2 Team seats included<br>Need more seats? Talk to us about moving up to Firm.</p>
         <div class="price-card__amount price-monthly">
           <span class="value">₦25,000</span><span class="unit">/ firm / month</span>
@@ -2636,11 +2636,11 @@
           <span class="value">₦240,000</span><span class="unit">/ firm / year</span>
         </div>
         <span class="price-card__annual-note">≈ ₦20,000 / firm / month, billed yearly</span>
-        <a href="https://app.deeluh.com/auth/signup" class="price-card__cta">Set up your firm</a>
+        <a href="https://app.deeluh.com/auth/signup?plan=solo&amp;billing=monthly" class="price-card__cta" data-plan="solo" aria-describedby="tier-solo">Set up your firm</a>
       </article>
 
       <article class="price-card" data-ngn-monthly="75000" data-ngn-annual="720000">
-        <p class="price-card__tier">Firm</p>
+        <p class="price-card__tier" id="tier-firm">Firm</p>
         <p class="price-card__scope">5 Professional seats included<br>5 Team seats included<br>Need more seats? Talk to us about moving up to Scale.</p>
         <div class="price-card__amount price-monthly">
           <span class="value">₦75,000</span><span class="unit">/ firm / month</span>
@@ -2649,11 +2649,11 @@
           <span class="value">₦720,000</span><span class="unit">/ firm / year</span>
         </div>
         <span class="price-card__annual-note">≈ ₦60,000 / firm / month, billed yearly</span>
-        <a href="https://app.deeluh.com/auth/signup" class="price-card__cta">Set up your firm</a>
+        <a href="https://app.deeluh.com/auth/signup?plan=firm&amp;billing=monthly" class="price-card__cta" data-plan="firm" aria-describedby="tier-firm">Set up your firm</a>
       </article>
 
       <article class="price-card" data-ngn-monthly="175000" data-ngn-annual="1680000">
-        <p class="price-card__tier">Scale</p>
+        <p class="price-card__tier" id="tier-scale">Scale</p>
         <p class="price-card__scope">15 Professional seats included<br>10 Team seats included<br>Need more seats? Talk to us about Enterprise.</p>
         <div class="price-card__amount price-monthly">
           <span class="value">₦175,000</span><span class="unit">/ firm / month</span>
@@ -2662,7 +2662,7 @@
           <span class="value">₦1,680,000</span><span class="unit">/ firm / year</span>
         </div>
         <span class="price-card__annual-note">≈ ₦140,000 / firm / month, billed yearly</span>
-        <a href="https://app.deeluh.com/auth/signup" class="price-card__cta">Set up your firm</a>
+        <a href="https://app.deeluh.com/auth/signup?plan=scale&amp;billing=monthly" class="price-card__cta" data-plan="scale" aria-describedby="tier-scale">Set up your firm</a>
       </article>
 
       <article class="price-card">
@@ -2713,6 +2713,9 @@
     const pricingSection = document.querySelector('.pricing');
     const billingToggle = document.getElementById('billingToggle');
     const billingLabels = document.querySelectorAll('.billing-toggle span[data-label]');
+    // Each plan's "Set up your firm" link names its plan and the billing on show. The monthly
+    // link is written in the page, so it works without scripts; the switch changes only `billing`.
+    const planLinks = document.querySelectorAll('.price-card__cta[data-plan]');
     if (!pricingSection || !billingToggle) return;
 
     billingToggle.addEventListener('click', () => {
@@ -2721,6 +2724,11 @@
       billingLabels.forEach(label => {
         const matches = (label.dataset.label === 'annual') === isAnnual;
         label.classList.toggle('is-active', matches);
+      });
+      planLinks.forEach(link => {
+        const url = new URL(link.href);
+        url.searchParams.set('billing', isAnnual ? 'yearly' : 'monthly');
+        link.href = url.toString();
       });
     });
   })();
