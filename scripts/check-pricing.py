@@ -74,9 +74,11 @@ SWITCH_STATEMENTS = (
     "searchParams.set('billing', isAnnual ? 'yearly' : 'monthly')",
     "link.href = url.toString()",
 )
-# A <script> is JavaScript when it has no type, an empty one, or one of these (the HTML standard's
-# JavaScript MIME types, and "module"), read without case and outer spacing. Any other type, such as
-# "text/plain" or "application/json", makes its text data that a browser never runs.
+ASCII_SPACE = " \t\n\r\f"
+# A <script> runs as JavaScript when its type, read without case or outer spacing, is one of these
+# (the HTML standard's JavaScript MIME types, and "module"). No type, or an empty one, is JavaScript;
+# with no type, the obsolete language attribute names one as "text/" + language. Any other type, such
+# as "text/plain" or "application/json", makes the script's text data that a browser never runs.
 JAVASCRIPT_TYPES = {
     "module", "application/ecmascript", "application/javascript", "application/x-ecmascript",
     "application/x-javascript", "text/ecmascript", "text/javascript", "text/javascript1.0",
@@ -289,7 +291,9 @@ def check_prices(root, page, fail):
         # stay its name). Only the tier name may hold the id: a browser uses the first element with it.
         tier_id = f"tier-{tier.lower()}"
         holders = [n for n in root.walk() if n.attrs.get("id") == tier_id]
-        if [n.attrs.get("aria-describedby") for n in ctas] != [tier_id] or holders != [card.find("price-card__tier")]:
+        # a browser reads aria-describedby as ids separated by ASCII whitespace
+        described_by = [re.split(r"[ \t\n\r\f]+", (n.attrs.get("aria-describedby") or "").strip(ASCII_SPACE)) for n in ctas]
+        if described_by != [[tier_id]] or holders != [card.find("price-card__tier")]:
             fail(page, f"{tier}: its button must have aria-describedby={tier_id!r}, and its tier name "
                        f"id={tier_id!r}, an id nothing else on the page has")
         # nothing else on the card may state a figure: the three above are the only ones checked
@@ -325,25 +329,44 @@ def check_prices(root, page, fail):
                            f"year, against {naira(monthly * 12)} paid monthly")
 
 
+# A string or template literal, or a comment, read left to right as a JavaScript tokenizer reads them,
+# so a // inside a string is not a comment and a quote inside a comment is not a string. Comments are
+# /* */ (an unclosed one runs to the end), //, and the HTML-like <!-- anywhere and --> after only
+# spaces at the start of a line, which a classic script reads as // (a module does not, so there this
+# can only make a statement go missing). Regular-expression literals are not recognised, so a quote
+# or // inside one can still mislead this.
+JS_STRING_OR_COMMENT = re.compile(
+    r"""('(?:\\.|[^'\\\n])*'|"(?:\\.|[^"\\\n])*"|`(?:\\.|[^`\\])*`)"""
+    r"|/\*.*?(?:\*/|\Z)|//[^\n]*|<!--[^\n]*|(?:\A|(?<=\n))[ \t]*-->[^\n]*", re.S)
+
+
 def code_shape(js):
-    # Comments become a space first, while line ends still mark where a // comment stops (an unclosed
-    # /* runs to the end, as in a browser). Then spacing is dropped only next to punctuation, so
-    # `new URL` stays two words and `url.to String()` is not read as `url.toString()`. Nothing here
-    # can join two words, so it can make a statement go missing (a loud failure), never appear.
-    js = re.sub(r"/\*.*?(?:\*/|\Z)|//[^\n]*", " ", js, flags=re.S)
+    # Strings are kept whole and each comment becomes a space (see JS_STRING_OR_COMMENT). Then spacing
+    # is dropped only next to punctuation, so `new URL` stays two words and `url.to String()` is not
+    # read as `url.toString()`. Nothing here joins two words, so the shaping itself can make a
+    # statement go missing (a loud failure) but never makes one appear.
+    js = JS_STRING_OR_COMMENT.sub(lambda m: m.group(1) or " ", js)
     js = re.sub(r"\s+", " ", js)
     return re.sub(r" ?([^\w$ ]) ?", r"\1", js).replace('"', "'")
 
 
 def runs_in_browser(script):
-    # Whether a browser runs this <script> element's own text, by the HTML standard's rules for the
-    # ways an edit could stop it: a src (even an empty one) replaces the text, a type that is not
-    # JavaScript makes it data, a browser that runs modules skips a classic script marked nomodule,
-    # and nothing inside an INERT_PARENTS element runs. The obsolete language, for and event
-    # attributes are not read.
-    attrs = script.attrs
-    kind = attrs["type"].strip(" \t\n\r\f").lower() if attrs.get("type") else "text/javascript"
-    if "src" in attrs or kind not in JAVASCRIPT_TYPES or ("nomodule" in attrs and kind != "module"):
+    # Whether a browser runs this <script> element's own text, by the HTML standard's steps for
+    # preparing a script: a src (even an empty one) replaces the text; the type must be JavaScript
+    # (see JAVASCRIPT_TYPES); a browser that runs modules skips a classic script marked nomodule; a
+    # classic script with both for and event runs only for "window" and "onload"; and nothing inside
+    # an INERT_PARENTS element runs.
+    attrs = {name: value or "" for name, value in script.attrs.items()}
+    if "type" in attrs:
+        kind = attrs["type"].strip(ASCII_SPACE).lower() if attrs["type"] else "text/javascript"
+    else:
+        kind = f"text/{attrs['language']}".lower() if attrs.get("language") else "text/javascript"
+    classic = kind != "module"
+    if "src" in attrs or kind not in JAVASCRIPT_TYPES or (classic and "nomodule" in attrs):
+        return False
+    if classic and "for" in attrs and "event" in attrs and (
+            attrs["for"].strip(ASCII_SPACE).lower() != "window"
+            or attrs["event"].strip(ASCII_SPACE).lower() not in ("onload", "onload()")):
         return False
     node = script.parent
     while node is not None:
@@ -362,9 +385,9 @@ def check_switch(root, page, fail):
     wanted = [code_shape(statement) for statement in SWITCH_STATEMENTS]
     if not any(all(statement in script for statement in wanted) for script in scripts):
         fail(page, "the Monthly/Yearly switch must also set `billing` on the plan buttons: no inline script that "
-                   f"a browser would run contains all of {list(SWITCH_STATEMENTS)} outside comments (a script "
-                   "never runs if it has a src, a type other than JavaScript or nomodule, or sits inside "
-                   f"any of {sorted(INERT_PARENTS)})")
+                   f"a browser would run contains all of {list(SWITCH_STATEMENTS)} outside comments (a script's "
+                   "own text does not run when it has a src, a type or language other than JavaScript, nomodule, "
+                   f"or for and event other than window and onload, or sits inside any of {sorted(INERT_PARENTS)})")
 
 
 def check_text(text, page, fail, where=""):
@@ -564,16 +587,43 @@ def self_test():
         "a switch script with an empty src": page().replace("<script>", '<script src="">', 1),
         "a switch script with a bare src": page().replace("<script>", "<script src>", 1),
         "a switch script marked nomodule": page().replace("<script>", "<script nomodule>", 1),
+        "a switch script whose language is not JavaScript": page().replace("<script>", '<script language="vbscript">', 1),
+        "a switch script for another event": page().replace("<script>", '<script for="window" event="onclick">', 1),
+        "a switch script for another object": page().replace("<script>", '<script for="document" event="onload">', 1),
         "a switch script deep inside a template": page().replace(switch, f"<template><div>{switch}</div></template>"),
         # written out, not read from INERT_PARENTS, so that a name dropped from the set fails here
         **{f"a switch script inside <{tag}>": page().replace(switch, f"<{tag}>{switch}</{tag}>")
            for tag in ("template", "noscript", "textarea", "title", "xmp", "iframe", "noembed", "noframes", "plaintext")},
+        # a classic script reads <!-- anywhere, and --> at the start of a line, as //
+        "a switch whose list of links follows <!--": page().replace("<script>const planLinks", "<script><!-- const planLinks"),
+        "a switch whose link update follows --> at the start of a line": page().replace(rewrite, f"--> {rewrite}"),
+        # a quote with no partner on its line (here in a regular expression) starts no string
+        "a switch whose link update is commented out after a lone quote": page().replace(
+            rewrite, f"const quote = /'/;\n// {rewrite}"),
     }
-    # the known-good page, and versions of it whose switch script a browser still runs (Chrome 156
-    # ran each of these, and refused each "a switch script" case above)
+    # The known-good page, and versions of it that must pass too: Chrome 156 ran the switch script with
+    # each of these opening-tag attributes, and refused it in each "a switch script" case above. The
+    # JavaScript types are written out, not read from JAVASCRIPT_TYPES, so that one dropped fails here.
+    still_runs = [f'type="{kind}"' for kind in (
+        "module", "application/ecmascript", "application/javascript", "application/x-ecmascript",
+        "application/x-javascript", "text/ecmascript", "text/javascript", "text/javascript1.0", "text/javascript1.1",
+        "text/javascript1.2", "text/javascript1.3", "text/javascript1.4", "text/javascript1.5", "text/jscript",
+        "text/livescript", "text/x-ecmascript", "text/x-javascript")] + [
+        'type=" TEXT/JavaScript "', 'type=""', "type", 'type="module" nomodule', 'language="JavaScript"', 'language=""',
+        'type="text/javascript" language="vbscript"', 'for="window" event="onload"', 'for=" Window " event=" OnLoad() "',
+        'event="onclick"', 'for="document"', 'type="module" for="document" event="onload"']
     goods = {"the known-good page": page()}
-    goods.update({f"a switch script with {attrs}": page().replace("<script>", f"<script {attrs}>", 1)
-                  for attrs in ('type="module"', 'type=" TEXT/JavaScript "', 'type=""', "type", 'type="module" nomodule')})
+    goods.update({f"a switch script with {attrs}": page().replace("<script>", f"<script {attrs}>", 1) for attrs in still_runs})
+    goods.update({
+        "a switch with a // inside a string": page().replace(
+            "const url = new URL(link.href);", "const home = 'https://deeluh.com'; const url = new URL(link.href);"),
+        "a switch with a /* inside a string": page().replace(
+            "const url = new URL(link.href);", "const glob = '/*'; const url = new URL(link.href);"),
+        "a switch with --> in the middle of a line": page().replace(
+            "const url = new URL(link.href);", "let n = 1; while (n --> 0) {} const url = new URL(link.href);"),
+        "a card button described by its tier name between spaces": page(cards=good_cards.replace(
+            'aria-describedby="tier-solo"', 'aria-describedby=" tier-solo "', 1) + enterprise),
+    })
     # on any page but the home page, nothing is exempt: a price card or saving note elsewhere is unchecked
     elsewhere = {
         "a price card on another page": '<html><body><article class="price-card">Solo costs ₦1 a month.</article></body></html>',
