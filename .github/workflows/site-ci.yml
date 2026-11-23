@@ -95,6 +95,18 @@ jobs:
           python3 scripts/check-pricing.py --self-test
           python3 scripts/check-pricing.py
 
+      # ── TOOL PAGE PROMISES ──────────────────────────────────────────────────────────────────
+      # Every /tools/ page promises a reader four things: a canonical URL that is its own, a date
+      # its figures were last checked, a not-legal-advice line, and the call to action the pages
+      # exist for. Those are promises, not house style, and the sixth page somebody adds in a hurry
+      # is the one that ships without the date. Also checks the index links every tool and nothing
+      # it does not have.
+      - name: tool pages carry their date, their disclaimer and their own canonical
+        run: |
+          set -euo pipefail
+          python3 scripts/check-tool-pages.py --self-test
+          python3 scripts/check-tool-pages.py
+
       # ── PUBLISHED LEGAL AND FEE FIGURES ─────────────────────────────────────────────────────
       # /tools/cac-registration-fees/ publishes the Commission's own fees. A mistyped naira figure
       # on a public page read by law firms is the worst defect this site can ship, and nothing else

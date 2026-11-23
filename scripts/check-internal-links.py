@@ -28,6 +28,11 @@ def pages():
     out = [f for f in sorted(os.listdir(ROOT)) if f.endswith(".html")]
     tools = os.path.join(ROOT, "tools")
     if os.path.isdir(tools):
+        # the /tools/ index itself, which sits at tools/index.html rather than in a slug directory -
+        # the first version of this walked only the slug directories and so never checked the index,
+        # the one page whose whole job is linking to the others
+        if os.path.isfile(os.path.join(tools, "index.html")):
+            out.append(os.path.join("tools", "index.html"))
         for d in sorted(os.listdir(tools)):
             rel = os.path.join("tools", d, "index.html")
             if os.path.isfile(os.path.join(ROOT, rel)):

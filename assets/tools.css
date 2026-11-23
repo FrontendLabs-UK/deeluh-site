@@ -127,3 +127,7 @@
 /* Two fields on a line where they belong together (names with addresses, rent with its period). */
 .field2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
 @media (max-width: 560px) { .field2 { grid-template-columns: 1fr; } }
+
+textarea.field__control { resize: vertical; min-height: 96px; font-size: 15px; line-height: 1.55; }
+.draft__body ol { margin: 0 0 12px; padding-left: 24px; }
+.draft__body li { margin: 0 0 6px; }
