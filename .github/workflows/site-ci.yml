@@ -69,17 +69,13 @@ jobs:
       # ── DEAD LINKS ──────────────────────────────────────────────────────────────────────────
       # The failure mode of a hand-built static site. A nav item that goes nowhere reads as a
       # broken product to someone deciding whether to trust you with their clients' files.
-      - name: relative links resolve
+      - name: internal links resolve
+        # Root pages AND every /tools/<slug>/ page, with root-relative and directory URLs resolved.
+        # scripts/check-internal-links.py says why both halves are needed. Self-test first.
         run: |
           set -euo pipefail
-          fail=0
-          for f in *.html; do
-            # every href="something.html" must exist on disk
-            grep -ohE 'href="[^"#:]+\.html' "$f" | sed 's/href="//' | sort -u | while read -r t; do
-              [ -f "$t" ] || { echo "::error file=$f::links to missing page: $t"; exit 1; }
-            done || fail=1
-          done
-          [ "$fail" = "0" ]
+          python3 scripts/check-internal-links.py --self-test
+          python3 scripts/check-internal-links.py
 
       - name: report placeholder links
         run: |
@@ -98,6 +94,38 @@ jobs:
           # first prove every rule still fails on a known-bad page, then check the real pages
           python3 scripts/check-pricing.py --self-test
           python3 scripts/check-pricing.py
+
+      # ── TOOL PAGE PROMISES ──────────────────────────────────────────────────────────────────
+      # Every /tools/ page promises a reader four things: a canonical URL that is its own, a date
+      # its figures were last checked, a not-legal-advice line, and the call to action the pages
+      # exist for. Those are promises, not house style, and the sixth page somebody adds in a hurry
+      # is the one that ships without the date. Also checks the index links every tool and nothing
+      # it does not have.
+      - name: tool pages carry their date, their disclaimer and their own canonical
+        run: |
+          set -euo pipefail
+          python3 scripts/check-tool-pages.py --self-test
+          python3 scripts/check-tool-pages.py
+
+      # ── PUBLISHED LEGAL AND FEE FIGURES ─────────────────────────────────────────────────────
+      # /tools/cac-registration-fees/ publishes the Commission's own fees. A mistyped naira figure
+      # on a public page read by law firms is the worst defect this site can ship, and nothing else
+      # here would notice it — so the page is checked against a committed extract of the gazette
+      # it cites. Self-test first, because a checker that cannot fail is not evidence.
+      - name: published fees match the gazetted schedule
+        run: |
+          set -euo pipefail
+          python3 scripts/check-tool-fees.py --self-test
+          python3 scripts/check-tool-fees.py
+
+      # ── THE ARITHMETIC THE PAGES SHIP ───────────────────────────────────────────────────────
+      # Runs assets/tools.js, the file the browser loads, so the money parsing, the "or part
+      # thereof" rounding, the month-end clamp and the lease bands are tested rather than
+      # described. This step was MISSING when the test was written: the suite existed, passed
+      # locally, and a rounding change would still have sailed through the real gate. A test
+      # nothing runs is a comment.
+      - name: the tool pages' own arithmetic
+        run: node scripts/tools-js.test.mjs
 
       # ── ASSET WEIGHT ────────────────────────────────────────────────────────────────────────
       # The audience is Nigerian law firms, frequently on mobile data. A 3 MB hero is a bounce.

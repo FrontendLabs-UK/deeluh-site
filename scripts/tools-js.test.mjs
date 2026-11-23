@@ -1,0 +1,120 @@
+/* Tests the arithmetic the /tools/ pages actually ship.
+ *
+ * The point is that it imports assets/tools.js — the same file the browser loads — rather than
+ * reimplementing the rules here. An earlier check computed the share-capital rounding in Python
+ * and passed while the page's own JavaScript could have been changed from ceil to floor without
+ * anything noticing. A test of a reimplementation proves only that the reimplementation agrees
+ * with itself.
+ */
+import assert from "node:assert/strict";
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+const T = require("../assets/tools.js");
+
+let checks = 0;
+const is = (actual, expected, what) => { assert.deepEqual(actual, expected, what); checks++; };
+
+/* ---- money, the bug that was shipping a figure 100x too large ---- */
+is(T.parseMoney("1,000,000").value, 1000000, "thousands separators");
+is(T.parseMoney("₦1,000,000.00").ok, true, "a pasted naira amount with decimals is accepted");
+is(T.parseMoney("₦1,000,000.00").value, 1000000, "and is NOT inflated by dropping the point");
+is(T.parseMoney("1000000.50").value, 1000000.5, "a decimal is kept, not concatenated");
+is(T.parseMoney("N1 000 000").value, 1000000, "spaces and an N prefix");
+is(T.parseMoney("-500").ok, false, "a negative is refused, not made positive");
+is(T.parseMoney("-500").reason, "negative", "and says why");
+is(T.parseMoney("abc").ok, false, "text is refused");
+is(T.parseMoney("").ok, false, "blank is refused");
+is(T.parseMoney("1.2.3").ok, false, "two decimal points is not a number");
+is(T.parseMoney("9".repeat(25)).ok, false, "an absurd paste is refused rather than becoming Infinity");
+is(T.parseMoney(String(T.MAX_AMOUNT)).ok, true, "the limit itself is accepted");
+
+/* ---- "or part thereof", which rounds UP ---- */
+is(T.partMillions(0), 0, "nothing is nothing");
+is(T.partMillions(1), 1, "one naira is already a part-million");
+is(T.partMillions(999999), 1, "just under a million");
+is(T.partMillions(1000000), 1, "exactly a million");
+is(T.partMillions(1000001), 2, "one naira over is two part-millions — the whole point");
+is(T.partMillions(10000000), 10, "ten million");
+is(T.partMillions(1000000) * 10000, 10000, "the fee on one million is ten thousand");
+is(T.partMillions(10000000) * 10000, 100000, "and on ten million it is a hundred thousand");
+is(T.partMillions(1000001) * 10000 - T.partMillions(1000000) * 10000, 10000,
+   "one naira of capital past a million costs ten thousand more, as the page claims");
+
+is(T.parseMoney("1.000.000").ok, false, "a European-style amount is ambiguous, so it is refused not guessed");
+
+is(T.parseMoney("\u20a6-500").ok, false, "a minus AFTER the currency symbol is still a minus");
+is(T.parseMoney("N -500").ok, false, "and with a space after the N");
+is(T.parseMoney("N-500").reason, "negative", "and it says negative, not 500");
+is(T.parseMoney("1N2").ok, false, "a letter among the digits is not a number, not 12");
+is(T.parseMoney("0").ok, true, "zero is a number");
+is(T.parseMoney("0", true).ok, false, "but a caller can require a positive amount");
+is(T.parseMoney("0", true).reason, "zero", "and is told which");
+
+/* ---- a term in whole months, which must not round INTO a sourced band ---- */
+is(T.parseMonths("84", 600).value, 84, "a whole number");
+is(T.parseMonths("84.1", 600).ok, false, "84.1 is refused, NOT floored to 84 and charged");
+is(T.parseMonths("84.9", 600).ok, false, "nor 84.9");
+is(T.parseMonths("", 600).ok, false, "blank is refused, not treated as twelve");
+is(T.parseMonths("abc", 600).ok, false, "and so is a word");
+is(T.parseMonths("0", 600).ok, false, "a zero-month term is not a term");
+is(T.parseMonths("-5", 600).ok, false, "nor a negative one");
+is(T.parseMonths("601", 600).ok, false, "and a term past the limit is refused, not clamped");
+
+/* ---- lease duty, the one function both pages must agree through ---- */
+is(T.leaseDuty(4800000, 12).kind, "exempt", "an ordinary tenancy owes nothing (s.135)");
+is(T.leaseDuty(9999999, 12).kind, "exempt", "just under the threshold");
+is(T.leaseDuty(10000000, 12).kind, "base_unsourced",
+   "at the threshold it is chargeable - but the Act does not say what the rate is charged ON, so no figure");
+is(T.leaseDuty(10000000, 12).rate, 0.0078, "the rate itself IS sourced and is given");
+is(T.leaseDuty(10000000, 12).duty, undefined, "and no duty figure is invented from it");
+is(T.leaseDuty(25000000, 84).kind, "base_unsourced", "a seven-year term is within the sourced rate");
+is(T.leaseDuty(25000000, 85).kind, "unsourced", "one month past seven years, we do not have the rate");
+is(T.leaseDuty(25000000, 240).kind, "unsourced", "nor for twenty years");
+is(T.leaseDuty(4800000, 240).kind, "unsourced",
+   "and the term is checked BEFORE the exemption, so an unsourced band is never answered as 'exempt'");
+is(T.leaseDuty(0, 12).kind, "nothing", "no value, no answer");
+is(typeof T.LEASE_ABOVE_7_YEARS_NOTE, "string", "both pages share one sentence for the open band");
+
+/* ---- dates: the month-end clamp and the timezone trap ---- */
+const d = (y, m, day) => new Date(y, m - 1, day);
+is(T.addMonths(d(2026, 3, 31), 1).getDate(), 30, "31 March + 1 month lands on 30 April");
+is(T.addMonths(d(2026, 3, 31), 1).getMonth(), 3, "and stays in April");
+is(T.addMonths(d(2026, 1, 31), 1).getDate(), 28, "31 January + 1 month in a common year");
+is(T.addMonths(d(2028, 1, 31), 1).getDate(), 29, "and 29 February in a leap year");
+is(T.addMonths(d(2026, 11, 23), 6).getMonth(), 4, "six months from November is May");
+is(T.addMonths(d(2026, 11, 23), 6).getFullYear(), 2027, "of the next year");
+is(T.parseLocalDate("2026-03-31").getDate(), 31, "a date input keeps the day the person picked");
+is(T.parseLocalDate("2026-03-31").getMonth(), 2, "in the month they picked");
+is(T.parseLocalDate("not a date"), null, "and refuses what is not one");
+is(T.parseLocalDate(""), null, "or nothing");
+
+/* ---- escaping, so a typed name cannot add a clause to a printed instrument ---- */
+is(T.escapeHtml("<p>x</p>"), "&lt;p&gt;x&lt;/p&gt;", "tags are inert");
+is(T.escapeHtml('a" onclick="x'), "a&quot; onclick=&quot;x", "an attribute break is inert");
+is(T.escapeHtml("Dangote & Sons"), "Dangote &amp; Sons", "an ampersand survives as text");
+is(T.escapeHtml(null), "", "and null is empty, not the word null");
+
+/* ---- the SECOND version of the money bug: separators removed wherever they appeared ---- */
+/* Review's cases. Fixing the lost decimal point left the same class in a narrower form: an
+ * ambiguous amount still became a confident, wrong public figure. Now the grouping is validated
+ * in place, so a typo is refused with a reason instead of regrouped into a bigger number. */
+is(T.parseMoney("1,000,000,00").ok, false, "a mistyped group is refused, not read as 100,000,000");
+is(T.parseMoney("1,00").ok, false, "a two-digit group is a typo, not a hundred");
+is(T.parseMoney("1,0000").ok, false, "a four-digit group is a typo too");
+is(T.parseMoney("1,000,00").ok, false, "and a short LAST group is the common mistype");
+is(T.parseMoney("1 00").ok, false, "a space groups like a comma, so the same rule applies");
+is(T.parseMoney("1_00").ok, false, "and so does an underscore");
+is(T.parseMoney("1₦2").ok, false, "a symbol in the MIDDLE is refused, not welded into 12");
+is(T.parseMoney("1N2").ok, false, "an N in the middle likewise");
+is(T.parseMoney("1,000-").ok, false, "a trailing minus is still a negative");
+is(T.parseMoney("N -500").ok, false, "and a spaced minus after the prefix");
+is(T.parseMoney("N -500").reason, "negative", "named as negative rather than unreadable");
+
+/* The forms a person actually types must all still read, or the fix has broken the tool. */
+is(T.parseMoney("1_000_000").value, 1000000, "underscores group correctly in threes");
+is(T.parseMoney("₦ 1,000").value, 1000, "a symbol with a space still leads");
+is(T.parseMoney("0.5").value, 0.5, "a bare decimal");
+is(T.parseMoney("999").value, 999, "a plain short number");
+is(T.parseMoney("₦2,500.75").value, 2500.75, "grouped with a decimal");
+
+console.log(`tools.js: ${checks} checks PASS`);

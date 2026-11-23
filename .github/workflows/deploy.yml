@@ -243,7 +243,20 @@ jobs:
           SHA: ${{ steps.sha.outputs.sha }}
         run: |
           set -euo pipefail
+          # Root pages, the /tools/ index AND every /tools/<slug>/ directory URL. Without the
+          # second half a deploy that 404s every tool page would verify clean and would not roll
+          # back. The `|| true` matters for a HISTORICAL deploy: this workflow deploys older
+          # commits as its rollback mechanism, and on a commit from before /tools/ existed the
+          # find exits non-zero, which under `set -e` would fail the step AFTER activation and
+          # strand the rollback.
           PAGES="$(find . -maxdepth 1 -name '*.html' -printf '%f ')"
+          if [ -f tools/index.html ]; then PAGES="${PAGES}tools/ "; fi
+          if [ -d tools ]; then
+            # NO `|| true` here. The `-d tools` guard above already covers a historical commit from
+            # before /tools/ existed; swallowing an error inside the guard would instead hide a real
+            # failure and quietly verify the deploy with every tool page missing from the list.
+            PAGES="${PAGES}$(find tools -mindepth 1 -maxdepth 1 -type d -printf 'tools/%f/ ')"
+          fi
           bash scripts/deploy-check.sh --sha "$SHA" --base "$SITE_URL" --pages "$PAGES" --origin "$DEPLOY_HOST" --timeout 90
           echo "VERIFIED=1" >> "$GITHUB_ENV"
 

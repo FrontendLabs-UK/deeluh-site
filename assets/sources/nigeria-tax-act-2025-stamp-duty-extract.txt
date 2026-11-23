@@ -1,0 +1,94 @@
+EXTRACT FOR VERIFICATION — Nigeria Tax Act, 2025 (2025 No. 7), stamp duty provisions.
+
+Retrieved 23 November 2026 as a PDF of the Act and converted to text. Only the parts
+/tools/stamp-duty-nigeria/ relies on are reproduced: the obligation to stamp, the lease
+provision, the share-capital charge, and the rows of the duty table the page publishes.
+
+WHY IT IS IN THIS REPO: the page publishes rates from this Act, and without a committed
+copy of the source nothing would notice a mistyped percentage on a public page.
+
+ONE CELL IS GENUINELY MISSING FROM THE SOURCE, AND THE PAGE SAYS SO. The lease row reads
+"Up to 7 years = 0.78%. Above 7" and then stops: the continuation is absent from the PDF's
+text layer in this copy, in both layout and raw extraction, and the string "years =" occurs
+exactly once in the whole document. So the rate for leases ABOVE seven years is NOT sourced
+here and is marked "being confirmed" on the page rather than filled in from commentary.
+
+-----------------------------------------------------------------------------------
+--- s.126 Obligation to stamp ---
+Obligation to         126. (1) Every instrument executed in Nigeria, chargeable with a duty
+stamp           as prescribed under Chapter Five of this Act, shall be stamped not later than
+                30 days after its execution by the person required to pay the appropriate duty.
+                      (2) A person, being the transferee of interest in a real property, other than
+
+--- s.135 Leases ---
+Leases                135. An agreement for a lease, with respect to the letting of land or
+                building, shall be subject to duty on grant of a lease or sublease, or the assignment
+                of a lease, and shall be charged with the same duty as if it were an actual lease
+                made for the term and consideration mentioned in the agreement, provided
+                that lease agreements for which the annual value is less than N10,000,000 or
+                10 times the annual minimum wage, whichever is higher, shall not be chargeable
+                with any duty under Chapter Five of this Act.
+Duty on               136. The share capital of a company shall be charged with an advalorem
+
+--- s.136 Duty on share capital ---
+share capital   duty, as specified in the Ninth Schedule to this Act, of the amount of such
+Ninth           capital, or increase of capital, as the case may be.
+Schedule
+Duty on loan          137. (1) The loan capital of a company shall be charged with advalorem
+
+--- duty table: capital and instrument rows ---
+7                                            Ad Valorem
+      Transfer Stocks)                                               security
+
+8     Capital Duty on Nominal Shares         Ad Valorem   0.75%      Company
+9    Capital Duty on Loan capital           Ad Valorem   0.125%   Borrower     .  Overdraft at the
+                                                                               bank
+                                                                               Loan raised for a
+                                                                               .
+                                                                               period not exceeding 12
+                                                                               months
+
+--- duty table: conveyance rows 15-18 ---
+15    Conveyance or transfer on sale              Ad Valorem   1.5%         Transferee         • Where the property has
+                                                                                               a value of N10,000,000
+                                                                                               or less                     2025 No. 7
+
+                                                                                               • Where the transfer is
+                                                                                               between associated
+                                                                                               companies holding at
+                                                                                               least 90% shareholding in
+                                                                                               each other or through a
+                                                                                               third party, provided it
+
+
+16    Conveyance or transfer by way of            Ad Valorem   0.375%       Mortgagee          Relates to property
+      security of any property or security (see                                                less than                   Nigeria Tax Act, 2025
+      Mortgage)
+17    Conveyance or transfers (dispositions       Ad Valorem   1.5%         Transferee
+      inter vivos except to entity created by
+      Act for the benefit of Nigeria) (see
+
+
+18    Covenant (payment of money or               Ad Valorem   0.375%       Mortgagee          Relates to property
+      transfer or re-transfer of stock) (see                                                   less than
+
+--- duty table: demise/lease row 22 and neighbours ---
+     apparently absolute but intended
+     only as a security for money or
+     stock) (see Mortgage)
+
+22   Demise (see Lease)                   Ad Valorem   Up to 7   Lessee         Relates to property
+                                                       years =                                        Nigeria Tax Act, 2025
+
+                                                       0.78%.
+                                                       Above 7
+
+
+23   Further charge of further security   Ad Valorem   0.375%    Mortgagee
+
+24   Marketable security (all types)      Ad Valorem   0.225%
+                                                                                                      2025 No. 7
+25   Mortgage, Bond, Debenture, Covenant Ad Valorem    0.375%    Party taking
+     (See bonds)
+
+26   Mutual disposition (see Exchange)    Ad Valorem   1.5%      Transferee
