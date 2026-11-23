@@ -133,6 +133,16 @@
           </select>
         </div>
 
+        <div class="field" id="associatedField" hidden>
+          <label class="check" style="grid-template-columns:22px 1fr">
+            <input type="checkbox" id="associated">
+            <span><span class="check__title">It is a transfer between associated companies</span>
+              <span class="check__note">Holding at least 90% of each other, directly or through a third
+                party. The Act exempts such a transfer subject to a proviso our copy cuts off, so this
+                answers &ldquo;take advice&rdquo; rather than charging you for it.</span></span>
+          </label>
+        </div>
+
         <div class="field">
           <label class="field__label" for="value" id="valueLabel">Value (&#8358;)</label>
           <input id="value" class="field__control" type="text" inputmode="numeric" value="25,000,000"
@@ -227,14 +237,14 @@
 
 <footer class="site-footer">
     <div class="site-footer__inner">
-  
+
       <div class="footer-grid">
-  
+
         <div class="footer-brand">
           <p class="footer-brand__name"><a href="/">Deeluh<span class="wordmark__dot">.</span></a></p>
           <p class="footer-brand__tagline">The operating system for Nigerian law firms. A product of DEELUH-AI TECHNOLOGY LIMITED, Lagos.</p>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Product</p>
           <ul>
@@ -244,7 +254,7 @@
             <li><a href="/legal.html#security">Security</a></li>
           </ul>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Company</p>
           <ul>
@@ -254,7 +264,7 @@
             <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
           </ul>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Legal</p>
           <ul>
@@ -265,19 +275,19 @@
           <li><a href="/legal.html">All legal documents</a></li>
           </ul>
         </div>
-  
+
       </div>
-  
+
       <div class="footer-bottom">
         <p class="footer-bottom__legal">© 2026 DEELUH-AI TECHNOLOGY LIMITED (RC 9989811). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Phone: +234 905 262 8465. Email: <a href="mailto:company@deeluh.com">company@deeluh.com</a>.</p>
-  
+
         <div class="footer-bottom__social">
           <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
           </a>
         </div>
       </div>
-  
+
     </div>
   </footer>
 
@@ -364,7 +374,9 @@
     var rows = document.getElementById('sdrows');
     var totalCell = document.getElementById('sdtotal');
     var who = document.getElementById('sdwho');
-    if (!sel || !val || !rows || !totalCell) return;
+    var associatedField = document.getElementById('associatedField');
+    var associated = document.getElementById('associated');
+    if (!sel || !val || !rows || !totalCell || !associated) return;
 
     function line(label, figure) {
       rows.innerHTML = '<tr><th scope="row">' + label + '</th><td class="feetable__num">' + figure + '</td></tr>';
@@ -373,6 +385,18 @@
     function render() {
       var i = I[sel.value];
       if (!i) return;
+      /* The page DESCRIBES this exemption, so the calculator must not charge straight through it:
+         review found a qualifying 25-million transfer being handed a positive duty. */
+      associatedField.hidden = sel.value !== 'conveyance';
+      if (sel.value === 'conveyance' && associated.checked) {
+        line(i.label, 'take advice');
+        totalCell.textContent = 'not shown';
+        who.innerHTML = 'The Act exempts a transfer between companies holding at least 90% of each other, '
+          + 'directly or through a third party \u2014 subject to a proviso the copy of the Act we read cuts '
+          + 'off. We will not charge you for a transfer the Act may exempt, and we will not call it exempt '
+          + 'on a proviso we cannot read. Take advice.';
+        return;
+      }
       valueLabel.innerHTML = i.valueLabel;
       valueHint.innerHTML = i.exemptNote || '';
 
@@ -404,10 +428,17 @@
           who.innerHTML = 'No duty is chargeable on this one. ' + (i.exemptNote || '');
           return;
         }
-        line(i.label + ' of &#8358;' + T.naira(amount), T.naira(r.duty));
-        totalCell.textContent = '\u20a6' + T.naira(r.duty);
-        who.innerHTML = 'Payable by ' + i.who + '. An instrument executed in Nigeria must be stamped within 30 '
-          + 'days of execution (section 126(1)).';
+        if (r.kind === 'base_unsourced') {
+          /* The rate is the Act's. What it is charged ON is not stated there, so no figure. */
+          line(i.label, 'rate applies, base being confirmed');
+          totalCell.textContent = 'not shown';
+          who.innerHTML = T.LEASE_BASE_NOTE + ' Payable by ' + i.who + '. An instrument executed in Nigeria '
+            + 'must be stamped within 30 days of execution (section 126(1)).';
+          return;
+        }
+        line(i.label, '&mdash;');
+        totalCell.textContent = 'not shown';
+        who.innerHTML = 'Enter the annual value above.';
         return;
       }
 
@@ -425,7 +456,7 @@
         + 'of execution (section 126(1)).';
     }
 
-    [sel, val].forEach(function (el) {
+    [sel, val, associated].forEach(function (el) {
       el.addEventListener('input', render);
       el.addEventListener('change', render);
     });

@@ -80,10 +80,11 @@ def check(mutate=None):
         want = f"https://deeluh.com/tools/{slug}/" if slug else "https://deeluh.com/tools/"
         if f'rel="canonical" href="{want}"' not in html:
             bad.append(f"{name}: canonical is not {want}")
-        # The page's OWN call to action, not the navbar's. Every page carries a navbar signup link,
-        # so searching for the URL alone passed even with the promised free-week button deleted.
-        if "Start your free week" not in html or SIGNUP not in html:
-            bad.append(f"{name}: no free-week call to action of its own")
+        # The page's OWN call to action, as ONE element. Checking for the text and the URL
+        # separately still passed when the text pointed somewhere else, because every page carries
+        # a navbar signup link that satisfied the URL half on its own.
+        if not re.search(r'href="' + re.escape(SIGNUP) + r'"[^>]*>\s*Start your free week\s*<', html):
+            bad.append(f"{name}: no free-week call to action that actually links to the signup")
         if not ADVICE.search(html):
             bad.append(f"{name}: no not-legal-advice line")
         # the index carries no figures of its own, so it needs no date
@@ -117,7 +118,7 @@ def main():
             # navbar carries one too, so the first occurrence belonged to the chrome and the page
             # still looked compliant - which is exactly the hole this check was tightened to close.
             return (html.replace("Last checked", "Checked at some point", 1)
-                        .replace("Start your free week", "Have a look round"))
+                        .replace(">Start your free week<", ">Have a look round<"))
         bad, _ = check(mutate=break_one)
         # EVERY planted category must be caught, not merely one of them: the first version asked
         # whether ANY category appeared, so a check that had stopped noticing dates still passed.

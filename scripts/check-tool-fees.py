@@ -78,29 +78,52 @@ def derive_cac(gz):
     # Row 4 of the COMPANIES table: "4.  Incorporation of   NA   10,000 for every   ..." with
     # "N1,000,000 or part" wrapping onto the next line. The figure is on the label's own row, and
     # the wrap is checked so this cannot read row 5 (increase of share capital) by accident.
-    per_million = None
+    per_million = public_per_million = None
     lines = companies.split("\n")
     for n, line in enumerate(lines):
         if re.match(r"\s*4\.\s+Incorporation of", line) and "for every" in line:
             if any("1,000,000" in probe for probe in lines[n: n + 4]):
-                m = re.search(r"\b(\d{1,3}(?:,\d{3})+)\b", line)
-                if m:
-                    per_million = int(m.group(1).replace(",", ""))
+                found = re.findall(r"\b(\d{1,3}(?:,\d{3})+)\b", line)
+                if found:
+                    per_million = int(found[0].replace(",", ""))
+                    public_per_million = int(found[-1].replace(",", ""))
             break
     return {
         "business-name": {"reg": money_on_row(names, r"Registration and CTC"),
                           "nameRes": money_on_row(names, r"^\s*1\s+Name Reservation"),
                           "restricted": money_on_row(names, r"Name Reservation for Restricted")},
+        # The same row governs a small company and a private company other than small: the
+        # schedule gives both the same rate in adjacent columns.
         "small-company": {"perMillion": per_million,
                           "nameRes": money_on_row(companies, r"^\s*1\.\s+Name Reservation"),
                           "restricted": money_on_row(companies, r"Name Reservation for\b")},
-        # Row 3 of the same table, whose fee sits on the label's own row.
+        "private-company": {"perMillion": per_million,
+                            "nameRes": money_on_row(companies, r"^\s*1\.\s+Name Reservation"),
+                            "restricted": money_on_row(companies, r"Name Reservation for\b")},
+        # The public column of the same row, read as the LAST money token on it rather than the
+        # first - review proved the old code never validated this column at all.
+        "public-company": {"perMillion": public_per_million,
+                           "nameRes": money_on_row(companies, r"^\s*1\.\s+Name Reservation"),
+                           "restricted": money_on_row(companies, r"Name Reservation for\b")},
+        # Row 3 of the same table, whose fee sits on the label's own row. For a company limited by
+        # guarantee the schedule puts name reservation at the RESTRICTED rate in any case - row 1
+        # says "See 2" in the LTD/GTE column and row 2 is headed "restricted words and LTD/GTE" -
+        # so both fields come from that row.
         "ltd-gte": {"reg": money_on_row(companies, r"^\s*3\.\s+Incorporation of"),
-                    "nameRes": money_on_row(companies, r"Name Reservation for\b")},
+                    "nameRes": money_on_row(companies, r"Name Reservation for\b"),
+                    "restricted": money_on_row(companies, r"Name Reservation for\b")},
+        # The INCORPORATED TRUSTEES table has ONE name-reservation row and no separate restricted
+        # one, so the page uses the figure the schedule gives for both. Spelt out because a total
+        # check found the page asserting a "restricted" fee this file had derived nothing for.
         "trustees": {"reg": money_on_row(trustees, r"Registration and CTC"),
-                     "nameRes": money_on_row(trustees, r"^\s*1\s+Name Reservation")},
-        "llp": {"reg": money_on_row(llp, r"Incorporation and CTC")},
-        "lp": {"reg": money_on_row(lp, r"Registration and CTC")},
+                     "nameRes": money_on_row(trustees, r"^\s*1\s+Name Reservation"),
+                     "restricted": money_on_row(trustees, r"^\s*1\s+Name Reservation")},
+        "llp": {"reg": money_on_row(llp, r"Incorporation and CTC"),
+                "nameRes": money_on_row(llp, r"^\s*1\s+Name Reservation"),
+                "restricted": money_on_row(llp, r"Name Reservation for Restricted")},
+        "lp": {"reg": money_on_row(lp, r"Registration and CTC"),
+               "nameRes": money_on_row(lp, r"^\s*1\s+Name Reservation"),
+               "restricted": money_on_row(lp, r"Name Reservation for Restricted")},
         "ctc": money_on_row(names, r"Certified True Copy"),
     }
 
@@ -138,6 +161,9 @@ def main():
         cac_html = cac_html.replace("&#8358;5,000 each", "&#8358;4,000 each", 1)
         sd_html = sd_html.replace("rate: 0.015", "rate: 0.025", 1)
         sd_html = sd_html.replace("Conveyance or transfer on sale, 1.5%", "Conveyance or transfer on sale, 2.5%", 1)
+        # the two that review proved could be changed without failing anything
+        cac_html = cac_html.replace("'private-company': { perMillion: 10000", "'private-company': { perMillion: 99999", 1)
+        cac_html = cac_html.replace("var CTC = 5000", "var CTC = 99999", 1)
 
     fail = []
     want_cac, want_act = derive_cac(gz), derive_act(act)
@@ -156,15 +182,33 @@ def main():
             fail.append(f"could not derive the stamp duty rate for {key} from the Act extract")
 
     got_cac = page_table(cac_html, "ENTITIES")
-    for key, fields in want_cac.items():
-        if key == "ctc":
+
+    # TOTAL, IN BOTH DIRECTIONS. Review proved the old loop walked only the keys this file happened
+    # to derive, so `private-company` and `public-company` - which the page offers and charges on -
+    # were never checked at all, and a wrong figure in them passed. Now every key and field ON THE
+    # PAGE must have something derived to compare against, and a page key this file cannot cover is
+    # itself a failure rather than a silent omission.
+    for key, fields in got_cac.items():
+        if key not in want_cac:
+            fail.append(f"the CAC page offers '{key}' and this check derives nothing for it, so its fees "
+                        f"are unverified - add it to derive_cac or remove it from the page")
             continue
-        for name, value in fields.items():
+        for name, seen in fields.items():
+            value = want_cac[key].get(name)
             if value is None:
-                continue
-            seen = got_cac.get(key, {}).get(name)
-            if seen is None or int(seen) != int(value):
-                fail.append(f"CAC page {key}.{name} is {seen}, the gazette row says {value}")
+                fail.append(f"the CAC page sets {key}.{name} and the gazette row for it could not be read, "
+                            f"so the figure is unverified")
+            elif int(seen) != int(value):
+                fail.append(f"CAC page {key}.{name} is {int(seen)}, the gazette row says {value}")
+
+    # The calculator's own certified-copy constant, which lives outside the entity table and was
+    # therefore invisible to the old check: changing it passed.
+    m = re.search(r"var CTC = (\d+)", cac_html)
+    if not m:
+        fail.append("the CAC page no longer declares its certified-copy constant where this check can read it")
+    elif want_cac["ctc"] is None or int(m.group(1)) != int(want_cac["ctc"]):
+        fail.append(f"the CAC page's certified-copy constant is {m.group(1) if m else '?'}, "
+                    f"the gazette says {want_cac['ctc']}")
 
     # the figure the READER sees, not only the one behind it
     if want_cac["ctc"] and f"&#8358;{want_cac['ctc']:,} each" not in cac_html:
@@ -175,6 +219,11 @@ def main():
             fail.append(f"the CAC page does not state '{pm:,} for every 1,000,000' in its own words")
 
     got_act = page_table(sd_html, "I")
+    # The same totality on the duty side: a rate the page carries and this file does not derive is
+    # an unverified figure, not an exemption from checking.
+    for key, fields in got_act.items():
+        if "rate" in fields and key not in want_act:
+            fail.append(f"the stamp duty page carries a rate for '{key}' that this check derives nothing for")
     for key, rate in want_act.items():
         if rate is None:
             continue
@@ -209,9 +258,11 @@ def main():
             "visible CAC fee": any("certified-copy fee" in f for f in fail),
             "hidden duty rate": any("conveyance is" in f for f in fail),
             "visible duty label": any("in the label the reader sees" in f for f in fail),
+            "a column that was never checked": any("private-company.perMillion" in f for f in fail),
+            "the calculator's own constant": any("certified-copy constant" in f for f in fail),
         }
         missed = [k for k, v in kinds.items() if not v]
-        print("self-test:", "PASS — caught a wrong figure in all four places"
+        print("self-test:", f"PASS — caught a wrong figure in all {len(kinds)} places"
               if not missed else f"FAIL — missed: {missed}")
         return 1 if missed else 0
 

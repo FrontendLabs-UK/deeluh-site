@@ -252,7 +252,10 @@ jobs:
           PAGES="$(find . -maxdepth 1 -name '*.html' -printf '%f ')"
           if [ -f tools/index.html ]; then PAGES="${PAGES}tools/ "; fi
           if [ -d tools ]; then
-            PAGES="${PAGES}$(find tools -mindepth 1 -maxdepth 1 -type d -printf 'tools/%f/ ' 2>/dev/null || true)"
+            # NO `|| true` here. The `-d tools` guard above already covers a historical commit from
+            # before /tools/ existed; swallowing an error inside the guard would instead hide a real
+            # failure and quietly verify the deploy with every tool page missing from the list.
+            PAGES="${PAGES}$(find tools -mindepth 1 -maxdepth 1 -type d -printf 'tools/%f/ ')"
           fi
           bash scripts/deploy-check.sh --sha "$SHA" --base "$SITE_URL" --pages "$PAGES" --origin "$DEPLOY_HOST" --timeout 90
           echo "VERIFIED=1" >> "$GITHUB_ENV"

@@ -42,12 +42,32 @@ is(T.partMillions(1000001) * 10000 - T.partMillions(1000000) * 10000, 10000,
 
 is(T.parseMoney("1.000.000").ok, false, "a European-style amount is ambiguous, so it is refused not guessed");
 
+is(T.parseMoney("\u20a6-500").ok, false, "a minus AFTER the currency symbol is still a minus");
+is(T.parseMoney("N -500").ok, false, "and with a space after the N");
+is(T.parseMoney("N-500").reason, "negative", "and it says negative, not 500");
+is(T.parseMoney("1N2").ok, false, "a letter among the digits is not a number, not 12");
+is(T.parseMoney("0").ok, true, "zero is a number");
+is(T.parseMoney("0", true).ok, false, "but a caller can require a positive amount");
+is(T.parseMoney("0", true).reason, "zero", "and is told which");
+
+/* ---- a term in whole months, which must not round INTO a sourced band ---- */
+is(T.parseMonths("84", 600).value, 84, "a whole number");
+is(T.parseMonths("84.1", 600).ok, false, "84.1 is refused, NOT floored to 84 and charged");
+is(T.parseMonths("84.9", 600).ok, false, "nor 84.9");
+is(T.parseMonths("", 600).ok, false, "blank is refused, not treated as twelve");
+is(T.parseMonths("abc", 600).ok, false, "and so is a word");
+is(T.parseMonths("0", 600).ok, false, "a zero-month term is not a term");
+is(T.parseMonths("-5", 600).ok, false, "nor a negative one");
+is(T.parseMonths("601", 600).ok, false, "and a term past the limit is refused, not clamped");
+
 /* ---- lease duty, the one function both pages must agree through ---- */
 is(T.leaseDuty(4800000, 12).kind, "exempt", "an ordinary tenancy owes nothing (s.135)");
 is(T.leaseDuty(9999999, 12).kind, "exempt", "just under the threshold");
-is(T.leaseDuty(10000000, 12).kind, "charged", "at the threshold it is chargeable");
-is(T.leaseDuty(10000000, 12).duty, 78000, "and the duty is 0.78%");
-is(T.leaseDuty(25000000, 84).kind, "charged", "a seven-year term still uses the sourced rate");
+is(T.leaseDuty(10000000, 12).kind, "base_unsourced",
+   "at the threshold it is chargeable - but the Act does not say what the rate is charged ON, so no figure");
+is(T.leaseDuty(10000000, 12).rate, 0.0078, "the rate itself IS sourced and is given");
+is(T.leaseDuty(10000000, 12).duty, undefined, "and no duty figure is invented from it");
+is(T.leaseDuty(25000000, 84).kind, "base_unsourced", "a seven-year term is within the sourced rate");
 is(T.leaseDuty(25000000, 85).kind, "unsourced", "one month past seven years, we do not have the rate");
 is(T.leaseDuty(25000000, 240).kind, "unsourced", "nor for twenty years");
 is(T.leaseDuty(4800000, 240).kind, "unsourced",

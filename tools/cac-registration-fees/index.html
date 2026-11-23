@@ -242,14 +242,14 @@
 
 <footer class="site-footer">
     <div class="site-footer__inner">
-  
+
       <div class="footer-grid">
-  
+
         <div class="footer-brand">
           <p class="footer-brand__name"><a href="/">Deeluh<span class="wordmark__dot">.</span></a></p>
           <p class="footer-brand__tagline">The operating system for Nigerian law firms. A product of DEELUH-AI TECHNOLOGY LIMITED, Lagos.</p>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Product</p>
           <ul>
@@ -259,7 +259,7 @@
             <li><a href="/legal.html#security">Security</a></li>
           </ul>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Company</p>
           <ul>
@@ -269,7 +269,7 @@
             <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
           </ul>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Legal</p>
           <ul>
@@ -280,19 +280,19 @@
           <li><a href="/legal.html">All legal documents</a></li>
           </ul>
         </div>
-  
+
       </div>
-  
+
       <div class="footer-bottom">
         <p class="footer-bottom__legal">© 2026 DEELUH-AI TECHNOLOGY LIMITED (RC 9989811). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Phone: +234 905 262 8465. Email: <a href="mailto:company@deeluh.com">company@deeluh.com</a>.</p>
-  
+
         <div class="footer-bottom__social">
           <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
           </a>
         </div>
       </div>
-  
+
     </div>
   </footer>
 
@@ -384,9 +384,9 @@
       var lines = [];
       var problem = null;
       if (perMillion) {
-        var money = T.parseMoney(capital.value);
+        var money = T.parseMoney(capital.value, true);   /* zero share capital is not an answer */
         if (!money.ok) {
-          problem = money.reason === 'empty'
+          problem = (money.reason === 'empty' || money.reason === 'zero')
             ? 'Enter the share capital above.'
             : 'That share capital is not an amount we can read (' + money.reason + '). Digits, commas if you '
               + 'like, and at most one decimal point \u2014 for example 1,000,000.';

@@ -23,19 +23,45 @@
    * negative, anything with no digits, and anything absurd - and says which, so a caller can show
    * the reason instead of silently computing on a wrong number.
    */
-  function parseMoney(raw) {
+  function parseMoney(raw, requirePositive) {
     var s = String(raw == null ? "" : raw).trim();
     if (s === "") return { ok: false, reason: "empty", value: 0 };
-    var negative = /^\s*-/.test(s);
-    // strip the currency symbol, separators and spaces, keeping digits and at most one point
-    var cleaned = s.replace(/[₦N…]/gi, "").replace(/[,\s_]/g, "").replace(/^-/, "");
+
+    // Strip the currency symbol and separators FIRST, then look for a minus. The other way round -
+    // which the first version did - meant "N-500" and "N -500" had their minus removed along with
+    // the prefix and came back as a positive 500.
+    var cleaned = s.replace(/\u20a6/g, "").replace(/^\s*N(?=\s*[-\d.])/i, "").replace(/[,\s_]/g, "");
+    if (/-/.test(cleaned)) return { ok: false, reason: "negative", value: 0 };
+
+    // Digits and at most one point, and nothing else. A letter among the digits ("1N2") used to be
+    // stripped out, silently turning two numbers into one.
     if (!/^\d*\.?\d*$/.test(cleaned) || !/\d/.test(cleaned)) {
       return { ok: false, reason: "not a number", value: 0 };
     }
-    if (negative) return { ok: false, reason: "negative", value: 0 };
     var n = parseFloat(cleaned);
     if (!isFinite(n)) return { ok: false, reason: "not a number", value: 0 };
     if (n > MAX_AMOUNT) return { ok: false, reason: "too large", value: 0 };
+    // Zero is a real answer for a deposit and a meaningless one for share capital or rent, so the
+    // CALLER says which it needs rather than the parser guessing.
+    if (requirePositive && n === 0) return { ok: false, reason: "zero", value: 0 };
+    return { ok: true, value: n };
+  }
+
+  /**
+   * A whole number of months.
+   *
+   * Strict, because the tenancy page used parseInt and `parseInt("84.1")` is 84 - so a term just
+   * over seven years was silently rounded down INTO the band whose rate the Act gives, and a blank
+   * or a word became twelve months while the box still showed something else. A term the page
+   * cannot read is refused, not guessed.
+   */
+  function parseMonths(raw, max) {
+    var s = String(raw == null ? "" : raw).trim();
+    if (s === "") return { ok: false, reason: "empty", value: 0 };
+    if (!/^\d+$/.test(s)) return { ok: false, reason: "not a whole number of months", value: 0 };
+    var n = parseInt(s, 10);
+    if (n < 1) return { ok: false, reason: "zero", value: 0 };
+    if (max && n > max) return { ok: false, reason: "too long", value: 0 };
     return { ok: true, value: n };
   }
 
@@ -96,6 +122,11 @@
   var LEASE_ABOVE_7_YEARS_NOTE =
     "The Act's own table is cut off for a term above seven years, so we do not state a rate for it.";
 
+  /** And for a gap review found, which costs this tool a number: the rate is sourced, its base is not. */
+  var LEASE_BASE_NOTE =
+    "The Act states the rate, and exempts a lease by its ANNUAL value, but does not state what the "
+    + "rate is charged on \u2014 so we give the rate and not a figure.";
+
   function leaseDuty(annualValue, termMonths) {
     if (!(annualValue > 0)) return { kind: "nothing" };
     if (termMonths !== undefined && termMonths !== null && termMonths > SEVEN_YEARS_IN_MONTHS) {
@@ -104,7 +135,12 @@
     /* The exemption is checked BEFORE the rate: an exempt lease owes NOTHING, and showing a figure
        with a note beside it invites somebody to pay it. */
     if (annualValue < LEASE_EXEMPT_BELOW) return { kind: "exempt", threshold: LEASE_EXEMPT_BELOW };
-    return { kind: "charged", rate: LEASE_RATE_TO_7_YEARS, duty: annualValue * LEASE_RATE_TO_7_YEARS };
+    /* Chargeable - and here we stop. Review found that the Act expresses the EXEMPTION on annual
+       value but expresses chargeability on the lease's "term and consideration", and nowhere says
+       that annual value is what the percentage applies to. Multiplying 0.78% by the annual rent was
+       my inference, and on a long lease an annual base and an aggregate one differ by a multiple of
+       the term. So: the rate, which is sourced, and no figure, which is not. */
+    return { kind: "base_unsourced", rate: LEASE_RATE_TO_7_YEARS, note: LEASE_BASE_NOTE };
   }
 
   var MONTHS = ["January", "February", "March", "April", "May", "June",
@@ -143,6 +179,8 @@
     LEASE_RATE_TO_7_YEARS: LEASE_RATE_TO_7_YEARS,
     SEVEN_YEARS_IN_MONTHS: SEVEN_YEARS_IN_MONTHS,
     LEASE_ABOVE_7_YEARS_NOTE: LEASE_ABOVE_7_YEARS_NOTE,
+    LEASE_BASE_NOTE: LEASE_BASE_NOTE,
+    parseMonths: parseMonths,
     leaseDuty: leaseDuty,
     parseMoney: parseMoney,
     parseLocalDate: parseLocalDate,

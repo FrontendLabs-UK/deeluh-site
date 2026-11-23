@@ -118,6 +118,15 @@ jobs:
           python3 scripts/check-tool-fees.py --self-test
           python3 scripts/check-tool-fees.py
 
+      # ── THE ARITHMETIC THE PAGES SHIP ───────────────────────────────────────────────────────
+      # Runs assets/tools.js, the file the browser loads, so the money parsing, the "or part
+      # thereof" rounding, the month-end clamp and the lease bands are tested rather than
+      # described. This step was MISSING when the test was written: the suite existed, passed
+      # locally, and a rounding change would still have sailed through the real gate. A test
+      # nothing runs is a comment.
+      - name: the tool pages' own arithmetic
+        run: node scripts/tools-js.test.mjs
+
       # ── ASSET WEIGHT ────────────────────────────────────────────────────────────────────────
       # The audience is Nigerian law firms, frequently on mobile data. A 3 MB hero is a bounce.
       - name: asset weight

@@ -42,7 +42,9 @@ def pages():
 
 # Every local reference, not only hrefs: a missing stylesheet or script is as broken as a missing
 # page, and the first version of this looked at href= alone and only at values ending .html or /.
-REFERENCE = re.compile(r'(?:href|src)\s*=\s*"([^"]+)"')
+# Double OR SINGLE quoted: `<script src='/missing.js'>` is valid HTML, and a pattern that only
+# matched double quotes let it through.
+REFERENCE = re.compile(r"""(?:href|src)\s*=\s*(?:"([^"]+)"|'([^']+)')""")
 
 
 def broken(extra_html=None):
@@ -52,7 +54,8 @@ def broken(extra_html=None):
         targets.append(("<self-test>", extra_html))
     for page, html in targets:
         here = os.path.dirname(page) or "."
-        for raw in sorted(set(REFERENCE.findall(html))):
+        for double, single in sorted(set(REFERENCE.findall(html))):
+            raw = double or single
             # an absolute URL, a protocol-relative one, a mail link or a bare fragment is not ours
             if re.match(r"^(?:[a-z][a-z0-9+.-]*:|//|#|data:)", raw, re.I):
                 continue
@@ -81,12 +84,13 @@ def main():
             '<a href="/missing.html?utm=1">d</a>'             # nor a query string
             '<link rel="stylesheet" href="/assets/not-there.css">'   # nor being an asset
             '<script src="/assets/missing.js"></script>'
+            "<img src='/assets/single-quoted-missing.png'>"      # a single-quoted attribute counts
         )
         hits = broken(planted)
         found = [b for b in hits if "<self-test>" in b]
-        print("self-test:", f"PASS — caught all {len(found)} planted dead references" if len(found) == 6
-              else f"FAIL — caught {len(found)} of 6: {found}")
-        return 0 if len(found) == 6 else 1
+        print("self-test:", f"PASS — caught all {len(found)} planted dead references" if len(found) == 7
+              else f"FAIL — caught {len(found)} of 7: {found}")
+        return 0 if len(found) == 7 else 1
 
     bad = broken()
     print(f"checked {len(pages())} page(s)")

@@ -266,14 +266,14 @@
 
 <footer class="site-footer">
     <div class="site-footer__inner">
-  
+
       <div class="footer-grid">
-  
+
         <div class="footer-brand">
           <p class="footer-brand__name"><a href="/">Deeluh<span class="wordmark__dot">.</span></a></p>
           <p class="footer-brand__tagline">The operating system for Nigerian law firms. A product of DEELUH-AI TECHNOLOGY LIMITED, Lagos.</p>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Product</p>
           <ul>
@@ -283,7 +283,7 @@
             <li><a href="/legal.html#security">Security</a></li>
           </ul>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Company</p>
           <ul>
@@ -293,7 +293,7 @@
             <li><a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener">LinkedIn</a></li>
           </ul>
         </div>
-  
+
         <div class="footer-col">
           <p class="footer-col__title">Legal</p>
           <ul>
@@ -304,19 +304,19 @@
           <li><a href="/legal.html">All legal documents</a></li>
           </ul>
         </div>
-  
+
       </div>
-  
+
       <div class="footer-bottom">
         <p class="footer-bottom__legal">© 2026 DEELUH-AI TECHNOLOGY LIMITED (RC 9989811). All rights reserved. Registered office: Suite D14, AOS Mall, Adeniran Ogunsanya, Surulere, Lagos State, Nigeria. Phone: +234 905 262 8465. Email: <a href="mailto:company@deeluh.com">company@deeluh.com</a>.</p>
-  
+
         <div class="footer-bottom__social">
           <a href="https://linkedin.com/company/deeluh" target="_blank" rel="noopener" aria-label="Deeluh on LinkedIn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg>
           </a>
         </div>
       </div>
-  
+
     </div>
   </footer>
 
@@ -403,19 +403,28 @@
 
     function facts() {
       var p = PERIODS[f.freq.value] || PERIODS.monthly;
-      var money = T.parseMoney(f.rent.value);
+      var money = T.parseMoney(f.rent.value, true);   /* a zero rent is not a tenancy */
       var annual = money.ok ? money.value * p.perYear : 0;
       /* A LOCAL date: valueAsDate is midnight UTC, and reading it with local getDate() shifted the
          day backwards for any visitor west of Greenwich. */
       var start = T.parseLocalDate(f.start.value);
-      var months = Math.max(1, Math.min(600, parseInt(f.months.value, 10) || 12));
+      /* Strict: parseInt("84.1") was 84, which rounded a term just over seven years DOWN into
+         the band whose rate the Act gives. A term we cannot read is refused, not guessed. */
+      var term = T.parseMonths(f.months.value, 600);
+      var months = term.ok ? term.value : 0;
       var end = start ? addMonths(start, months) : null;
       if (end) end.setDate(end.getDate() - 1);   /* a 12-month term from the 1st ends on the last day, not the 1st */
-      return { p: p, money: money, annual: annual, start: start, months: months, end: end,
+      return { p: p, money: money, annual: annual, start: start, term: term, months: months, end: end,
                duty: T.leaseDuty(annual, months) };
     }
 
     function render() {
+      /* Any change clears a document built from the previous answers: review found a 400,000
+         agreement staying on screen and printable after the rent was changed or invalidated. */
+      out.hidden = true;
+      out.innerHTML = '';
+      printBtn.hidden = true;
+
       var x = facts();
       areaHint.innerHTML = f.area.value === 'excluded'
         ? 'The Tenancy Law 2011 does not apply there &mdash; the Recovery of Premises Law does, and the notice '
@@ -425,9 +434,20 @@
       if (!x.money.ok) {
         answer.className = 'answer answer--stop';
         answer.innerHTML = '<p class="answer__head">'
-          + (x.money.reason === 'empty' ? 'Enter the rent above.' : 'That rent is not an amount we can read.')
+          + (x.money.reason === 'empty' ? 'Enter the rent above.'
+             : x.money.reason === 'zero' ? 'A tenancy needs a rent.'
+             : 'That rent is not an amount we can read.')
           + '</p><p class="answer__body">Digits, commas if you like, and at most one decimal point &mdash; for '
           + 'example 400,000.</p>';
+        return;
+      }
+      if (!x.term.ok) {
+        answer.className = 'answer answer--stop';
+        answer.innerHTML = '<p class="answer__head">The term has to be a whole number of months.</p>'
+          + '<p class="answer__body">' + (x.term.reason === 'too long'
+            ? 'Longer than fifty years is beyond what this page is for.'
+            : 'For example 12, or 24. Not a fraction \u2014 a term of 84.1 months is not something this '
+              + 'page can place on either side of the seven-year line.') + '</p>';
         return;
       }
       var bits = [];
@@ -445,10 +465,9 @@
       } else if (x.duty.kind === 'exempt') {
         body.push('Stamp duty: <strong>none</strong>. The annual value is under &#8358;10,000,000, so section 135 '
           + 'exempts it.');
-      } else if (x.duty.kind === 'charged') {
-        body.push('Stamp duty: chargeable. At 0.78% on an annual value of &#8358;' + naira(x.annual)
-          + ' that is about &#8358;' + naira(x.duty.duty) + ', payable by the tenant. An instrument executed in '
-          + 'Nigeria must be stamped within 30 days of execution.');
+      } else if (x.duty.kind === 'base_unsourced') {
+        body.push('Stamp duty: <strong>chargeable at 0.78%, but we do not give a figure.</strong> '
+          + T.LEASE_BASE_NOTE);
       }
       if (x.end) body.push('Term: ' + x.months + ' months, ending <strong>' + longDate(x.end) + '</strong>.');
       bits.push('<p class="answer__body">' + body.join('<br>') + '</p>');
@@ -461,8 +480,9 @@
       var ll = or(f.llname, '[landlord&rsquo;s full name]');
       var tn = or(f.tname, '[tenant&rsquo;s full name]');
       var prem = or(f.premises, '[describe the premises]');
-      if (!x.money.ok) { render(); return; }   /* never build a document on a rent we cannot read */
+      if (!x.money.ok || !x.term.ok) { render(); return; }   /* never build on input we cannot read */
       var depMoney = T.parseMoney(f.deposit.value);
+      if (!depMoney.ok && depMoney.reason !== 'empty') { render(); return; }
       var dep = depMoney.ok ? depMoney.value : 0;
       var noticeClause = f.area.value === 'covered'
         ? '<p><strong>8. Notice.</strong> Either party may determine this tenancy by giving the other '
@@ -505,8 +525,11 @@
             : x.duty.kind === 'unsourced'
             ? '[The term exceeds seven years. This page does not state a duty rate for that band &mdash; '
               + T.LEASE_ABOVE_7_YEARS_NOTE + ' Take advice before completing this clause.]'
-            : 'The Tenant shall stamp this agreement within 30 days of execution, duty being chargeable under the '
-              + 'Nigeria Tax Act 2025.')
+            : x.duty.kind === 'base_unsourced'
+            ? 'The Tenant shall stamp this agreement within 30 days of execution, duty being chargeable '
+              + 'under the Nigeria Tax Act 2025. [The rate is 0.78%; this page does not compute the amount, '
+              + 'because the Act does not state what the rate is charged on.]'
+            : '[Enter the rent and term above.]')
         + '</p>'
         + '<p>SIGNED by the Landlord: ____________________  Date: __________<br>'
         + 'Witness name, address and occupation: ____________________</p>'
