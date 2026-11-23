@@ -1,0 +1,311 @@
+EXTRACT FOR VERIFICATION — Corporate Affairs Commission, New Schedule of Fees.
+
+Source: S.I. No. 6, Federal Republic of Nigeria Official Gazette No. 92, Vol. 112,
+Lagos, 29th May 2025; the schedule itself is dated 31st October 2024 and signed by
+the Minister of Industry, Trade and Investment.
+Retrieved 23 November 2026 from the Commission's own site and converted to text.
+
+Why it is in this repo: /tools/cac-registration-fees/ publishes these figures, and
+scripts/check-tool-fees.py checks the page against this file on every push. Without a
+committed copy of the source, nothing would notice a mistyped fee on a public page.
+It is a government instrument, reproduced here for that check.
+
+-----------------------------------------------------------------------------------
+Extraordinary                                                                                     B 623
+
+
+
+
+     Federal Republic of Nigeria
+          Official Gazette
+No. 92                              Lagos — 29th May, 2025                                      Vol. 112
+Government Notice No. 20
+
+      The following is published as Supplement to this Gazette :
+S. I. No.                                       Short Title                                         Page
+  6 Corporate Affairs Commission—New Schedule of Fees                           ..     ..      B625-631
+
+
+
+
+              Printed and Published by The Federal Government Press, Lagos, Nigeria
+                                        FGP 23/52025/650
+       Annual Subscription from 1st January, 2025 is Local : N100,000.00 Overseas : N131,000 [Surface Mail]
+N150,000.00 [Second Class Air Mail]. Present issue N3,000 per copy. Subscribers who wish to obtain Gazette
+after 1st January should apply to the Federal Government Printer, Lagos, for amended Subscriptions.
+B 624
+                                                                                          B 625
+
+                       CORPORATE AFFAIRS COMMISSION
+                              NEW S CHEDULE OF FEES FOR THE
+                      SERVICES OF THE CORPORATE AFFAIRS COMMISSION
+                                            COMPANIES
+S/N         Service             LTD/GTE        Small Company         Private          Public
+                                 Fee (N)          Fee (N)        Other Than Small     Fee (N)
+                                                                     Fee (N)
+1. Name Reservation               See 2            1,000              1,000             1,000
+2. Name Reservation for           5,000         5,000 where         5,000 where     5,000 where
+      restricted words and                       applicable          applicable      applicable
+            LTD/GTE
+3.       Incorporation of         40,000      Not Applicable           NA               NA
+      Company Limited by                           (NA)
+          Guarantee (this
+      includes CTC of first
+          incorporation
+       documents without
+        additional charge)
+4.       Incorporation of          NA          10,000 for every   10,000 for every   20,000 for
+      Company with share                      N1,000,000 or part N1,000,000 or part    every
+              capital
+                                                   thereof            thereof       N1,000,000 or
+                                                                                    part thereof
+5.       Registration of           NA          10,000 for every   10,000 for every    20,000 for
+       increase in issued                     N1,000,000 or part N1,000,000 or part     every
+       share capital up to
+          N500 million                             thereof            thereof       N1,000,000 or
+                                                                                    part thereof
+6.      Change of Name             20,000          10,000              20,000           50,000
+7.      Registration of       25,000 or 0.35% 25,000 or 0.35% of 25,000 or 0.35% of 25,000 or
+          Charges              of the amount     the amount         the amount      0.35% of the
+                              secured by the secured by the       secured by the       amount
+                                   charge     charge wihichever charge wihichever    secured   by
+                               wihichever is      is higher          is higher       the charge
+                                                                                    wihichever is
+                                   higher                                              higher
+8.   Memorandum of                25,000            25,000             25,000          25,000
+    Satisfaction/Deed of
+           Release
+ 9.        Deed of                25,000           25,000             25,000           25,000
+       Hypothecation
+10. Deed of Negative              25,000            25,000            25,000           25,000
+            Pledge
+11. Post incorporation             5,000           5,000              10,000           20,000
+     and miscellaneous
+      filings other than
+        annual returns
+B 626
+
+                         CORPORATE AFFAIRS COMMISSION
+                               NEW S CHEDULE OF FEES FOR THE
+                       SERVICES OF THE CORPORATE AFFAIRS COMMISSION
+                                               COMPANIES
+S/N          Service              LTD/GTE        Small Company       Private         Public
+                                   Fee (N)          Fee (N)      Other Than Small    Fee (N)
+                                                                     Fee (N)
+
+ 12.      Status Report             5,000             5,000            5,000          10,000
+ 13. Letter of Good                 10,000           10,000           10,000          20,000
+         Standing
+14. Historical Search               10,000           10,000           10,000          20,000
+    Report (Directors/
+   Officers Information)
+
+ 15.     Historical Search         10,000            10,000           10,000          20,000
+       Report (Shareholding
+           Information)
+ 16.    Historical Search          10,000            10,000           10,000          20,000
+       Report (Particulars of
+       Charges/Debentures/
+         Memorandum of
+          Satisfaction)
+         Historical Search         20,000            20,000           20,000          30,000
+16A.        Report (All
+           information)
+ 17. Due Diligence Search          50,000            50,000           50,000          50,000
+         (Self-service)
+ 18. Voluntary Striking off        50,000            25,000            50,000        100,000
+ 19.       Same day post            30,000           20,000           30,000          50,000
+       incorporation filing (in
+       addition to filing fees)
+ 20. Relisting of Company          50,000            25,000           50,000         100,000
+
+ 21.    Restriction of             25,000            25,000           25,000          50,000
+    Director’s Residential
+            Address
+22.  Extension  of time to         50,000             NA              50,000         100,000
+     hold Annual General
+       Meeting (AGM)
+23. Certified True Copy of        5,000 each       5,000 each       5,000 each      5,000 each
+     Documents/Extracts
+                                                                                                   B 627
+
+                          CORPORATE AFFAIRS COMMISSION
+                                 NEW S CHEDULE OF FEES FOR THE
+                         SERVICES OF THE CORPORATE AFFAIRS COMMISSION
+                                           ANNUAL RETURNS
+     LTD/GTE          N100,000 - N100M         Above N100M -         Above N500M -             Above
+      Fee (N)         Share Capital (N)            N500M               N1Billion              N1Billion
+                                              Share Capital (N)     Share Capital (N)          Share
+                                                                                             Capital (N)
+         10,000               5,000                 100,000                150,000             200,000
+
+                                         FOREIGN COMPANIES
+     S/N                                       Service                                        Fee (N)
+     1        Notice of Exemption of Foreign Companies                                        100,000
+     2        Annual Report of Foreign Companies                                              100,000
+
+                              LIMITED LIABILITY PARTNERSHIPS (LLP)
+S/N                                            Service                                       Fee (N)
+ 1       Name Reservation                                                            1,000
+ 2       Name Reservation for Restricted Words                                       5,000
+3        Incorporation and CTC of Registration Documents                             40,000
+4        Change of Name                                                              20,000
+ 5       Registration of Charges                                                     25,000 or 0.35% of
+                                                                                     the amount
+                                                                                     secured by the
+                                                                                     charge whichever
+                                                                                     is higher.
+
+ 6       Memorandum of Satisfaction/Deed of Release                                  25,000
+ 7       Annual Returns and other post incorporation and miscellaneous filings 10,000 each
+ 8       Status Report                                                         5,000
+9        Letter of Good Standing                                                      10,000
+10       Voluntary Striking-off                                                       50,000
+11       Same day post incorporation filing (in addition to filing fees)              30,000 per filing
+12       Relisting                                                                    50,000
+13       Restriction of partner’s residential address                                 25,000
+14       Certified True Copy of Documents/Extracts                                     5,000 each
+B 628
+
+                      CORPORATE AFFAIRS COMMISSION
+                              NEW S CHEDULE OF FEES FOR THE
+                      SERVICES OF THE CORPORATE AFFAIRS COMMISSION
+                                LIMITED PARTNERSHIPS (LP)
+S/N                                       Service                                    Fee (N)
+ 1    Name Reservation                                                       1,000
+ 2    Name Reservation for Restricted Words                                  5,000
+ 3    Registration and CTC of Registration Documents/extracts                30,000
+ 4    Change of Name                                                        10,000
+ 5    Annual Returns and other post incorporation and miscellaneous filings 5,000 each
+ 6    Status Report                                                          5,000
+ 7 Letter of Good Standing                                                   10,000
+  8 Voluntary Striking-off                                                   25,000
+ 9 Same day post incorporation filing (in addition to filing fees)           25,000
+ 10 Relisting                                                                25,000
+ 11 Restriction of Partner’s Residential Address                             25,000
+ 12 Certified True Copy of Documents                                         5,000 each
+
+
+
+                                      BUSINESS N AMES
+S/N                                       Service                                    Fee (N)
+  1   Name Reservation                                                       1,000
+ 2    Name Reservation for Restricted Words                                  5,000
+ 3    Registration and CTC of Registration Documents                         20,000
+ 4    Change of Name                                                         10,000
+ 5    Annual Returns and other post registration and miscellaneous filings   5,000 each
+ 6    Status Report                                                          5,000
+ 7 Letter of Good Standing                                                   10,000
+  8 Voluntary Striking-off                                                   10,000
+ 9 Same day post incorporation filing (in addition to filing fees)           10,000
+ 10 Relisting                                                                25,000
+ 11 Restriction of Proprietor’s/Partner’s Residential Address                25,000
+ 12 Certified True Copy of Documents/Extract                                 5,000 each
+ 13 Application for Cessation                                                10,000
+                                                                                             B 629
+
+                        CORPORATE AFFAIRS COMMISSION
+                               NEW S CHEDULE OF FEES FOR THE
+                       SERVICES OF THE CORPORATE AFFAIRS COMMISSION
+                                  INCORPORATED TRUSTEES
+ S/N                                         Service                                   Fee (N)
+  1    Name Reservation                                                        5,000
+  2    Registration and CTC of Registration Documents                          40,000
+  3    Change of Name                                                        25,000
+  4    Annual Returns and other post incorporation and miscellaneous filings 5,000 each
+  5    Status Report                                                          5,000
+  6    Letter of Good Standing                                                10,000
+  7    Historical Search Report                                               10,000
+   8   Same day post incorporation filing (in addition to filing fees)        25,000
+  9    Restriction of Trustee’s Residential Address                           25,000
+  10 Certified True Copy of Documents/Extract                                 5,000 each
+  11 Notice of Dissolution                                                    30,000
+            REGISTRATION OF AGENTS /PROFESSIONALS/INSOLVENCY PRACTITIONERS
+ S/N                                         Service                                   Fee (N)
+  1    Registration of Accredited Agents/Professionals (one-off)              10,000
+  2    Registration of Insolvency Practitioners (one-off)                     50,000
+
+                                      VALUE ADDED SERVICE
+                                 Service                                               Fee (N)
+ SMS Notification alert for every transaction carried out by an Entity to      5,000
+ all officers of the Entity (Annual Subscription)
+
+                                           WEBSITE SEARCH
+Visitors to the Commission’s public search page can get basic information free of charge.
+However, the following services are paid services :
+ S/N                                       Service                                   Fee (N)
+  1    Full electronic search per entity (View only)                          1,000
+  2    Persons with Significant Control (View only)                           Free
+
+                                           APPOINTMENTS
+ S/N                                   Service                                    Fee (N)
+  1 Personal Appointment                                                        Free
+  2 Premium Service/VIP Lounge Facilities (Same Day Service Single Transaction) 50,000
+  3 Premium Service/VIP Lounge Facilities (Same Day Multiple Applications per 100,000
+     entity)
+B 630
+
+                       CORPORATE AFFAIRS COMMISSION
+                              NEW S CHEDULE OF FEES FOR THE
+                      SERVICES OF THE CORPORATE AFFAIRS COMMISSION
+                                         BULK PRODUCTS
+ S/N                                     Service                                    Fee (N)
+  1 Application by Specified Public Authority or Credit Reference Agency per Entity 25,000
+  2 Individual request by Specified Public Authority or Credit Reference Agency     1,000
+     (to access information) per Entity
+
+                                       DVD DIRECTORIES
+ S/N                                          Service                               Fee (N)
+   1 Company Directory Exportable one-off (name, address, registration           1,000,000
+       number and date of registration, particulars of Directors and other post
+       incorporation information)
+   2  Company    Directory Exportable Annual Subscription (name, address,        10,000,000
+      registration number and date of registration, particulars of Directors and
+      other post incorporation information)
+  3 Person with Significant Control (PSC) information : Exportable for           Free
+       Specified Public Authority and other approved persons/bodies
+   4 Company Directory : data file on DVD, by email or by file transfer          10,000,000
+       protocol (FTP) Annual Subscription (name, address, registration number
+       and date of registration, particulars of Directors and other post
+       incorporation information)
+   5 Change of Name/Dissolved/Removed Index (one-off)                            100,000
+   6 Change of Name/Dissolved/Removed Index : Exportable Annual                  1,000,000
+      Subscription
+   7 Change of Name/Dissolved/Removed Index : Data file on DVD, by email 1,000,000
+      or by FTP Annual Subscription
+   8 Change of PSC/Removed index : Data file on DVD, by email or by FTP          Free
+      for Public Specified Public Authority and other Approved Persons/
+      Bodies
+Notwithstanding the foregoing the Commission may issue information to any Investigation Agency
+or other approved Public Authority, Organization or Individual gratis.
+
+                                 PENALTIES (ANNUAL RETURNS)
+ S/N    Entity Type                          One-Off (N)
+  1    Small Company                         1,000         Penalty to be assessed against the Entity
+  2    Company Private other than small      2,000         and Each Officer of the Entity
+  3    Company limited by guarantee          2,000
+  4    Public Company                        5,000
+  5    Limited Liability Partnership (LLP)   2,000
+  6    Limited Partnership (LP)              1,000
+  7    Business Names                        5,000         Penalty to be assessed against the Entity
+  8    Incorporated Trustees                 10,000        Only
+                                                                                               B 631
+
+                        CORPORATE AFFAIRS COMMISSION
+                              NEW S CHEDULE OF FEES FOR THE
+                      SERVICES OF THE CORPORATE AFFAIRS COMMISSION
+                                      PENALTIES (OTHERS)
+S/N     Entity Type                         Daily Default Penalty(N) Other Penalties (One-Off) N
+ 1    Small Company                                 100                          5,000
+ 2    Company Private other than small              200                          10,000
+ 3    Company limited by guarantee                  200                          10,000
+ 4    Public Company                                500                          25,000
+ 5    Limited Liability Partnership (LLP)           200                          10,000
+ 6    Limited Partnership (LP)                      100                          10,000
+ 7    Business Names                                100                          5,000
+ 8    Incorporated Trustees                         200                          10,000
+      DATED this 31st October, 2024
+
+                                                                            Signed
+                                                          Minister of Industry, Trade and Investment
+

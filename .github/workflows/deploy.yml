@@ -243,7 +243,9 @@ jobs:
           SHA: ${{ steps.sha.outputs.sha }}
         run: |
           set -euo pipefail
-          PAGES="$(find . -maxdepth 1 -name '*.html' -printf '%f ')"
+          # Root pages AND every /tools/<slug>/ directory URL. Without the second half a deploy
+          # that 404s every tool page would verify clean and would not roll back.
+          PAGES="$(find . -maxdepth 1 -name '*.html' -printf '%f ')$(find tools -mindepth 1 -maxdepth 1 -type d -printf 'tools/%f/ ' 2>/dev/null)"
           bash scripts/deploy-check.sh --sha "$SHA" --base "$SITE_URL" --pages "$PAGES" --origin "$DEPLOY_HOST" --timeout 90
           echo "VERIFIED=1" >> "$GITHUB_ENV"
 
