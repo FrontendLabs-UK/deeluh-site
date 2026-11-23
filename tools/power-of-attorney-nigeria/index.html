@@ -22,6 +22,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assets/tools.css">
+<script src="/assets/tools.js" defer></script>
 </head>
 <body>
 
@@ -333,6 +334,26 @@
         }
       });
     }
+    /* The Security submenu's accordion. The tool pages copy the navbar markup, which includes
+       navLegalDropdown, but the first version of this script omitted its handler - and the CSS
+       keeps that submenu collapsed until `.is-open`, so on a phone the item could not be
+       expanded at all. */
+    var legal = document.getElementById('navLegalDropdown');
+    if (legal) {
+      var trigger = legal.querySelector('.navbar__mobile-dropdown-trigger');
+      if (trigger) {
+        trigger.addEventListener('click', function () {
+          var open = legal.classList.toggle('is-open');
+          trigger.setAttribute('aria-expanded', String(open));
+        });
+        window.addEventListener('resize', function () {
+          if (window.matchMedia('(min-width: 981px)').matches) {
+            legal.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    }
   })();
 </script>
 
@@ -345,11 +366,22 @@
     var scopeHint = el('scopeHint');
     if (!donor || !answer || !out) return;
 
-    var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    function longToday() { var d = new Date(); return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear(); }
-    function or(v, fb) { return (v || '').trim() === '' ? fb : v.trim(); }
+    var T = window.DeeluhTools;
+    if (!T) return;
+    function longToday() { return T.longDate(new Date()); }
+    /* ESCAPED: a name or address typed with a tag in it must not be able to add a clause to the
+       printed instrument, or carry an event handler into it. */
+    function or(el, fb) { return T.field(el, fb); }
 
     function render() {
+      /* ANY change clears a document generated under the previous answers. Without this, a reader
+         could generate a general power, then tick "it involves land" - the answer would change to
+         "do not rely on this template for land" while the document generated a moment earlier
+         stayed on screen and printable. A refusal beside a usable document is not a refusal. */
+      out.hidden = true;
+      out.innerHTML = '';
+      printBtn.hidden = true;
+
       var general = scope.value === 'general';
       actsField.hidden = general;
       scopeHint.innerHTML = general
@@ -383,7 +415,7 @@
     draftBtn.addEventListener('click', function () {
       var general = scope.value === 'general';
       var listed = (acts.value || '').split('\n').map(function (s) { return s.trim(); })
-                     .filter(function (s) { return s !== ''; });
+                     .filter(function (s) { return s !== ''; }).map(T.escapeHtml);
       var powers = general
         ? '<p><strong>2. Powers.</strong> To do, execute and perform any act, deed, matter or thing which I could '
           + 'lawfully do, execute or perform myself.</p>'
@@ -391,7 +423,7 @@
           + 'well.]</p>'
         : '<p><strong>2. Powers.</strong> To do the following on my behalf, and nothing further:</p><ol>'
           + (listed.length
-              ? listed.map(function (a) { return '<li>' + a.replace(/</g, '&lt;') + '</li>'; }).join('')
+              ? listed.map(function (a) { return '<li>' + a + '</li>'; }).join('')
               : '<li>[List each act specifically &mdash; a power you have not written down is one your attorney '
                 + 'does not have.]</li>')
           + '</ol>';
@@ -409,9 +441,9 @@
         + '<div class="draft__body">'
         + '<p><strong>POWER OF ATTORNEY</strong></p>'
         + '<p>BY THIS POWER OF ATTORNEY made on ' + longToday() + ', I, '
-        + or(donor.value, '[your full name]') + ' of ' + or(donoraddr.value, '[your address]')
-        + ' (&ldquo;the Donor&rdquo;) APPOINT ' + or(donee.value, '[attorney&rsquo;s full name]') + ' of '
-        + or(doneeaddr.value, '[attorney&rsquo;s address]') + ' (&ldquo;the Attorney&rdquo;) to be my lawful '
+        + or(donor, '[your full name]') + ' of ' + or(donoraddr, '[your address]')
+        + ' (&ldquo;the Donor&rdquo;) APPOINT ' + or(donee, '[attorney&rsquo;s full name]') + ' of '
+        + or(doneeaddr, '[attorney&rsquo;s address]') + ' (&ldquo;the Attorney&rdquo;) to be my lawful '
         + 'attorney.</p>'
         + '<p><strong>1. Appointment.</strong> The Attorney may act for me in the matters set out below, in my name '
         + 'and on my behalf.</p>'
@@ -437,7 +469,12 @@
       out.scrollIntoView({ block: 'nearest' });
     });
 
-    printBtn.addEventListener('click', function () { window.print(); });
+    printBtn.addEventListener('click', function () {
+      /* Print the INSTRUMENT, not the page around it: the body is marked for the duration so the
+         print stylesheet can hide the form, the explanation and the sources. */
+      document.body.classList.add('printing-draft');
+      try { window.print(); } finally { document.body.classList.remove('printing-draft'); }
+    });
     [donor, donoraddr, donee, doneeaddr, scope, acts, land, abroad].forEach(function (e2) {
       e2.addEventListener('input', render);
       e2.addEventListener('change', render);

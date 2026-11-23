@@ -278,12 +278,14 @@
 
     <h2 class="tool-h2">What it costs</h2>
     <div class="unconfirmed">
-      <p class="unconfirmed__h">Being confirmed &mdash; we are not printing a number we cannot stand behind</p>
-      <p class="tool-p" style="margin:0">The published figures contradict each other. One guide puts the cost at
-        5&ndash;10% of the value of the estate, which we could not verify for Lagos. A Lagos practitioner writes
-        separately that local government officials sometimes ask for an unofficial &#8358;3,000&ndash;&#8358;5,000,
-        which is not a Registry fee at all. We have asked the Lagos Probate Registry for its current fee schedule
-        and will publish that, with the date we read it, instead of an average of other people&rsquo;s guesses.</p>
+      <p class="unconfirmed__h">Being confirmed &mdash; we have no figure of our own for this</p>
+      <p class="tool-p" style="margin:0">What follows is what <em>other people</em> publish, reported so you can
+        recognise it rather than relied on. One guide puts the cost at 5&ndash;10% of the value of the estate; we
+        could not verify that for Lagos and would not budget from it. A Lagos practitioner writes separately that
+        local government officials sometimes ask for an unofficial &#8358;3,000&ndash;&#8358;5,000 &mdash; which is
+        not a Registry fee at all, and is worth knowing precisely so you can decline it. Neither is our figure. We
+        have asked the Lagos Probate Registry for its current fee schedule and will publish that, with the date we
+        read it, instead of an average of other people&rsquo;s guesses.</p>
     </div>
 
     <h2 class="tool-h2">Where this comes from</h2>
@@ -439,7 +441,12 @@
     paint();
 
     var printBtn = document.getElementById('printBtn');
-    if (printBtn) printBtn.addEventListener('click', function () { window.print(); });
+    if (printBtn) printBtn.addEventListener('click', function () {
+      /* Print the INSTRUMENT, not the page around it: the body is marked for the duration so the
+         print stylesheet can hide the form, the explanation and the sources. */
+      document.body.classList.add('printing-draft');
+      try { window.print(); } finally { document.body.classList.remove('printing-draft'); }
+    });
 
     var resetBtn = document.getElementById('resetBtn');
     if (resetBtn) resetBtn.addEventListener('click', function () {
@@ -447,6 +454,26 @@
       write({});
       paint();
     });
+    /* The Security submenu's accordion. The tool pages copy the navbar markup, which includes
+       navLegalDropdown, but the first version of this script omitted its handler - and the CSS
+       keeps that submenu collapsed until `.is-open`, so on a phone the item could not be
+       expanded at all. */
+    var legal = document.getElementById('navLegalDropdown');
+    if (legal) {
+      var trigger = legal.querySelector('.navbar__mobile-dropdown-trigger');
+      if (trigger) {
+        trigger.addEventListener('click', function () {
+          var open = legal.classList.toggle('is-open');
+          trigger.setAttribute('aria-expanded', String(open));
+        });
+        window.addEventListener('resize', function () {
+          if (window.matchMedia('(min-width: 981px)').matches) {
+            legal.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    }
   })();
 </script>
 </body>

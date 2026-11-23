@@ -80,8 +80,10 @@ def check(mutate=None):
         want = f"https://deeluh.com/tools/{slug}/" if slug else "https://deeluh.com/tools/"
         if f'rel="canonical" href="{want}"' not in html:
             bad.append(f"{name}: canonical is not {want}")
-        if SIGNUP not in html:
-            bad.append(f"{name}: no free-week call to action")
+        # The page's OWN call to action, not the navbar's. Every page carries a navbar signup link,
+        # so searching for the URL alone passed even with the promised free-week button deleted.
+        if "Start your free week" not in html or SIGNUP not in html:
+            bad.append(f"{name}: no free-week call to action of its own")
         if not ADVICE.search(html):
             bad.append(f"{name}: no not-legal-advice line")
         # the index carries no figures of its own, so it needs no date
@@ -111,13 +113,23 @@ def main():
         def break_one(slug, html):
             if slug == "":
                 return html.replace('rel="canonical" href="https://deeluh.com/tools/"', 'rel="canonical" href="https://deeluh.com/"')
-            return html.replace("Last checked", "Checked at some point", 1).replace(SIGNUP, "https://example.com", 1)
+            # Removes the page's OWN call to action. Replacing the signup URL was not enough: the
+            # navbar carries one too, so the first occurrence belonged to the chrome and the page
+            # still looked compliant - which is exactly the hole this check was tightened to close.
+            return (html.replace("Last checked", "Checked at some point", 1)
+                        .replace("Start your free week", "Have a look round"))
         bad, _ = check(mutate=break_one)
-        kinds = {("canonical" in b) for b in bad} | {("Last checked" in b) for b in bad} | {("call to action" in b) for b in bad}
-        ok = len(bad) >= 3 and True in kinds
-        print("self-test:", f"PASS — caught {len(bad)} planted problem(s)" if ok
-              else f"FAIL — caught only {bad}")
-        return 0 if ok else 1
+        # EVERY planted category must be caught, not merely one of them: the first version asked
+        # whether ANY category appeared, so a check that had stopped noticing dates still passed.
+        wanted = {
+            "canonical": lambda b: "canonical is not" in b,
+            "date": lambda b: "Last checked" in b,
+            "call to action": lambda b: "call to action" in b,
+        }
+        missed = [k for k, pred in wanted.items() if not any(pred(b) for b in bad)]
+        print("self-test:", f"PASS — caught all {len(wanted)} planted categories"
+              if not missed else f"FAIL — missed {missed}")
+        return 1 if missed else 0
 
     bad, n = check()
     print(f"checked {n} tool page(s)")

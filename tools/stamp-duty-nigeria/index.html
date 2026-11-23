@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stamp duty in Nigeria: the 2026 rates, from the Act itself · Deeluh</title>
-<meta name="description" content="What stamp duty you pay on a tenancy, a deed of assignment, a mortgage or share capital in Nigeria, with the exemptions that take most tenancies out of duty altogether. Rates read from the Nigeria Tax Act 2025, which replaced the old schedule from January 2026.">
+<meta name="description" content="What stamp duty you pay on a tenancy, a deed of assignment, a mortgage or share capital in Nigeria, with the exemptions that take most tenancies out of duty altogether. Rates read from the Nigeria Tax Act 2025 itself, with the one band the Act leaves unreadable marked as such.">
 <link rel="canonical" href="https://deeluh.com/tools/stamp-duty-nigeria/">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Deeluh">
 <meta property="og:title" content="Stamp duty in Nigeria: the 2026 rates, from the Act itself · Deeluh">
-<meta property="og:description" content="What stamp duty you pay on a tenancy, a deed of assignment, a mortgage or share capital in Nigeria, with the exemptions that take most tenancies out of duty altogether. Rates read from the Nigeria Tax Act 2025, which replaced the old schedule from January 2026.">
+<meta property="og:description" content="What stamp duty you pay on a tenancy, a deed of assignment, a mortgage or share capital in Nigeria, with the exemptions that take most tenancies out of duty altogether. Rates read from the Nigeria Tax Act 2025 itself, with the one band the Act leaves unreadable marked as such.">
 <meta property="og:url" content="https://deeluh.com/tools/stamp-duty-nigeria/">
 <meta property="og:image" content="https://deeluh.com/assets/images/og-deeluh.png">
 <meta property="og:image:width" content="1200">
@@ -22,6 +22,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assets/tools.css">
+<script src="/assets/tools.js" defer></script>
 </head>
 <body>
 
@@ -105,9 +106,9 @@
 
     <h1 class="tool-h1">Stamp duty in Nigeria</h1>
 
-    <p class="tool-standfirst">Nearly every rate you will find online for this is now wrong. The
-      <strong>Nigeria Tax Act 2025</strong> replaced the old stamp duties schedule, so figures written before
-      2026 describe a law that no longer applies. The rates below are read from the Act. The most useful thing in
+    <p class="tool-standfirst">Nearly every rate you will find online for this is out of date. The
+      <strong>Nigeria Tax Act 2025</strong> carries its own schedule of stamp duties, so a figure written against
+      the old Stamp Duties Act is not a figure under the Act in force. The rates below are read from the Act. The most useful thing in
       it is an exemption: a lease whose <strong>annual value is under &#8358;10,000,000</strong> is not chargeable
       with duty at all, which takes most Nigerian tenancies out of this entirely.</p>
 
@@ -167,10 +168,12 @@
       proviso.</p>
 
     <h2 class="tool-h2">You have 30 days</h2>
-    <p class="tool-p">Section 126(1): an instrument executed in Nigeria that is chargeable with duty
+    <p class="tool-p">Section 126(1): an instrument <strong>executed in Nigeria</strong> that is chargeable with duty
       &ldquo;shall be stamped not later than 30 days after its execution by the person required to pay the
-      appropriate duty.&rdquo; Under the old law it was forty. If you are working to a closing checklist written
-      before 2026, that is ten days you no longer have.</p>
+      appropriate duty.&rdquo; Commentary says the equivalent period under the old law was forty days; we have not
+      read that in the repealed Act ourselves, so treat the comparison as commentary and the thirty days as the
+      provision. Where an instrument is executed outside Nigeria, section 126(1) does not say this, and we have not
+      sourced what does.</p>
 
     <h2 class="tool-h2">One rate we are not printing</h2>
     <div class="unconfirmed">
@@ -206,7 +209,7 @@
       who is liable to pay each one. An extract of the provisions this page relies on is committed alongside it, and
       a check compares the figures published here against that extract on every change.</p>
     <p class="tool-p">Pages still quoting a flat 6% on tenancies, or rates attributed to the Stamp Duties Act,
-      describe the position before January 2026. If the revenue authority publishes a schedule that differs from the
+      are not describing this Act. If the revenue authority publishes a schedule that differs from the
       Act as we have read it, tell us and we will correct this and change the date at the top.</p>
 
     <div class="tool-cta">
@@ -300,24 +303,51 @@
         }
       });
     }
+    /* The Security submenu's accordion. The tool pages copy the navbar markup, which includes
+       navLegalDropdown, but the first version of this script omitted its handler - and the CSS
+       keeps that submenu collapsed until `.is-open`, so on a phone the item could not be
+       expanded at all. */
+    var legal = document.getElementById('navLegalDropdown');
+    if (legal) {
+      var trigger = legal.querySelector('.navbar__mobile-dropdown-trigger');
+      if (trigger) {
+        trigger.addEventListener('click', function () {
+          var open = legal.classList.toggle('is-open');
+          trigger.setAttribute('aria-expanded', String(open));
+        });
+        window.addEventListener('resize', function () {
+          if (window.matchMedia('(min-width: 981px)').matches) {
+            legal.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    }
   })();
 </script>
 
 <script>
-  /* Rates from the Nigeria Tax Act 2025, named on the page. `rate: null` means the Act's own cell is
-     truncated in the copy we read, so the page refuses to compute rather than borrow a number from
-     commentary. */
+  /* Rates from the Nigeria Tax Act 2025, named on the page. A LEASE is answered by
+     DeeluhTools.leaseDuty so that this page and the tenancy page cannot give different answers -
+     they did, and the tenancy page was quietly using the up-to-seven-years rate for any term. */
   (function () {
+    var T = window.DeeluhTools;
+    if (!T) return;
+
     var I = {
-      conveyance:  { rate: 0.015,   who: 'the transferee &mdash; in practice the buyer', label: 'Conveyance or transfer on sale, 1.5%',
+      conveyance:  { rate: 0.015,   who: 'the transferee &mdash; in practice the buyer',
+                     label: 'Conveyance or transfer on sale, 1.5%',
                      valueLabel: 'Value of the property (&#8358;)', exemptAtOrBelow: 10000000,
                      exemptNote: 'Exempt where the property has a value of &#8358;10,000,000 or less.' },
-      lease7:      { rate: 0.0078,  who: 'the lessee &mdash; the tenant', label: 'Lease, term up to 7 years, 0.78%',
-                     valueLabel: 'Annual value of the lease (&#8358;)', exemptBelow: 10000000,
+      /* Both lease options route through the shared function; 84 months is seven years exactly,
+         85 is the first month of the band the Act does not give us. */
+      lease7:      { lease: 84, who: 'the lessee &mdash; the tenant', label: 'Lease, term up to 7 years, 0.78%',
+                     valueLabel: 'Annual value of the lease (&#8358;)',
                      exemptNote: 'Not chargeable where the ANNUAL value is less than &#8358;10,000,000 (section 135).' },
-      lease7plus:  { rate: null,    who: 'the lessee', label: 'Lease, term above 7 years',
+      lease7plus:  { lease: 85, who: 'the lessee', label: 'Lease, term above 7 years',
                      valueLabel: 'Annual value of the lease (&#8358;)' },
-      mortgage:    { rate: 0.00375, who: 'the party taking the security', label: 'Mortgage, bond, debenture or covenant, 0.375%',
+      mortgage:    { rate: 0.00375, who: 'the party taking the security',
+                     label: 'Mortgage, bond, debenture or covenant, 0.375%',
                      valueLabel: 'Amount secured (&#8358;)' },
       security:    { rate: 0.00375, who: 'the mortgagee', label: 'Conveyance or transfer by way of security, 0.375%',
                      valueLabel: 'Amount secured (&#8358;)' },
@@ -336,45 +366,63 @@
     var who = document.getElementById('sdwho');
     if (!sel || !val || !rows || !totalCell) return;
 
-    function naira(n) { return Math.round(n).toLocaleString('en-NG'); }
-    function read() {
-      var d = (val.value || '').replace(/[^0-9]/g, '');
-      return d === '' ? 0 : parseInt(d, 10);
+    function line(label, figure) {
+      rows.innerHTML = '<tr><th scope="row">' + label + '</th><td class="feetable__num">' + figure + '</td></tr>';
     }
 
     function render() {
-      var k = sel.value, i = I[k];
+      var i = I[sel.value];
       if (!i) return;
       valueLabel.innerHTML = i.valueLabel;
       valueHint.innerHTML = i.exemptNote || '';
-      var amount = read();
 
-      /* The exemption is checked BEFORE the rate, because an exempt instrument is not a small
-         duty - it is no duty, and showing a number with a note beside it invites paying it. */
-      var exempt = (i.exemptAtOrBelow !== undefined && amount > 0 && amount <= i.exemptAtOrBelow)
-                || (i.exemptBelow !== undefined && amount > 0 && amount < i.exemptBelow);
-
-      if (i.rate === null) {
-        rows.innerHTML = '<tr><th scope="row">' + i.label
-          + '</th><td class="feetable__num">rate being confirmed</td></tr>';
+      var money = T.parseMoney(val.value);
+      if (!money.ok) {
+        /* A refused amount must not silently become zero: the reader sees why, and no figure. */
+        line(i.label, '&mdash;');
         totalCell.textContent = 'not shown';
-        who.innerHTML = 'The Act&rsquo;s own table is cut off for this term, so this page will not compute a '
-          + 'figure for it. See &ldquo;One rate we are not printing&rdquo; below.';
+        who.innerHTML = money.reason === 'empty'
+          ? 'Enter the amount above.'
+          : 'That is not an amount we can read (' + money.reason + '). Enter digits, with commas if you like '
+            + 'and at most one decimal point &mdash; for example 25,000,000.';
+        return;
+      }
+      var amount = money.value;
+
+      if (i.lease) {
+        var r = T.leaseDuty(amount, i.lease);
+        if (r.kind === 'unsourced') {
+          line(i.label, 'rate being confirmed');
+          totalCell.textContent = 'not shown';
+          who.innerHTML = T.LEASE_ABOVE_7_YEARS_NOTE
+            + ' See &ldquo;One rate we are not printing&rdquo; below.';
+          return;
+        }
+        if (r.kind === 'exempt') {
+          line(i.label, 'exempt');
+          totalCell.textContent = '\u20a60';
+          who.innerHTML = 'No duty is chargeable on this one. ' + (i.exemptNote || '');
+          return;
+        }
+        line(i.label + ' of &#8358;' + T.naira(amount), T.naira(r.duty));
+        totalCell.textContent = '\u20a6' + T.naira(r.duty);
+        who.innerHTML = 'Payable by ' + i.who + '. An instrument executed in Nigeria must be stamped within 30 '
+          + 'days of execution (section 126(1)).';
         return;
       }
 
-      if (exempt) {
-        rows.innerHTML = '<tr><th scope="row">' + i.label + '</th><td class="feetable__num">exempt</td></tr>';
+      if (i.exemptAtOrBelow !== undefined && amount <= i.exemptAtOrBelow) {
+        line(i.label, 'exempt');
         totalCell.textContent = '\u20a60';
         who.innerHTML = 'No duty is chargeable on this one. ' + (i.exemptNote || '');
         return;
       }
 
       var duty = amount * i.rate;
-      rows.innerHTML = '<tr><th scope="row">' + i.label + ' of &#8358;' + naira(amount)
-        + '</th><td class="feetable__num">' + naira(duty) + '</td></tr>';
-      totalCell.textContent = '\u20a6' + naira(duty);
-      who.innerHTML = 'Payable by ' + i.who + '. It must be stamped within 30 days of execution (section 126).';
+      line(i.label + ' of &#8358;' + T.naira(amount), T.naira(duty));
+      totalCell.textContent = '\u20a6' + T.naira(duty);
+      who.innerHTML = 'Payable by ' + i.who + '. An instrument executed in Nigeria must be stamped within 30 days '
+        + 'of execution (section 126(1)).';
     }
 
     [sel, val].forEach(function (el) {

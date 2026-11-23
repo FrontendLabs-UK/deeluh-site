@@ -131,3 +131,29 @@
 textarea.field__control { resize: vertical; min-height: 96px; font-size: 15px; line-height: 1.55; }
 .draft__body ol { margin: 0 0 12px; padding-left: 24px; }
 .draft__body li { margin: 0 0 6px; }
+
+/* ---- The tools index ----
+   This was written once and lost: the append was chained after a build step with &&, the build
+   failed an assertion, and the append never ran - so the index rendered as a default bulleted
+   list while everything reported success. */
+.toolgrid { list-style: none; margin: 28px 0 0; padding: 0; }
+.toolcard { border-top: 1px solid #e8eced; padding: 20px 0; }
+.toolcard:last-child { border-bottom: 1px solid #e8eced; }
+.toolcard__name { font-family: var(--font-display); font-size: 21px; line-height: 1.25; margin: 0 0 6px; }
+.toolcard__name a { color: var(--ink); text-decoration: none; }
+.toolcard__name a:hover { color: var(--brand-primary); text-decoration: underline; }
+.toolcard__name a:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 3px; }
+.toolcard__what { font-size: 15px; line-height: 1.6; color: var(--ink-2); margin: 0; max-width: 62ch; }
+.toolcard__src { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11.5px; color: var(--ink-3);
+                 margin: 8px 0 0; }
+
+/* ---- Printing a generated instrument, not the page it came from ----
+   The first version hid only the chrome, so a notice printed with the form, the explanations and
+   the sources attached. When a draft exists it is the only thing that prints. */
+@media print {
+  body.printing-draft .tool-main > .tool-wrap > *:not(section) { display: none !important; }
+  body.printing-draft section > :not(.gate) { display: none !important; }
+  body.printing-draft .gate > :not(.draft) { display: none !important; }
+  body.printing-draft .gate { border: none !important; padding: 0 !important; }
+  body.printing-draft .draft { display: block !important; }
+}

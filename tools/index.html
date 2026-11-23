@@ -111,7 +111,7 @@
 
     <p class="tool-provenance"><strong>Why the sourcing is on every page.</strong> Most of what is published about
       Nigerian fees and duties is out of date or contradicts itself: CAC fees are quoted at three different numbers,
-      and stamp duty rates written before January 2026 describe a law that has been replaced. So each page names its
+      and stamp duty rates written against the old Stamp Duties Act are not rates under the Act in force. So each page names its
       instrument, and anything we have not confirmed is marked as still being confirmed rather than filled in from
       somebody&rsquo;s summary. General information, not legal advice.</p>
 
@@ -133,7 +133,7 @@
         </li>
         <li class="toolcard">
           <h2 class="toolcard__name"><a href="/tools/stamp-duty-nigeria/">Stamp duty</a></h2>
-          <p class="toolcard__what">The rates that replaced the old schedule in January 2026, who pays each one, the 30-day deadline, and the exemption that takes most tenancies out entirely.</p>
+          <p class="toolcard__what">The rates the Act in force actually gives, who pays each one, the 30-day deadline, and the exemption that takes most tenancies out entirely.</p>
           <p class="toolcard__src">Nigeria Tax Act 2025</p>
         </li>
         <li class="toolcard">
@@ -238,6 +238,26 @@
           burger.setAttribute('aria-expanded', 'false');
         }
       });
+    }
+    /* The Security submenu's accordion. The tool pages copy the navbar markup, which includes
+       navLegalDropdown, but the first version of this script omitted its handler - and the CSS
+       keeps that submenu collapsed until `.is-open`, so on a phone the item could not be
+       expanded at all. */
+    var legal = document.getElementById('navLegalDropdown');
+    if (legal) {
+      var trigger = legal.querySelector('.navbar__mobile-dropdown-trigger');
+      if (trigger) {
+        trigger.addEventListener('click', function () {
+          var open = legal.classList.toggle('is-open');
+          trigger.setAttribute('aria-expanded', String(open));
+        });
+        window.addEventListener('resize', function () {
+          if (window.matchMedia('(min-width: 981px)').matches) {
+            legal.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
     }
   })();
 </script>

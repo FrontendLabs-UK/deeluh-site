@@ -22,6 +22,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assets/tools.css">
+<script src="/assets/tools.js" defer></script>
 </head>
 <body>
 
@@ -324,6 +325,26 @@
         }
       });
     }
+    /* The Security submenu's accordion. The tool pages copy the navbar markup, which includes
+       navLegalDropdown, but the first version of this script omitted its handler - and the CSS
+       keeps that submenu collapsed until `.is-open`, so on a phone the item could not be
+       expanded at all. */
+    var legal = document.getElementById('navLegalDropdown');
+    if (legal) {
+      var trigger = legal.querySelector('.navbar__mobile-dropdown-trigger');
+      if (trigger) {
+        trigger.addEventListener('click', function () {
+          var open = legal.classList.toggle('is-open');
+          trigger.setAttribute('aria-expanded', String(open));
+        });
+        window.addEventListener('resize', function () {
+          if (window.matchMedia('(min-width: 981px)').matches) {
+            legal.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    }
   })();
 </script>
 
@@ -355,28 +376,23 @@
     var agreedField = document.getElementById('agreedField');
     if (!area || !ttype || !served || !out) return;
 
-    function today() {
+    var T = window.DeeluhTools;
+    if (!T) return;
+    var longDate = T.longDate, addMonths = T.addMonths;
+
+    function todayISO() {
       var d = new Date();
-      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-'
+             + String(d.getDate()).padStart(2, '0');
     }
-    served.value = today();
+    served.value = todayISO();
 
-    var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    function longDate(d) { return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear(); }
-
-    /* Adding a month to the 31st of a month with fewer days must not silently roll into the next
-       one: a notice dated "31 March + 1 month" is not 1 May. It lands on the last day of April. */
-    function addMonths(date, n) {
-      var d = new Date(date.getTime());
-      var day = d.getDate();
-      d.setDate(1);
-      d.setMonth(d.getMonth() + n);
-      var last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-      d.setDate(Math.min(day, last));
-      return d;
-    }
-
-    var state = { expiry: null, period: null, kind: null };
+    /* `document: false` means this state generates NO document: the answer explains it instead.
+       The fixed-term path used to store a seven-day period and then let Draft build a paper headed
+       "NOTICE TO QUIT" saying the tenancy determined in seven days - which is a different
+       instrument from the notice of intention to recover possession the answer describes, and we
+       have not sourced that instrument's form. */
+    var state = { expiry: null, period: null, kind: null, document: false };
 
     function render() {
       var covered = area.value === 'covered';
@@ -386,7 +402,9 @@
       draftBtn.hidden = !covered;
       printBtn.hidden = true;
       draft.hidden = true;
+      draft.innerHTML = '';      /* never leave a document from a previous state on screen */
       state.expiry = null;
+      state.document = false;
 
       if (area.value === 'excluded') {
         out.className = 'answer answer--stop';
@@ -430,17 +448,15 @@
           + '<p class="answer__body">A fixed term that has ended by effluxion of time needs no notice to quit. '
           + 'Before applying to court to recover possession, the landlord must still serve a seven-day notice of '
           + 'intention to do so (section 13(5)).</p>';
-        state.period = '7 days'; state.kind = t.label;
-        var base0 = served.valueAsDate || new Date(served.value);
-        if (base0 && !isNaN(base0.getTime())) {
-          var d7 = new Date(base0.getTime()); d7.setDate(d7.getDate() + 7);
-          state.expiry = d7;
-        }
+        /* No document here. The seven-day paper is a notice of INTENTION TO RECOVER POSSESSION,
+           not a notice to quit, and we have not sourced its prescribed form - so the page explains
+           the step and declines to draft it. */
+        draftBtn.hidden = true;
         return;
       }
 
-      var base = served.valueAsDate || new Date(served.value);
-      if (!base || isNaN(base.getTime())) {
+      var base = T.parseLocalDate(served.value);
+      if (!base) {
         out.className = 'answer answer--stop';
         out.innerHTML = '<p class="answer__head">Pick the date the notice is served.</p>';
         return;
@@ -450,7 +466,7 @@
       if (t.weeks) { end = new Date(base.getTime()); end.setDate(end.getDate() + t.weeks * 7); period = t.weeks === 1 ? 'one week' : t.weeks + ' weeks'; }
       else { end = addMonths(base, t.months); period = t.months === 1 ? 'one month' : t.months + ' months'; }
 
-      state.expiry = end; state.period = period; state.kind = t.label;
+      state.expiry = end; state.period = period; state.kind = t.label; state.document = true;
       out.className = 'answer';
       out.innerHTML = '<p class="answer__head">' + period.charAt(0).toUpperCase() + period.slice(1)
         + '&rsquo;s notice &mdash; expiring ' + longDate(end) + '</p>'
@@ -460,8 +476,10 @@
     }
 
     draftBtn.addEventListener('click', function () {
+      if (!state.document) { render(); return; }   /* only the states that have a notice to draft */
       if (!state.expiry) { render(); if (!state.expiry) return; }
-      var base = served.valueAsDate || new Date(served.value);
+      var base = T.parseLocalDate(served.value);
+      if (!base) { render(); return; }
       draft.hidden = false;
       printBtn.hidden = false;
       draft.innerHTML =
@@ -483,7 +501,12 @@
       draft.scrollIntoView({ block: 'nearest' });
     });
 
-    printBtn.addEventListener('click', function () { window.print(); });
+    printBtn.addEventListener('click', function () {
+      /* Print the INSTRUMENT, not the page around it: the body is marked for the duration so the
+         print stylesheet can hide the form, the explanation and the sources. */
+      document.body.classList.add('printing-draft');
+      try { window.print(); } finally { document.body.classList.remove('printing-draft'); }
+    });
     [area, agreed, ttype, served].forEach(function (el) {
       el.addEventListener('input', render);
       el.addEventListener('change', render);

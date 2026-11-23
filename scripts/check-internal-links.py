@@ -40,6 +40,11 @@ def pages():
     return out
 
 
+# Every local reference, not only hrefs: a missing stylesheet or script is as broken as a missing
+# page, and the first version of this looked at href= alone and only at values ending .html or /.
+REFERENCE = re.compile(r'(?:href|src)\s*=\s*"([^"]+)"')
+
+
 def broken(extra_html=None):
     bad = []
     targets = [(p, open(os.path.join(ROOT, p), encoding="utf8").read()) for p in pages()]
@@ -47,25 +52,41 @@ def broken(extra_html=None):
         targets.append(("<self-test>", extra_html))
     for page, html in targets:
         here = os.path.dirname(page) or "."
-        for href in sorted(set(re.findall(r'href="([^"#:]+)"', html))):
-            if href.startswith("//") or href.startswith("mailto"):
+        for raw in sorted(set(REFERENCE.findall(html))):
+            # an absolute URL, a protocol-relative one, a mail link or a bare fragment is not ours
+            if re.match(r"^(?:[a-z][a-z0-9+.-]*:|//|#|data:)", raw, re.I):
+                continue
+            # A FRAGMENT OR A QUERY STRING DOES NOT MAKE A LINK EXTERNAL. "/missing.html#section"
+            # used to be skipped entirely by a pattern that excluded "#", so a dead link with an
+            # anchor on it passed - which is how most in-page links are written.
+            href = raw.split("#", 1)[0].split("?", 1)[0]
+            if href == "":
                 continue
             rel = href.lstrip("/") if href.startswith("/") else os.path.normpath(os.path.join(here, href))
             full = os.path.join(ROOT, rel)
-            if href.endswith(".html") and not os.path.isfile(full):
-                bad.append(f"{page} -> {href} (no such file)")
-            elif href.endswith("/") and not os.path.isfile(os.path.join(full, "index.html")):
-                bad.append(f"{page} -> {href} (nothing serving that directory)")
+            if href.endswith("/"):
+                if not os.path.isfile(os.path.join(full, "index.html")):
+                    bad.append(f"{page} -> {raw} (nothing serving that directory)")
+            elif not os.path.exists(full):
+                bad.append(f"{page} -> {raw} (no such file)")
     return bad
 
 
 def main():
     if "--self-test" in sys.argv:
-        hits = broken('<a href="/this-page-does-not-exist.html">x</a><a href="/tools/nope/">y</a>')
+        planted = (
+            '<a href="/this-page-does-not-exist.html">a</a>'
+            '<a href="/tools/nope/">b</a>'
+            '<a href="/also-missing.html#section">c</a>'      # a fragment must not excuse it
+            '<a href="/missing.html?utm=1">d</a>'             # nor a query string
+            '<link rel="stylesheet" href="/assets/not-there.css">'   # nor being an asset
+            '<script src="/assets/missing.js"></script>'
+        )
+        hits = broken(planted)
         found = [b for b in hits if "<self-test>" in b]
-        print("self-test:", f"PASS — caught {len(found)} planted dead link(s)" if len(found) == 2
-              else f"FAIL — caught {len(found)} of 2 planted dead links")
-        return 0 if len(found) == 2 else 1
+        print("self-test:", f"PASS — caught all {len(found)} planted dead references" if len(found) == 6
+              else f"FAIL — caught {len(found)} of 6: {found}")
+        return 0 if len(found) == 6 else 1
 
     bad = broken()
     print(f"checked {len(pages())} page(s)")

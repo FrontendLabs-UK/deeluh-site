@@ -22,6 +22,7 @@
 <link rel="preload" href="/assets/fonts/inter-latin-wght.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/assets/tools.css">
+<script src="/assets/tools.js" defer></script>
 </head>
 <body>
 
@@ -317,6 +318,26 @@
         }
       });
     }
+    /* The Security submenu's accordion. The tool pages copy the navbar markup, which includes
+       navLegalDropdown, but the first version of this script omitted its handler - and the CSS
+       keeps that submenu collapsed until `.is-open`, so on a phone the item could not be
+       expanded at all. */
+    var legal = document.getElementById('navLegalDropdown');
+    if (legal) {
+      var trigger = legal.querySelector('.navbar__mobile-dropdown-trigger');
+      if (trigger) {
+        trigger.addEventListener('click', function () {
+          var open = legal.classList.toggle('is-open');
+          trigger.setAttribute('aria-expanded', String(open));
+        });
+        window.addEventListener('resize', function () {
+          if (window.matchMedia('(min-width: 981px)').matches) {
+            legal.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      }
+    }
   })();
 </script>
 
@@ -347,13 +368,11 @@
     var notIncluded = document.getElementById('notIncluded');
     if (!entity || !rows || !total) return;
 
-    function naira(n) { return n.toLocaleString('en-NG'); }
-
-    /* Digits only, so a pasted "N1,000,000.00" or a stray space cannot make the fee NaN. */
-    function readCapital() {
-      var digits = (capital.value || '').replace(/[^0-9]/g, '');
-      return digits === '' ? 0 : parseInt(digits, 10);
-    }
+    /* The shared helpers. This page used to parse money by stripping every non-digit, which threw
+       away the DECIMAL POINT - so a pasted "N1,000,000.00" became a hundred million and the fee came
+       out a hundred times too large, with nothing shown to say so. */
+    var T = window.DeeluhTools;
+    if (!T) return;
 
     function render() {
       var key = entity.value;
@@ -363,19 +382,23 @@
       capitalField.hidden = !perMillion;
 
       var lines = [];
+      var problem = null;
       if (perMillion) {
-        var cap = readCapital();
-        /* "or part thereof": round UP, and a company with share capital pays for at least one
-           part-million even if the capital is far below a million. */
-        var blocks = cap > 0 ? Math.ceil(cap / 1000000) : 0;
-        if (blocks > 0) {
+        var money = T.parseMoney(capital.value);
+        if (!money.ok) {
+          problem = money.reason === 'empty'
+            ? 'Enter the share capital above.'
+            : 'That share capital is not an amount we can read (' + money.reason + '). Digits, commas if you '
+              + 'like, and at most one decimal point \u2014 for example 1,000,000.';
+          lines.push({ label: 'Incorporation', amount: null });
+        } else {
+          var blocks = T.partMillions(money.value);   /* "or part thereof" rounds UP */
           lines.push({
-            label: 'Incorporation &mdash; &#8358;' + naira(e.perMillion) + ' for every &#8358;1,000,000 or part thereof ('
+            label: 'Incorporation &mdash; &#8358;' + T.naira(e.perMillion)
+                   + ' for every &#8358;1,000,000 or part thereof ('
                    + blocks + (blocks === 1 ? ' part-million' : ' part-millions') + ')',
             amount: blocks * e.perMillion
           });
-        } else {
-          lines.push({ label: 'Incorporation &mdash; enter the share capital above', amount: 0 });
         }
       } else {
         lines.push({ label: e.regLabel, amount: e.reg });
@@ -389,14 +412,22 @@
 
       var copies = Math.max(0, Math.min(50, parseInt(ctc.value, 10) || 0));
       if (copies > 0) {
-        lines.push({ label: 'Certified true copies, ' + copies + ' &times; &#8358;' + naira(CTC), amount: copies * CTC });
+        lines.push({ label: 'Certified true copies, ' + copies + ' &times; &#8358;' + T.naira(CTC), amount: copies * CTC });
       }
 
       rows.innerHTML = lines.map(function (l) {
-        return '<tr><th scope="row">' + l.label + '</th><td class="feetable__num">' + naira(l.amount) + '</td></tr>';
+        return '<tr><th scope="row">' + l.label + '</th><td class="feetable__num">'
+               + (l.amount === null ? '&mdash;' : T.naira(l.amount)) + '</td></tr>';
       }).join('');
-      total.textContent = '\u20a6' + naira(lines.reduce(function (s, l) { return s + l.amount; }, 0));
 
+      if (problem) {
+        /* No total while an input is unreadable: a figure computed from a value we could not read
+           is worse than no figure at all. */
+        total.textContent = 'not shown';
+        notIncluded.innerHTML = problem;
+        return;
+      }
+      total.textContent = '\u20a6' + T.naira(lines.reduce(function (s, l) { return s + l.amount; }, 0));
       notIncluded.innerHTML = 'The Commission&rsquo;s fees only. Stamp duty, and whoever files it for you, are '
         + 'separate &mdash; see below.';
     }
