@@ -19,25 +19,44 @@
   /**
    * Read a naira amount a person typed or pasted.
    *
-   * Accepts a currency symbol, thousands separators, spaces and ONE decimal point. Refuses a
-   * negative, anything with no digits, and anything absurd - and says which, so a caller can show
-   * the reason instead of silently computing on a wrong number.
+   * Accepts a LEADING currency symbol, correctly grouped thousands separators and ONE decimal point.
+   * Refuses a negative, anything with no digits, and anything absurd - and says which, so a caller
+   * can show the reason instead of silently computing on a wrong number.
+   *
+   * ── WHY THIS IS A GRAMMAR AND NOT A STRIP ────────────────────────────────────────────────────
+   * The first version discarded every non-digit, so a pasted "₦1,000,000.00" lost its point and
+   * came back a hundred times too large. The SECOND version - this one's predecessor - removed the
+   * separators wherever they appeared, which fixed the point and left the same failure in a
+   * narrower form, caught by review:
+   *
+   *   "1,000,000,00" -> 100,000,000     (a mistyped group read as a bigger number)
+   *   "1,00"         -> 100
+   *   "1₦2"          -> 12              (a symbol in the middle, two numbers welded into one)
+   *
+   * An ambiguous amount must not become a confident public figure. So the separators are VALIDATED
+   * in place before anything is removed: a group must be three digits, and the symbol must lead.
+   * Anything else is refused with a reason, and the page shows no figure rather than a wrong one.
    */
   function parseMoney(raw, requirePositive) {
     var s = String(raw == null ? "" : raw).trim();
     if (s === "") return { ok: false, reason: "empty", value: 0 };
 
-    // Strip the currency symbol and separators FIRST, then look for a minus. The other way round -
-    // which the first version did - meant "N-500" and "N -500" had their minus removed along with
-    // the prefix and came back as a positive 500.
-    var cleaned = s.replace(/\u20a6/g, "").replace(/^\s*N(?=\s*[-\d.])/i, "").replace(/[,\s_]/g, "");
-    if (/-/.test(cleaned)) return { ok: false, reason: "negative", value: 0 };
+    // The symbol may only LEAD, and only one of it. Removed here so the grammar below sees digits
+    // and separators only; a symbol anywhere else survives and is refused as not a number.
+    var body = s.replace(/^\u20a6\s*/, "").replace(/^N\s*(?=[-\d.])/i, "");
+    // The minus is looked for AFTER the prefix and BEFORE any grouping check, because "N-500" and
+    // "N -500" once had their minus taken away with the prefix and came back a positive 500.
+    if (/-/.test(body)) return { ok: false, reason: "negative", value: 0 };
 
-    // Digits and at most one point, and nothing else. A letter among the digits ("1N2") used to be
-    // stripped out, silently turning two numbers into one.
-    if (!/^\d*\.?\d*$/.test(cleaned) || !/\d/.test(cleaned)) {
+    // THE GRAMMAR. Either plain digits, or digits grouped in threes by one consistent separator -
+    // and nothing else anywhere. A short or long group ("1,00", "1,000,000,00") is a typo, not a
+    // number, and is refused rather than silently regrouped.
+    var plain = /^\d+(\.\d+)?$/;
+    var grouped = /^\d{1,3}(([,\s_])\d{3})(\2\d{3})*(\.\d+)?$/;
+    if (!plain.test(body) && !grouped.test(body)) {
       return { ok: false, reason: "not a number", value: 0 };
     }
+    var cleaned = body.replace(/[,\s_]/g, "");
     var n = parseFloat(cleaned);
     if (!isFinite(n)) return { ok: false, reason: "not a number", value: 0 };
     if (n > MAX_AMOUNT) return { ok: false, reason: "too large", value: 0 };
