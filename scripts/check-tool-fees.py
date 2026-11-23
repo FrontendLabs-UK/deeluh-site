@@ -9,6 +9,8 @@ import io, math, os, re, sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAGE = os.path.join(ROOT, "tools", "cac-registration-fees", "index.html")
 GAZETTE = os.path.join(ROOT, "assets", "sources", "cac-schedule-of-fees-gazette-92-2025.txt")
+SD_PAGE = os.path.join(ROOT, "tools", "stamp-duty-nigeria", "index.html")
+SD_SOURCE = os.path.join(ROOT, "assets", "sources", "nigeria-tax-act-2025-stamp-duty-extract.txt")
 SELF_TEST = "--self-test" in sys.argv
 
 html = io.open(PAGE, encoding="utf8").read()
@@ -63,12 +65,50 @@ for cap, want in cases:
 if blocks(1_000_001) * 10_000 - blocks(1_000_000) * 10_000 != 10_000:
     fail.append("the page claims one naira of capital past a million costs ten thousand more; it does not")
 
+# ───────────────────────── stamp duty: the published rates against the Act's own words
+sd_html = io.open(SD_PAGE, encoding="utf8").read()
+sd_src = io.open(SD_SOURCE, encoding="utf8").read()
 if SELF_TEST:
-    ok = any("business-name" in f for f in fail)
-    print("self-test:", "PASS — a wrong business-name fee is caught" if ok else "FAIL — a wrong fee went unnoticed")
+    sd_html = sd_html.replace("conveyance:  { rate: 0.015", "conveyance:  { rate: 0.025", 1)
+
+sd_block = sd_html[sd_html.index("var I = {"):]
+sd_block = sd_block[: sd_block.index("\n    };")]
+sd_rates = dict(re.findall(r"(\w+):\s*\{ rate: ([0-9.]+|null)", sd_block))
+
+SD_EXPECT = {
+    "conveyance": "0.015",    # 1.5%   — conveyance or transfer on sale
+    "lease7": "0.0078",       # 0.78%  — lease, term up to 7 years
+    "lease7plus": "null",     # the Act's cell is truncated; it must stay unfilled
+    "mortgage": "0.00375",    # 0.375%
+    "security": "0.00375",    # 0.375%
+    "shares": "0.0075",       # 0.75%  — capital duty on nominal shares
+    "marketable": "0.00225",  # 0.225%
+}
+for key, want in SD_EXPECT.items():
+    got = sd_rates.get(key)
+    if got != want:
+        fail.append(f"stamp duty {key}: page has {got}, the Act says {want}")
+
+# the percentages the page prints must be in the committed extract of the Act
+for pct in ["1.5%", "0.78%", "0.375%", "0.75%", "0.225%"]:
+    if pct not in sd_src:
+        fail.append(f"the Act extract does not contain {pct} — the rate on the page is unsupported")
+for phrase in ["30 days after its execution", "10,000,000", "135.", "126."]:
+    if phrase not in sd_src:
+        fail.append(f"the Act extract does not contain {phrase!r}")
+
+# and the one band we deliberately do not publish must stay unpublished
+if sd_rates.get("lease7plus") != "null":
+    fail.append("the above-7-years lease rate has been filled in; the Act's cell is truncated, so it is "
+                "either sourced from somewhere new (update the extract) or guessed (do not)")
+
+if SELF_TEST:
+    ok = any("business-name" in f for f in fail) and any("conveyance" in f for f in fail)
+    print("self-test:", "PASS — a wrong CAC fee and a wrong stamp duty rate are both caught" if ok
+          else "FAIL — a wrong figure went unnoticed")
     sys.exit(0 if ok else 1)
 
-print("entities checked:", len(nums))
+print("CAC entities checked:", len(nums), "| stamp duty rates checked:", len(sd_rates))
 print("FAIL" if fail else "PASS")
 for f in fail:
     print("  -", f)

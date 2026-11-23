@@ -103,3 +103,7 @@
                  padding-left: 14px !important; }
 .feetable tfoot th, .feetable tfoot td { border-top: 2px solid var(--brand-primary); font-weight: 700; color: var(--ink); }
 .feetable__total { font-size: 16px; }
+
+/* A quoted statutory provision. Set apart because the words are the authority, not our summary. */
+.quote { font-family: var(--font-display); font-size: 17px; line-height: 1.6; color: var(--ink);
+         border-left: 3px solid var(--brand-primary); margin: 18px 0; padding: 2px 0 2px 18px; max-width: 60ch; }
